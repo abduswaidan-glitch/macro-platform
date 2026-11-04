@@ -5,3 +5,5 @@ reports/
 # headline text never enters the public repo; it is deployed with the page only
 _site/
 news.json
+# built at every deploy from data/raw with the latest code
+data.json

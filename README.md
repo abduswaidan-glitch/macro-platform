@@ -5,7 +5,10 @@
 
 - `index.html` صفحة المنصة (ملف واحد بلا مكتبات خارجية، تقرأ `data.json`).
 - `fetch_macro.py` يجلب 27 سلسلة من FRED، ويفحصها، ويكتب `data.json`، ثم يكتب تقرير Claude إن حان موعده.
-- `.github/workflows/update.yml` يشغّل التحديث تلقائياً عدة مرات في كل يوم عمل، ويحفظ النتيجة في المستودع.
+- `.github/workflows/update.yml` يجلب البيانات عدة مرات في كل يوم عمل ويحفظ السلاسل في `data/raw`.
+- `.github/workflows/news.yml` يجلب الأخبار ويترجمها وينشر الصفحة كل 10 دقائق.
+- `.github/workflows/deploy.yml` ينشر الصفحة خلال دقيقة من أي تعديل يُدفع إلى `main`.
+- `data.json` لا يُحفظ في المستودع: يُبنى عند كل نشر بأحدث كود من `data/raw`.
 - `config.json` حدود البوابات (العائد 10Y الحرج، VIX، العائد الحقيقي، High Yield) وإعدادات التقرير الذكي.
 - `prompts/analyst.md` تعليمات المحلل الدائمة لتقرير Claude؛ عدّلها من GitHub متى شئت.
 

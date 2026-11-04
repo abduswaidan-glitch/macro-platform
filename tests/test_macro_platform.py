@@ -204,3 +204,28 @@ def test_write_report_with_fake_model_and_history(demo, cfg, tmp_path):
     ai_report.update_history(hist_p, rep, keep=2)
     ai_report.update_history(hist_p, rep, keep=2)  # نفس اليوم: يستبدل ولا يكرر
     assert len(json.loads(hist_p.read_text(encoding="utf-8"))) == 1
+
+
+# ---------------------------------------------------------------- offline rebuild at deploy time
+def test_offline_rebuild_uses_saved_series_and_keeps_fetch_warnings(tmp_path, monkeypatch, demo):
+    import fetch_macro
+    from macro_platform.build import save_raw
+
+    data = tmp_path / "data"
+    for sid in ("DGS10", "VIXCLS", "UNRATE"):
+        save_raw(data / "raw", sid, demo[sid])
+    fetch_macro.save_status(data / "fetch_status.json",
+                            {"DGS10": {"state": "error", "issues": ["فشل الجلب: blocked"]}},
+                            ["فشل كتابة تقرير Claude: x"], NOW)
+    monkeypatch.setattr(fetch_macro, "DATA", data)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "must-not-be-used")
+    monkeypatch.setattr(fetch_macro.ai_report, "write_report",
+                        lambda *a, **k: (_ for _ in ()).throw(AssertionError("no AI in offline mode")))
+    out = tmp_path / "data.json"
+    assert fetch_macro.main(["--offline", "--out", str(out)]) == 0
+    d = json.loads(out.read_text(encoding="utf-8"))
+    ids = {i["id"]: i for i in d["indicators"] if "points" in i}
+    assert set(ids) == {"DGS10", "VIXCLS", "UNRATE"}
+    assert ids["DGS10"]["state"] == "error"
+    assert any("فشل كتابة تقرير Claude" in w for w in d["status"]["warnings"])
+    assert not (data / "state.json").exists()
