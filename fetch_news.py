@@ -46,6 +46,8 @@ def build_site(site: Path) -> None:
         if src.exists():
             (site / f).parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, site / f)
+        elif f == "data.json":
+            log("WARNING: data.json missing; run `python fetch_macro.py --offline` before building the site")
 
 
 def main(argv=None) -> int:

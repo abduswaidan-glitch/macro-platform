@@ -99,11 +99,16 @@ def test_fetch_news_builds_site_without_keys(tmp_path, monkeypatch):
     monkeypatch.delenv("FJ_API_KEY", raising=False)
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.setattr(fetch_news, "load_live", lambda url: {})
+    root = tmp_path / "repo"                      # data.json مخرَج بناء، فنصنع شجرة مستقلة بدل الاعتماد على ملف محلي
+    (root / "data").mkdir(parents=True)
+    for f in ("index.html", "data.json", ".nojekyll", "data/ai_history.json"):
+        (root / f).write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(fetch_news, "ROOT", root)
     site = tmp_path / "_site"
     assert fetch_news.main(["--site", str(site)]) == 0
     out = json.loads((site / "news.json").read_text(encoding="utf-8"))
     assert out["items"] == [] and any("FJ_API_KEY" in e for e in out["errors"])
-    assert (site / "index.html").exists() and (site / "data.json").exists()
+    assert all((site / f).exists() for f in ("index.html", "data.json", ".nojekyll", "data/ai_history.json"))
 
 
 def test_fetch_news_end_to_end_with_fakes(tmp_path, monkeypatch):
