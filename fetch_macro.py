@@ -57,7 +57,11 @@ def main(argv=None) -> int:
         log("AI report skipped: no ANTHROPIC_API_KEY secret")
     elif ai_report.should_run(now, state.get("ai_last_date"), cfg.get("ai", {}), force):
         try:
-            rep = ai_report.write_report(payload, cfg, now_utc=now)
+            from fetch_news import load_live
+            live = load_live("https://abduswaidan-glitch.github.io/macro-platform/news.json")
+            heads = [{"utc": i.get("utc"), "title": i.get("title_en"), "breaking": i.get("breaking")}
+                     for i in live.get("items", []) if i.get("us") or i.get("breaking")][:60]
+            rep = ai_report.write_report(payload, cfg, now_utc=now, headlines=heads or None)
             ai_report.update_history(hist_p, rep, keep=cfg.get("ai", {}).get("keep", 14))
             state["ai_last_date"] = rep["meta"]["ny_date"]
             state_p.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")

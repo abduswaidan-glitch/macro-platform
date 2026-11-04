@@ -162,6 +162,27 @@ td .en{display:block;color:var(--muted);font-size:12px}
 .sec-body p{margin:6px 0 0;max-width:85ch}
 .picker select{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px}
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);padding:18px 0 30px}
+/* live news */
+.news{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden}
+.news-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--surface-2)}
+.news-meta{font-size:12.5px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip-btn{border:1px solid var(--rule);background:var(--surface);border-radius:99px;padding:4px 12px;cursor:pointer;font-size:13px;color:var(--ink)}
+.chip-btn[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.news ol{list-style:none;margin:0;padding:0;max-height:520px;overflow-y:auto}
+.news li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:9px 14px;border-bottom:1px solid var(--rule)}
+.news li:last-child{border-bottom:0}
+.news time{font-size:12.5px;color:var(--muted);direction:ltr;text-align:start;padding-top:2px}
+.news .h{font-size:14.5px;line-height:1.55}
+.news .h a{color:inherit;text-decoration:none}
+.news .h a:hover{text-decoration:underline;text-decoration-color:var(--acc)}
+.news .en{display:block;color:var(--muted);font-size:12px;direction:ltr;text-align:start;margin-top:2px}
+.news .lb{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--rule);border-radius:5px;padding:0 5px;margin-inline-start:4px;direction:ltr}
+.news .brk{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--bad);border-radius:5px;padding:0 6px;margin-inline-end:6px}
+.news li.hi .h{font-weight:600}
+.news li.new{animation:flash 2.5s ease-out}
+@keyframes flash{from{background:var(--acc-soft)}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){.news li.new{animation:none}}
 </style>
 </head>
 <body>
@@ -373,6 +394,8 @@ function renderOverview(data) {
   const w = data.status.warnings;
   p.innerHTML = `<div class="sec-head"><h2>نظرة عامة</h2><p>بوابات NQ الكلية وإشارات الدورة الاقتصادية في صفحة واحدة. كل رقم بتاريخه؛ البيانات الشهرية تصدر متأخرة.</p></div>
     ${w.length ? `<div class="warn-box"><b>تنبيهات البيانات (${w.length})</b><ul>${w.slice(0, 8).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+    <h3>الأخبار اللحظية</h3>
+    <div id="newsBox"><p class="empty">جارٍ تحميل الأخبار…</p></div>
     <h3>بوابات NQ</h3>
     <details class="about"><summary>كيف أقرأ البوابات؟</summary><div class="body">
       <p>العائد 10Y فوق الحد الحرج يضغط على تقييمات أسهم النمو، وVIX يحدد نوع اليوم (Mean reversion تحت ${esc(data.config.gates.vix_calm)}، وتوسّع تذبذب فوق ${esc(data.config.gates.vix_stress)}). تُعدَّل الحدود من <code>config.json</code>.</p>
@@ -482,6 +505,42 @@ function renderMethod(data) {
     </tbody></table></div>`;
 }
 
+/* ---------- live news ---------- */
+const NEWS = {data: null, filter: store.get("macro-news-filter") || "us", seen: new Set(), first: true};
+const nyTime = iso => { try { return new Date(iso).toLocaleTimeString("en-GB", {timeZone: "America/New_York", hour: "2-digit", minute: "2-digit"}); } catch (e) { return ""; } };
+const nyDay = iso => { try { return new Date(iso).toLocaleDateString("en-CA", {timeZone: "America/New_York"}); } catch (e) { return ""; } };
+function renderNews() {
+  const box = $("#newsBox"); if (!box) return;
+  const d = NEWS.data;
+  if (!d) { box.innerHTML = '<p class="empty">لا توجد أخبار منشورة بعد. تبدأ بعد أول تشغيل لـ«الأخبار اللحظية» في تبويب Actions.</p>'; return; }
+  const all = d.items || [];
+  const items = all.filter(i => NEWS.filter === "all" || (NEWS.filter === "us" ? i.us : i.breaking || i.level >= 3)).slice(0, 120);
+  const mins = Math.round((Date.now() - Date.parse(d.updated)) / 6e4);
+  const today = nyDay(new Date().toISOString());
+  const chips = [["us", "أمريكا"], ["hot", "عاجل ومؤثر"], ["all", "الكل"]];
+  box.innerHTML = `<div class="news"><div class="news-top">
+      <div class="chips" role="group" aria-label="تصفية الأخبار">${chips.map(([k, l]) => `<button class="chip-btn" type="button" data-f="${k}" aria-pressed="${NEWS.filter === k}">${l}</button>`).join("")}</div>
+      <div class="news-meta">FinancialJuice · بتأخير ${esc(d.delay_minutes)} دقائق · آخر جلب منذ ${mins < 1 ? "أقل من دقيقة" : mins + " د"}${d.translator ? " · الترجمة: " + esc(d.translator) : ""} · التوقيت: نيويورك</div></div>
+    ${(d.errors || []).length ? `<div class="warn-box" style="margin:10px 14px">${d.errors.map(esc).join("<br>")}</div>` : ""}
+    ${items.length ? `<ol>${items.map(i => {
+      const ar = i.title_ar && i.title_ar !== i.title_en ? i.title_ar : null;
+      const fresh = !NEWS.first && !NEWS.seen.has(i.id);
+      const day = nyDay(i.utc);
+      return `<li class="${i.breaking || i.level >= 3 ? "hi" : ""}${fresh ? " new" : ""}"><time datetime="${esc(i.utc)}">${esc(nyTime(i.utc))}${day !== today ? `<br>${esc(day.slice(5))}` : ""}</time>
+        <div class="h">${i.breaking ? '<span class="brk">عاجل</span>' : ""}<a href="${safeUrl(i.link)}" target="_blank" rel="noopener noreferrer">${esc(ar || i.title_en)}</a>
+        ${ar ? `<span class="en">${esc(i.title_en)}</span>` : ""}${(i.labels || []).slice(0, 3).map(l => `<span class="lb">${esc(l)}</span>`).join("")}</div></li>`;
+    }).join("")}</ol>` : '<p class="empty" style="padding:12px 14px">لا عناوين في هذا التصنيف خلال آخر 24 ساعة.</p>'}</div>`;
+  all.forEach(i => NEWS.seen.add(i.id));
+  NEWS.first = false;
+  box.querySelectorAll(".chip-btn").forEach(b => b.onclick = () => { NEWS.filter = b.dataset.f; store.set("macro-news-filter", NEWS.filter); renderNews(); });
+}
+async function loadNews() {
+  try { NEWS.data = await getJSON("news.json"); } catch (e) { if (!NEWS.data) NEWS.data = null; }
+  renderNews();
+}
+setInterval(() => { if (!document.hidden) loadNews(); }, 120000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) loadNews(); });
+
 /* ---------- boot ---------- */
 async function getJSON(f) {
   const r = await fetch(f + "?t=" + Date.now(), {cache: "no-store"});
@@ -496,6 +555,7 @@ async function getJSON(f) {
     renderHeader(data);
     renderAI(hist);
     renderOverview(data);
+    loadNews();
     renderCategories(data);
     renderMethod(data);
     setupTabs(data);

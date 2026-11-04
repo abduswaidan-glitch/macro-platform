@@ -62,7 +62,7 @@ def should_run(now_utc: datetime, last_date: str | None, cfg: dict, force: bool 
     return ny >= due and last_date != ny.strftime("%Y-%m-%d")
 
 
-def context(payload: dict, tail: int = 8) -> dict:
+def context(payload: dict, tail: int = 8, headlines: list[dict] | None = None) -> dict:
     """نسخة مضغوطة من data.json للنموذج: بلا السلاسل الكاملة، مع آخر نقاط لكل مؤشر لرؤية الاتجاه."""
     inds = []
     for i in payload["indicators"]:
@@ -75,7 +75,9 @@ def context(payload: dict, tail: int = 8) -> dict:
     return {"generated": payload["generated"], "kpis": payload["kpis"], "gates": payload["gates"],
             "gate_levels": payload["config"]["gates"], "signals": payload["signals"],
             "quadrant": payload["quadrant"], "sahm_recent": payload["sahm"]["points"][-6:],
-            "indicators": inds, "data_warnings": payload["status"]["warnings"]}
+            "indicators": inds, "data_warnings": payload["status"]["warnings"],
+            **({"headlines_24h": headlines, "headlines_note": "FinancialJuice wire, UTC, ~10 min delay; English originals"}
+               if headlines else {})}
 
 
 def parse_report(text: str) -> dict:
@@ -139,14 +141,15 @@ def call_claude(user_text: str, system: str, model: str, effort: str) -> tuple[s
     return "".join(texts), [{"url": u, "title": t} for u, t in sources.items()], usage, served
 
 
-def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, caller=call_claude) -> dict:
+def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, caller=call_claude,
+                 headlines: list[dict] | None = None) -> dict:
     now_utc = now_utc or datetime.now(timezone.utc)
     ai = cfg.get("ai", {})
     notes = analyst_notes()
     system = SYSTEM + ("\n\nThe trader's standing instructions (Arabic):\n" + notes if notes else "")
     ny_now = now_utc.astimezone(NY)
     user = (f"Today is {ny_now:%A %Y-%m-%d}, {ny_now:%H:%M} New York time. Platform data:\n"
-            + json.dumps(context(payload), ensure_ascii=False))
+            + json.dumps(context(payload, headlines=headlines), ensure_ascii=False))
     text, sources, usage, served = caller(user, system, ai.get("model", "claude-opus-5-5"), ai.get("effort", "high"))
     rep = parse_report(text)
     rep["sources"] = sources

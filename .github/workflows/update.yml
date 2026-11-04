@@ -15,6 +15,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: macro-data
@@ -24,6 +26,9 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -52,3 +57,16 @@ jobs:
             git pull -q --rebase origin "${GITHUB_REF_NAME}" || { git rebase --abort; break; }
           done
           echo "push failed"; exit 1
+
+      - name: بناء الموقع (مع آخر أخبار منشورة)
+        run: python fetch_news.py --site _site --no-fetch
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+          name: github-pages-update-${{ github.run_id }}
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-update-${{ github.run_id }}

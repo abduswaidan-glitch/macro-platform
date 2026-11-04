@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .pytest_cache/
 reports/
+# headline text never enters the public repo; it is deployed with the page only
+_site/
+news.json

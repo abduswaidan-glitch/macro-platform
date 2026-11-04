@@ -1,0 +1,75 @@
+name: الأخبار اللحظية (FinancialJuice)
+
+# حلقة حيّة: 30 خطوة متتالية، كل خطوة تجلب العناوين الجديدة وتترجم ما يلزم بـHaiku وتنشر الموقع، ثم تنتظر حتى تكمل 10 دقائق.
+# التشغيل يستمر ~5 ساعات ثم يطلق التشغيل التالي بنفسه. الجدولة أدناه احتياط فقط لأن GitHub يُسقط أغلب التشغيلات المجدولة.
+# نص العناوين لا يُحفظ في المستودع: يُنشر مع الصفحة مباشرة.
+
+on:
+  schedule:
+    - cron: "3,33 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: write
+
+concurrency:
+  group: news-loop
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        i: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: بداية الدورة
+        run: echo "T0=$(date +%s)" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: تثبيت المكتبات
+        run: pip install anthropic
+
+      - name: جلب الأخبار وترجمتها وبناء الموقع
+        env:
+          FJ_API_KEY: ${{ secrets.FJ_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python fetch_news.py --site _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+          name: github-pages-${{ github.run_id }}-${{ matrix.i }}
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ matrix.i }}
+
+      - name: انتظار حتى تكتمل 10 دقائق
+        if: matrix.i != 30
+        run: |
+          left=$(( 600 - ($(date +%s) - T0) ))
+          [ "$left" -gt 0 ] && sleep "$left" || true
+
+      - name: إطلاق التشغيل التالي
+        if: matrix.i == 30
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run news.yml --repo "$GITHUB_REPOSITORY" --ref main || true
