@@ -23,7 +23,7 @@ MIN_ROWS = {"D": 200, "W": 50, "M": 24, "Q": 8}
 MAX_AGE_DAYS = {"D": 7, "W": 14, "M": 80, "Q": 220}  # تأخر النشر الطبيعي لكل تكرار
 # سلاسل يومية ينشرها FRED متأخرة أسبوعاً عادةً (نفط WTI من EIA، الدولار الواسع من الفيدرالي)
 MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14}
-KPI_IDS = ("DGS10", "DGS2", "T10Y2Y", "FEDFUNDS", "PCEPILFE", "UNRATE", "VIXCLS", "NASDAQ100")
+KPI_IDS = ("DGS10", "DFII10", "DTWEXBGS", "DCOILWTICO", "T10Y2Y", "FEDFUNDS", "PCEPILFE", "UNRATE", "VIXCLS", "NASDAQ100")
 DEFAULT_CONFIG = {
     "start": "2000-01-01",
     "gates": {"us10y_trigger": 4.5, "vix_calm": 20, "vix_stress": 25, "real10_restrictive": 2.0, "hy_stress": 5.0},
