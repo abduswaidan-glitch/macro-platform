@@ -62,7 +62,12 @@ def main(argv=None) -> int:
     store = {str(i["id"]): i for i in prev.get("items", []) if isinstance(i, dict) and "id" in i}
     errors: list[str] = []
     translator = prev.get("translator")
-    key = os.environ.get("FJ_API_KEY", "").strip()
+    raw_key = os.environ.get("FJ_API_KEY", "")
+    key = raw_key.strip().strip("\"'").strip()  # يتسامح مع اقتباس أو مسافة أو سطر جديد لُصق مع المفتاح
+    if raw_key:
+        # وصف شكل المفتاح فقط (لا المفتاح): يكشف أخطاء اللصق دون تسريب
+        log(f"key shape: length {len(key)}, starts with fj_: {key.startswith('fj_')}, "
+            f"trimmed {len(raw_key) - len(key)} chars, inner spaces: {any(c.isspace() for c in key)}")
 
     if not args.no_fetch:
         if not key:

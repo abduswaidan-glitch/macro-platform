@@ -119,3 +119,13 @@ def test_fetch_news_end_to_end_with_fakes(tmp_path, monkeypatch):
     fetch_news.main(["--site", str(site)])
     out = json.loads((site / "news.json").read_text(encoding="utf-8"))
     assert out["translator"] == news.TRANSLATOR and out["items"][0]["title_ar"] == "ترتفع عوائد السندات"
+
+
+def test_key_with_quotes_and_newline_is_cleaned(tmp_path, monkeypatch):
+    seen = {}
+    monkeypatch.setenv("FJ_API_KEY", ' "fj_abc123"\n')
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.setattr(fetch_news, "load_live", lambda url: {})
+    monkeypatch.setattr(news, "fetch", lambda key, since: seen.setdefault("key", key) and [])
+    fetch_news.main(["--site", str(tmp_path / "s")])
+    assert seen["key"] == "fj_abc123"
