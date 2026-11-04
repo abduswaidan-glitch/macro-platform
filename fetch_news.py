@@ -82,7 +82,13 @@ def main(argv=None) -> int:
                 errors.append(str(e)[:160])
                 log("fetch failed:", str(e)[:160])
         store = news.prune(store, now)
-        if os.environ.get("ANTHROPIC_API_KEY", "").strip():
+        akey = os.environ.get("ANTHROPIC_API_KEY", "")
+        clean = akey.strip().strip("\"'").strip()
+        if clean:
+            os.environ["ANTHROPIC_API_KEY"] = clean
+            # وصف شكل المفتاح فقط: sk-ant-api = مفتاح API صحيح الشكل؛ sk-ant-oat = رمز اشتراك لا يعمل هنا
+            log(f"anthropic key shape: length {len(clean)}, prefix {clean[:10]!r}, trimmed {len(akey) - len(clean)} chars")
+        if clean:
             done, terr = news.translate_missing(store)
             errors += terr
             translator = news.TRANSLATOR if (done or translator) else None
