@@ -1,0 +1,17 @@
+{
+  "start": "2000-01-01",
+  "gates": {
+    "us10y_trigger": 4.50,
+    "vix_calm": 20,
+    "vix_stress": 25,
+    "real10_restrictive": 2.0,
+    "hy_stress": 5.0
+  },
+  "ai": {
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "ny_hour": 8,
+    "ny_minute": 30,
+    "keep": 14
+  }
+}

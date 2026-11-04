@@ -1,102 +1,72 @@
-"""عميل FRED: يجلب السلاسل ويخزنها محلياً كـCSV حتى لا يُعاد الجلب كل مرة.
+"""جلب سلاسل FRED من fredgraph.csv: نفس الرابط العام الذي تستخدمه منصة الذهب، ولا يحتاج مفتاح API.
 
-يحتاج مفتاح API مجاني من FRED في المتغير البيئي FRED_API_KEY.
+خوادم FRED تحجب أحياناً طلبات GitHub Actions العادية، فنجرّب أولاً curl_cffi (بصمة متصفح Chrome)
+ثم urllib كخيار احتياطي.
 """
 
 from __future__ import annotations
 
-import json
-import os
+import io
 import time
-import urllib.parse
 import urllib.request
-from pathlib import Path
 
 import pandas as pd
 
-FRED_URL = "https://api.stlouisfed.org/fred/series/observations"
+FRED_CSV = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={sid}&cosd={start}"
+TIMEOUT = 40
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 
 
 class FredError(RuntimeError):
     pass
 
 
-def get_api_key() -> str:
-    key = os.environ.get("FRED_API_KEY", "").strip()
-    if not key:
-        raise FredError("لم يُضبط FRED_API_KEY. احصل على مفتاح مجاني من fred.stlouisfed.org ثم صدّره في البيئة.")
-    return key
+def parse_csv(text: str, series_id: str = "") -> pd.Series:
+    """CSV من FRED: عمودان (التاريخ، القيمة). '.' أو فراغ = لا قيمة (عطلة) فتُحذف."""
+    if text.lstrip().startswith("<"):
+        raise FredError(f"{series_id}: الرد صفحة HTML وليس CSV (حجب أو خطأ)")
+    df = pd.read_csv(io.StringIO(text))
+    if df.shape[1] < 2 or df.empty:
+        raise FredError(f"{series_id}: CSV فارغ أو غير متوقع")
+    idx = pd.to_datetime(df.iloc[:, 0], errors="coerce")
+    vals = pd.to_numeric(df.iloc[:, 1], errors="coerce")
+    s = pd.Series(vals.to_numpy(dtype="float64"), index=pd.DatetimeIndex(idx), name=series_id)
+    s = s[s.index.notna()].dropna().sort_index()
+    return s[~s.index.duplicated(keep="last")]
 
 
-def parse_observations(payload: dict) -> pd.Series:
-    """يحوّل ردّ FRED JSON إلى سلسلة زمنية؛ القيمة '.' تعني لا بيانات (عطلة/تأخير) فتُحذف."""
-    rows = payload.get("observations")
-    if rows is None:
-        raise FredError("ردّ غير متوقع من FRED")
-    idx = pd.to_datetime([r["date"] for r in rows])
-    vals = [None if r["value"] in (".", "") else float(r["value"]) for r in rows]
-    return pd.Series(vals, index=idx, dtype="float64").dropna()
+def _get(url: str) -> str:
+    errors = []
+    try:
+        from curl_cffi import requests as creq  # اختياري: مثبّت في GitHub Actions
+
+        for imp in ("chrome", "safari"):
+            try:
+                r = creq.get(url, impersonate=imp, timeout=TIMEOUT, headers={"Accept": "text/csv"})
+                if r.status_code == 200:
+                    return r.text
+                errors.append(f"{imp}: HTTP {r.status_code}")
+            except Exception as exc:
+                errors.append(f"{imp}: {type(exc).__name__}")
+    except ImportError:
+        pass
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/csv"})
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+            return resp.read().decode("utf-8", "replace")
+    except Exception as exc:
+        errors.append(f"urllib: {type(exc).__name__}: {str(exc)[:80]}")
+    raise FredError(" | ".join(errors)[:300])
 
 
-def fetch_series(series_id: str, api_key: str, start: str = "1990-01-01",
-                 timeout: float = 30.0, retries: int = 3) -> pd.Series:
-    params = {
-        "series_id": series_id,
-        "api_key": api_key,
-        "file_type": "json",
-        "observation_start": start,
-    }
-    url = FRED_URL + "?" + urllib.parse.urlencode(params)
-    last_err: Exception | None = None
+def fetch_series(series_id: str, start: str = "2000-01-01", retries: int = 3) -> pd.Series:
+    url = FRED_CSV.format(sid=series_id, start=start)
+    last: Exception | None = None
     for attempt in range(retries):
         try:
-            with urllib.request.urlopen(url, timeout=timeout) as resp:
-                payload = json.loads(resp.read().decode("utf-8"))
-            return parse_observations(payload)
-        except Exception as exc:  # لا نطبع الرابط لأنه يحمل المفتاح
-            last_err = exc
+            return parse_csv(_get(url), series_id)
+        except Exception as exc:
+            last = exc
             if attempt < retries - 1:
-                time.sleep(2**attempt)
-    raise FredError(f"{series_id}: فشل الجلب ({type(last_err).__name__})")
-
-
-class SeriesStore:
-    """تخزين محلي: cache_dir/<SERIES>.csv"""
-
-    def __init__(self, cache_dir: str | Path, api_key: str | None = None):
-        self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self._api_key = api_key
-
-    def path(self, series_id: str) -> Path:
-        return self.cache_dir / f"{series_id}.csv"
-
-    def load_cached(self, series_id: str) -> pd.Series | None:
-        p = self.path(series_id)
-        if not p.exists():
-            return None
-        df = pd.read_csv(p, index_col=0, parse_dates=True)
-        return df.iloc[:, 0].astype("float64")
-
-    def get(self, series_id: str, start: str = "1990-01-01", refresh: bool = False) -> pd.Series:
-        if not refresh:
-            cached = self.load_cached(series_id)
-            if cached is not None:
-                return cached
-        if self._api_key is None:
-            self._api_key = get_api_key()
-        s = fetch_series(series_id, self._api_key, start=start)
-        s.rename(series_id).to_csv(self.path(series_id), header=[series_id])
-        return s
-
-    def get_all(self, series_ids, start: str = "1990-01-01", refresh: bool = False,
-                on_error=None) -> dict[str, pd.Series]:
-        out: dict[str, pd.Series] = {}
-        for sid in series_ids:
-            try:
-                out[sid] = self.get(sid, start=start, refresh=refresh)
-            except FredError as exc:
-                if on_error is None:
-                    raise
-                on_error(sid, exc)
-        return out
+                time.sleep(2 ** attempt)
+    raise FredError(f"{series_id}: {last}")

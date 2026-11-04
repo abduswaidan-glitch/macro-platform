@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="description" content="الاقتصاد الكلي الأمريكي: النمو والتوظيف والتضخم والفائدة وبوابات NQ | US Macro Desk">
+<title>الاقتصاد الكلي الأمريكي</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%232F6FDB'/><polyline points='22,68 40,50 54,60 78,32' fill='none' stroke='%23CFE0FF' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0F15; --surface:#111821; --surface-2:#16202B; --ink:#E3E8EE; --muted:#93A0B0; --rule:#233040;
+  --navy:#0C121A; --navy-ink:#E9EDF2; --navy-muted:#9AA7B6;
+  --acc:#5B9BFF; --acc-hi:#8DB9FF; --acc-lo:#2F6FDB; --acc-ink:#04122B; --acc-soft:rgba(91,155,255,.13);
+  --ok:#3CC48C; --bad:#F06A5D; --warn:#F5A142; --neu:#93A0B0; --line2:#E0B44C;
+  --radius:10px; --shadow:0 1px 2px rgba(0,0,0,.35);
+  --sans:"IBM Plex Sans Arabic","IBM Plex Sans","Segoe UI",Tahoma,system-ui,sans-serif;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#F3F4F6; --surface:#FFFFFF; --surface-2:#F8F9FB; --ink:#0F1720; --muted:#5B6776; --rule:#E2E6EB;
+  --navy:#131A22;
+  --acc:#2F6FDB; --acc-hi:#5B9BFF; --acc-lo:#1E4FA8; --acc-ink:#FFFFFF; --acc-soft:rgba(47,111,219,.10);
+  --ok:#0B8A5A; --bad:#C9372C; --warn:#C26A06; --neu:#5B6776; --line2:#B8892B;
+  --shadow:0 1px 2px rgba(15,23,32,.05),0 1px 1px rgba(15,23,32,.03); color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;
+  font-variant-numeric:tabular-nums;-webkit-text-size-adjust:100%;overflow-x:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+a{color:var(--acc-hi)}
+:root[data-theme="light"] a{color:var(--acc-lo)}
+
+/* header */
+.site-head{background:var(--navy);color:var(--navy-ink);border-bottom:3px solid var(--acc)}
+.util{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;padding-top:10px;font-size:12.5px;color:var(--navy-muted);flex-wrap:wrap}
+.live{display:inline-flex;align-items:center;gap:7px;padding:3px 12px;border-radius:99px;white-space:nowrap;
+  border:1px solid color-mix(in srgb,var(--ok) 45%,transparent);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.live.slow{border-color:color-mix(in srgb,var(--warn) 45%,transparent);background:color-mix(in srgb,var(--warn) 12%,transparent)}
+.live.slow i{background:var(--warn)}
+.live.late{border-color:color-mix(in srgb,var(--bad) 45%,transparent);background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.live.late i{background:var(--bad)}
+.brand-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:18px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:40px;height:40px;border-radius:10px;flex:none;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--acc-hi),var(--acc) 55%,var(--acc-lo))}
+.logo svg{width:24px;height:24px}
+.brand h1{margin:0;font-size:26px;font-weight:700;line-height:1.15}
+.brand h1 span{color:var(--acc-hi)}
+.brand p{margin:2px 0 0;font-size:13.5px;color:var(--navy-muted)}
+.theme-btn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:32px;border-radius:99px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.18);background:none;color:var(--acc-hi)}
+.theme-btn svg{width:16px;height:16px}
+.demo-flag{display:none;margin:0 0 14px;padding:8px 12px;border-radius:8px;font-size:13.5px;
+  background:color-mix(in srgb,var(--warn) 18%,transparent);border:1px solid color-mix(in srgb,var(--warn) 50%,transparent);color:var(--navy-ink)}
+
+/* KPI strip */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding-top:16px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--acc);border-radius:var(--radius);padding:11px 14px;box-shadow:var(--shadow);min-width:0}
+.kpi span{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi b{display:block;font-size:21px;font-weight:700;line-height:1.3;white-space:nowrap}
+.kpi small{font-size:12.5px;color:var(--muted)}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi b{font-size:18px}}
+
+/* tabs */
+.tabs-bar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--rule);margin-top:16px}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;align-items:center}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:none;padding:14px 12px 11px;cursor:pointer;color:var(--muted);font-weight:500;font-size:14.5px;
+  border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--acc);font-weight:600}
+.tab-ai{display:inline-flex;align-items:center;gap:8px;margin:7px 0 7px 6px;padding:7px 14px;border-radius:99px;color:var(--acc-ink);font-weight:700;
+  background:linear-gradient(135deg,var(--acc-hi),var(--acc) 55%,var(--acc-lo));border-bottom:0}
+.tab-ai:hover{color:var(--acc-ink);filter:brightness(1.05)}
+.tab-ai[aria-selected="true"]{color:var(--acc-ink);box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--acc)}
+.ai-badge{font-size:11px;font-weight:800;background:var(--navy);color:var(--acc-hi);padding:1px 6px;border-radius:5px;direction:ltr}
+
+/* sections */
+main{padding:22px 0 40px}
+.panel[hidden]{display:none}
+.sec-head h2{font-size:24px;font-weight:700;margin:0 0 4px;line-height:1.3}
+.sec-head p{margin:0;color:var(--muted);max-width:76ch}
+h3{font-size:18px;margin:26px 0 10px}
+.warn-box{margin:14px 0 0;padding:10px 14px;border-inline-start:3px solid var(--bad);background:var(--surface);border-radius:6px;font-size:14px}
+.warn-box ul{margin:4px 0 0;padding-inline-start:18px}
+.about{border:1px solid var(--rule);background:var(--surface);margin:16px 0;border-radius:var(--radius);overflow:hidden}
+.about summary{cursor:pointer;padding:12px 16px;font-weight:600;font-size:14.5px;list-style:none;display:flex;gap:8px;align-items:center}
+.about summary::-webkit-details-marker{display:none}
+.about summary::before{content:"i";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--acc-soft);color:var(--acc);font-size:12px;font-weight:700}
+.about .body{padding:2px 16px 14px;border-top:1px solid var(--rule);background:var(--surface-2);font-size:14px}
+.about .body p{margin:10px 0 0;max-width:80ch}
+.muted{color:var(--muted)}
+.empty{color:var(--muted);padding:12px 0;margin:0}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);border-inline-start:3px solid var(--neu)}
+.card.ok{border-inline-start-color:var(--ok)} .card.warn{border-inline-start-color:var(--warn)} .card.bad{border-inline-start-color:var(--bad)}
+.card .t{font-size:13px;color:var(--muted)}
+.card .v{font-size:21px;font-weight:700;margin:2px 0}
+.card .d{font-size:14px}
+.card .x{font-size:12.5px;color:var(--muted);margin-top:4px}
+.tone-ok{color:var(--ok)} .tone-bad{color:var(--bad)} .tone-warn{color:var(--warn)} .tone-neutral{color:var(--neu)}
+
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 12px;border-bottom:1px solid var(--rule);text-align:start;white-space:nowrap}
+th{color:var(--muted);font-weight:500;font-size:12.5px;background:var(--surface-2)}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr[aria-selected="true"]{background:var(--acc-soft)}
+td .en{display:block;color:var(--muted);font-size:12px}
+.num{direction:ltr;unicode-bidi:isolate}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:6px;background:var(--ok)}
+.dot.stale{background:var(--warn)} .dot.error{background:var(--bad)}
+.bar{position:relative;height:6px;width:70px;background:var(--rule);border-radius:3px;display:inline-block;vertical-align:middle}
+.bar i{position:absolute;inset-block:0;inset-inline-start:0;border-radius:3px;background:var(--acc)}
+
+/* chart */
+.chart-card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:14px;margin-top:14px}
+.chart-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.chart-top h4{margin:0;font-size:16px}
+.chart-top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface);direction:ltr}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;font-size:13px;color:var(--muted)}
+.seg button+button{border-inline-start:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink)}
+.chart{position:relative;direction:ltr;margin-top:10px}
+.chart svg{display:block;width:100%;height:260px}
+.chart .tip{position:absolute;top:6px;pointer-events:none;background:var(--navy);color:var(--navy-ink);border:1px solid var(--rule);
+  border-radius:6px;padding:4px 8px;font-size:12.5px;white-space:nowrap;display:none}
+.axis{fill:var(--muted);font-size:11px;font-family:var(--sans)}
+.grid{stroke:var(--rule);stroke-width:1}
+
+/* AI */
+.ai-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.ai-title{font-size:22px;font-weight:700;margin:6px 0 4px;line-height:1.45}
+.ai-meta{color:var(--muted);font-size:13px}
+.ai-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:16px}
+@media (max-width:860px){.ai-grid{grid-template-columns:1fr}}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 16px}
+.box h4{margin:0 0 8px;font-size:15.5px}
+.box ul{margin:0;padding-inline-start:18px}
+.box li{margin:4px 0}
+.bias{font-size:22px;font-weight:700}
+.conf{height:8px;border-radius:4px;background:var(--rule);margin:8px 0;overflow:hidden}
+.conf i{display:block;height:100%;background:var(--acc)}
+.sc{border:1px solid var(--rule);border-radius:8px;padding:10px 12px;margin-top:10px;background:var(--surface-2)}
+.sc-top{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.sc .conf{margin:6px 0}
+.sc p{margin:4px 0 0;font-size:14px}
+.one-liner{margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:var(--acc-soft);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);font-weight:600}
+.sec-body p{margin:6px 0 0;max-width:85ch}
+.picker select{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);padding:18px 0 30px}
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap util">
+    <span class="live" id="live"><i></i><b id="liveTxt">…</b></span>
+    <span id="updated"></span>
+  </div>
+  <div class="wrap brand-row">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="3,17 9,11 13,14 21,6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><h1>الاقتصاد الكلي <span>الأمريكي</span></h1><p>النمو، التوظيف، التضخم، الفائدة، وبوابات NQ: من بيانات FRED مباشرة</p></div>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الوضع الفاتح/الداكن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
+  <div class="wrap"><div class="demo-flag" id="demoFlag">بيانات تجريبية مولّدة للعرض فقط، وليست أرقاماً حقيقية.</div></div>
+</header>
+
+<div class="wrap"><div class="kpis" id="kpis"></div></div>
+
+<nav class="tabs-bar" aria-label="أقسام المنصة"><div class="wrap tabs" id="tabs" role="tablist"></div></nav>
+
+<main class="wrap" id="main">
+  <section class="panel" id="p-ai" hidden></section>
+  <section class="panel" id="p-overview" hidden></section>
+  <div id="catPanels"></div>
+  <section class="panel" id="p-method" hidden></section>
+</main>
+
+<footer class="wrap">المصدر: FRED, Federal Reserve Bank of St. Louis. التقرير الذكي يكتبه Claude من بيانات المنصة وأخبار اليوم. المحتوى تحليلي وليس توصية شراء أو بيع.</footer>
+
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl = u => /^https?:\/\//i.test(String(u || "")) ? esc(u) : "#";
+const store = {get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* theme */
+(function(){
+  const t = store.get("macro-theme"); if (t) document.documentElement.dataset.theme = t;
+  $("#themeBtn").onclick = () => {
+    const cur = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = cur; store.set("macro-theme", cur);
+    if (window.__redraw) window.__redraw();
+  };
+})();
+
+function fmt(v, unit) {
+  if (v === null || v === undefined || Number.isNaN(v)) return "—";
+  const a = Math.abs(v);
+  const s = a >= 1000 ? v.toLocaleString("en-US", {maximumFractionDigits: 0})
+          : a >= 100 ? v.toLocaleString("en-US", {maximumFractionDigits: 1})
+          : v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  return unit === "%" ? s + "%" : (unit === "$" ? "$" + s : s);
+}
+function chgTone(chg, goodUp) {
+  if (goodUp === null || goodUp === undefined || !chg) return "neutral";
+  return (goodUp ? chg > 0 : chg < 0) ? "ok" : "bad";
+}
+const arrow = c => c > 0 ? "▲" : c < 0 ? "▼" : "•";
+const FREQ = {D: "يومي", W: "أسبوعي", M: "شهري", Q: "ربع سنوي"};
+const TRANS = {level: "المستوى", yoy: "تغير سنوي %", diff: "تغير شهري", diff_avg3: "متوسط التغير الشهري (3 أشهر)"};
+const BIAS = {bullish: ["صاعد", "ok"], bearish: ["هابط", "bad"], neutral: ["محايد", "neutral"]};
+
+/* ---------- chart ---------- */
+function drawChart(host, points, opts = {}) {
+  host.innerHTML = '<svg role="img"></svg><div class="tip"></div>';
+  const svg = host.firstChild, tip = host.lastChild;
+  if (!points || points.length < 2) { host.innerHTML = '<p class="empty">لا بيانات كافية للرسم</p>'; return; }
+  const W = host.clientWidth || 600, H = 260, L = 48, R = 12, T = 12, B = 26;
+  const xs = points.map(p => Date.parse(p[0])), ys = points.map(p => p[1]);
+  let lo = Math.min(...ys), hi = Math.max(...ys);
+  (opts.refs || []).forEach(r => { lo = Math.min(lo, r.y); hi = Math.max(hi, r.y); });
+  if (lo === hi) { lo -= 1; hi += 1; }
+  const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+  const x0 = xs[0], x1 = xs[xs.length - 1];
+  const X = t => L + (t - x0) / (x1 - x0 || 1) * (W - L - R);
+  const Y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+  const cs = getComputedStyle(document.documentElement);
+  const acc = cs.getPropertyValue("--acc").trim(), l2 = cs.getPropertyValue("--line2").trim();
+  let g = "";
+  for (let i = 0; i <= 4; i++) {
+    const v = lo + (hi - lo) * i / 4, y = Y(v);
+    g += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/><text class="axis" x="${L - 6}" y="${y + 4}" text-anchor="end">${esc(fmt(v))}</text>`;
+  }
+  const y0 = new Date(x0).getUTCFullYear(), y1 = new Date(x1).getUTCFullYear();
+  const span = y1 - y0, step = span > 16 ? 4 : span > 8 ? 2 : 1;
+  if (span >= 1) {
+    for (let y = y0 + 1; y <= y1; y += step) {
+      const x = X(Date.UTC(y, 0, 1));
+      g += `<text class="axis" x="${x}" y="${H - 6}" text-anchor="middle">${y}</text>`;
+    }
+  } else {
+    for (let i = 0; i <= 3; i++) {
+      const t = x0 + (x1 - x0) * i / 3, d = new Date(t);
+      g += `<text class="axis" x="${X(t)}" y="${H - 6}" text-anchor="middle">${d.getUTCMonth() + 1}/${d.getUTCFullYear() % 100}</text>`;
+    }
+  }
+  if (lo < 0 && hi > 0) g += `<line x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" stroke="${cs.getPropertyValue("--muted").trim()}" stroke-dasharray="2 3"/>`;
+  (opts.refs || []).forEach(r => {
+    g += `<line x1="${L}" x2="${W - R}" y1="${Y(r.y)}" y2="${Y(r.y)}" stroke="${l2}" stroke-dasharray="5 4"/>` +
+         `<text class="axis" x="${W - R - 4}" y="${Y(r.y) - 4}" text-anchor="end" style="fill:${l2}">${esc(r.label)}</text>`;
+  });
+  const d = points.map((p, i) => (i ? "L" : "M") + X(xs[i]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join("");
+  g += `<path d="${d}" fill="none" stroke="${acc}" stroke-width="1.8" stroke-linejoin="round"/>`;
+  g += `<line id="hx" y1="${T}" y2="${H - B}" stroke="${cs.getPropertyValue("--muted").trim()}" visibility="hidden"/><circle id="hc" r="3.5" fill="${acc}" visibility="hidden"/>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("aria-label", opts.label || "رسم بياني");
+  svg.innerHTML = g;
+  const hx = svg.querySelector("#hx"), hc = svg.querySelector("#hc");
+  const move = ev => {
+    const r = svg.getBoundingClientRect();
+    const px = (ev.clientX - r.left) / r.width * W;
+    const t = x0 + (px - L) / (W - L - R) * (x1 - x0);
+    let i = 0, best = Infinity;
+    for (let k = 0; k < xs.length; k++) { const dd = Math.abs(xs[k] - t); if (dd < best) { best = dd; i = k; } }
+    const cx = X(xs[i]), cy = Y(ys[i]);
+    hx.setAttribute("x1", cx); hx.setAttribute("x2", cx); hx.setAttribute("visibility", "visible");
+    hc.setAttribute("cx", cx); hc.setAttribute("cy", cy); hc.setAttribute("visibility", "visible");
+    tip.textContent = `${points[i][0]}  ·  ${fmt(ys[i], opts.unit)}`;
+    tip.style.display = "block";
+    const left = cx / W * r.width;
+    tip.style.left = Math.min(Math.max(left - tip.offsetWidth / 2, 0), r.width - tip.offsetWidth) + "px";
+  };
+  svg.addEventListener("pointermove", move);
+  svg.addEventListener("pointerleave", () => { tip.style.display = "none"; hx.setAttribute("visibility", "hidden"); hc.setAttribute("visibility", "hidden"); });
+}
+function sliceRange(points, years) {
+  if (!years || !points.length) return points;
+  const end = Date.parse(points[points.length - 1][0]);
+  const cut = end - years * 365.25 * 864e5;
+  return points.filter(p => Date.parse(p[0]) >= cut);
+}
+function chartCard(id, title, sub, points, opts = {}) {
+  const ranges = [["1Y", 1], ["5Y", 5], ["10Y", 10], ["الكل", 0]];
+  const el = document.createElement("div");
+  el.className = "chart-card";
+  el.innerHTML = `<div class="chart-top"><div><h4>${esc(title)}</h4><p>${esc(sub)}</p></div>
+    <div class="seg" role="group" aria-label="المدى الزمني">${ranges.map(([l, y]) =>
+      `<button type="button" data-y="${y}" aria-pressed="${y === (opts.years ?? 5)}">${l}</button>`).join("")}</div></div>
+    <div class="chart"></div>`;
+  let years = opts.years ?? 5;
+  const host = el.querySelector(".chart");
+  const draw = () => drawChart(host, sliceRange(points, years), opts);
+  el.querySelectorAll(".seg button").forEach(b => b.onclick = () => {
+    years = +b.dataset.y;
+    el.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    draw();
+  });
+  el.__draw = draw;
+  return el;
+}
+
+/* ---------- tabs ---------- */
+function setupTabs(data) {
+  const tabs = [["ai", 'التقرير الذكي <span class="ai-badge">AI</span>', true], ["overview", "نظرة عامة"]];
+  data.categories.forEach(c => { if (data.indicators.some(i => i.category === c.key)) tabs.push(["cat-" + c.key, esc(c.ar)]); });
+  tabs.push(["method", "المنهجية وحالة البيانات"]);
+  $("#tabs").innerHTML = tabs.map(([k, label, ai]) =>
+    `<button class="tab${ai ? " tab-ai" : ""}" role="tab" data-k="${k}" aria-selected="false">${label}</button>`).join("");
+  const show = k => {
+    document.querySelectorAll(".panel").forEach(p => p.hidden = p.id !== "p-" + k);
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.k === k));
+    store.set("macro-tab", k);
+    if (location.hash !== "#" + k) history.replaceState(null, "", "#" + k);
+    redraw();
+  };
+  $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.k); };
+  const want = (location.hash || "").slice(1) || store.get("macro-tab") || "overview";
+  show(tabs.some(t => t[0] === want) ? want : "overview");
+  window.addEventListener("hashchange", () => {
+    const k = location.hash.slice(1);
+    if (tabs.some(t => t[0] === k)) show(k);
+  });
+}
+function redraw() {
+  document.querySelectorAll(".panel:not([hidden]) .chart-card").forEach(c => c.__draw && c.__draw());
+}
+window.__redraw = redraw;
+let rT; window.addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(redraw, 150); });
+
+/* ---------- header & KPIs ---------- */
+function renderHeader(data) {
+  const gen = new Date(data.generated);
+  const hrs = (Date.now() - gen) / 36e5;
+  const live = $("#live");
+  live.className = "live" + (hrs > 30 ? " late" : hrs > 8 ? " slow" : "");
+  $("#liveTxt").textContent = hrs > 30 ? "البيانات متأخرة" : hrs > 8 ? "آخر تحديث منذ ساعات" : "محدّثة";
+  $("#updated").textContent = "آخر تحديث: " + gen.toLocaleString("ar-EG-u-nu-latn", {dateStyle: "medium", timeStyle: "short"}) +
+    ` · ${data.status.ok}/${data.status.total} مصدر سليم`;
+  if (data.demo) $("#demoFlag").style.display = "block";
+  $("#kpis").innerHTML = data.kpis.map(k => {
+    const tone = chgTone(k.change, k.good_up);
+    return `<div class="kpi"><span>${esc(k.label)}</span><b class="num">${esc(fmt(k.value, k.unit))}</b>
+      <small class="num tone-${tone}">${arrow(k.change)} ${esc(fmt(Math.abs(k.change ?? 0)))}</small> <small>· ${esc(k.as_of)}</small></div>`;
+  }).join("");
+}
+
+function cardsHtml(list) {
+  return list.map(c => `<div class="card ${esc(c.tone)}"><div class="t">${esc(c.title)}</div>
+    <div class="v tone-${esc(c.tone)}"><bdi>${esc(c.value)}</bdi></div><div class="d">${esc(c.detail)}</div>
+    ${c.extra || c.as_of ? `<div class="x">${[c.extra, c.as_of].filter(Boolean).map(x => `<bdi>${esc(x)}</bdi>`).join(" · ")}</div>` : ""}</div>`).join("");
+}
+
+/* ---------- overview ---------- */
+function renderOverview(data) {
+  const p = $("#p-overview");
+  const w = data.status.warnings;
+  p.innerHTML = `<div class="sec-head"><h2>نظرة عامة</h2><p>بوابات NQ الكلية وإشارات الدورة الاقتصادية في صفحة واحدة. كل رقم بتاريخه؛ البيانات الشهرية تصدر متأخرة.</p></div>
+    ${w.length ? `<div class="warn-box"><b>تنبيهات البيانات (${w.length})</b><ul>${w.slice(0, 8).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+    <h3>بوابات NQ</h3>
+    <details class="about"><summary>كيف أقرأ البوابات؟</summary><div class="body">
+      <p>العائد 10Y فوق الحد الحرج يضغط على تقييمات أسهم النمو، وVIX يحدد نوع اليوم (Mean reversion تحت ${esc(data.config.gates.vix_calm)}، وتوسّع تذبذب فوق ${esc(data.config.gates.vix_stress)}). تُعدَّل الحدود من <code>config.json</code>.</p>
+      <p>قيادة NQ مقابل ES هي تغير نسبة Nasdaq 100 إلى S&amp;P 500 خلال 20 يوم تداول.</p></div></details>
+    <div class="cards">${cardsHtml(data.gates)}</div>
+    <h3>إشارات الدورة الاقتصادية</h3>
+    <div class="cards">${cardsHtml(data.signals)}</div>
+    <div id="sahmChart"></div>`;
+  if (data.sahm && data.sahm.points.length) {
+    const c = chartCard("sahm", "Sahm Rule", "متوسط البطالة 3 أشهر ناقص أدنى متوسط في 12 شهراً؛ تجاوز 0.50 تاريخياً يرافق بداية الركود",
+      data.sahm.points, {years: 10, unit: "", refs: [{y: data.sahm.trigger, label: "0.50"}], label: "Sahm Rule"});
+    $("#sahmChart").replaceWith(c);
+  }
+}
+
+/* ---------- category panels ---------- */
+function renderCategories(data) {
+  const host = $("#catPanels");
+  host.innerHTML = "";
+  data.categories.forEach(cat => {
+    const inds = data.indicators.filter(i => i.category === cat.key);
+    if (!inds.length) return;
+    const sec = document.createElement("section");
+    sec.className = "panel"; sec.id = "p-cat-" + cat.key; sec.hidden = true;
+    sec.innerHTML = `<div class="sec-head"><h2>${esc(cat.ar)} <span class="muted" style="font-size:15px">${esc(cat.en)}</span></h2>
+      <p>اضغط على أي صف لعرض رسمه البياني. Z (5y) يقيس بُعد القيمة عن متوسط 5 سنوات بالانحرافات المعيارية، والمئوي نسبة القيم التاريخية الأدنى منها.</p></div>
+      <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>المؤشر</th><th>آخر قيمة</th><th>التغير</th><th>Z (5y)</th><th>المئوي (5y)</th><th>التاريخ</th></tr></thead>
+      <tbody>${inds.map(i => i.points ? `<tr data-id="${esc(i.id)}" aria-selected="false">
+        <td><span class="dot ${esc(i.state)}" title="${esc((i.issues || []).join("؛ ") || "سليم")}"></span>${esc(i.name_ar)}<span class="en">${esc(i.name_en)} · ${esc(i.id)}</span></td>
+        <td class="num">${esc(fmt(i.last, i.unit))}</td>
+        <td class="num tone-${chgTone(i.change, i.good_up)}">${arrow(i.change)} ${esc(fmt(Math.abs(i.change ?? 0)))}</td>
+        <td class="num">${i.z5 === null ? "—" : (i.z5 > 0 ? "+" : "") + i.z5.toFixed(1) + "σ"}</td>
+        <td><span class="bar"><i style="width:${Math.max(0, Math.min(100, i.pct5 ?? 0))}%"></i></span> <span class="num">${i.pct5 === null ? "—" : Math.round(i.pct5)}</span></td>
+        <td class="num">${esc(i.as_of)}</td></tr>`
+        : `<tr><td><span class="dot error"></span>${esc(i.name_ar)}<span class="en">${esc(i.id)}</span></td><td colspan="5" class="muted">${esc((i.issues || []).join("؛ "))}</td></tr>`).join("")}</tbody></table></div>
+      <div class="chart-slot"></div>`;
+    host.appendChild(sec);
+    const slot = sec.querySelector(".chart-slot");
+    const select = id => {
+      const i = inds.find(x => x.id === id); if (!i) return;
+      sec.querySelectorAll("tbody tr").forEach(tr => tr.setAttribute("aria-selected", tr.dataset.id === id));
+      const card = chartCard(i.id, i.name_ar, `${i.name_en} · ${TRANS[i.transform]} · ${FREQ[i.freq]} · FRED: ${i.id}`, i.points,
+        {unit: i.unit, label: i.name_ar});
+      slot.replaceChildren(card);
+      if (!sec.hidden) card.__draw();
+    };
+    sec.querySelector("tbody").onclick = e => { const tr = e.target.closest("tr[data-id]"); if (tr) select(tr.dataset.id); };
+    const first = inds.find(i => i.points); if (first) select(first.id);
+  });
+}
+
+/* ---------- AI ---------- */
+function renderAI(hist) {
+  const p = $("#p-ai");
+  const intro = `<div class="sec-head"><h2>التقرير الذكي</h2><p>قراءة يومية يكتبها Claude قبل افتتاح نيويورك من بيانات المنصة وأخبار اليوم: ملخص، وانحياز لـNQ، وثلاثة سيناريوهات باحتمالاتها، ومصادر كل حدث.</p></div>
+    <details class="about"><summary>متى يُكتب وما قواعده؟</summary><div class="body">
+    <p>مرة واحدة كل يوم عمل بعد 8:30 بتوقيت نيويورك (بعد صدور بيانات 8:30 مباشرة). الأرقام من بيانات المنصة نفسها، والنموذج ممنوع من اختراع الأرقام أو إعطاء توصيات شراء وبيع. تعليماته الدائمة في <code>prompts/analyst.md</code> وتُعدَّل من GitHub. نحتفظ بآخر 14 تقريراً.</p></div></details>`;
+  if (!hist || !hist.length) {
+    p.innerHTML = intro + `<p class="empty">لا يوجد تقرير بعد. يُكتب أول تقرير بعد إضافة السر <code>ANTHROPIC_API_KEY</code> في إعدادات المستودع، أو بتشغيل الـworkflow يدوياً مع <code>ai_force=true</code>.</p>`;
+    return;
+  }
+  const view = idx => {
+    const r = hist[idx], b = BIAS[r.bias?.direction] || ["—", "neutral"];
+    const list = (title, arr) => arr && arr.length ? `<div class="box"><h4>${title}</h4><ul>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
+    p.innerHTML = intro + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
+        <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}</div></div>
+        ${hist.length > 1 ? `<label class="picker">تقارير سابقة: <select id="aiPick">${hist.map((h, k) =>
+          `<option value="${k}"${k === idx ? " selected" : ""}>${esc(h.meta?.ny_date)}</option>`).join("")}</select></label>` : ""}</div>
+      <div class="ai-grid">
+        <div class="box"><h4>الملخص</h4><ul>${(r.summary || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div class="box"><h4>انحياز NQ للجلسة القادمة</h4><div class="bias tone-${b[1]}">${b[0]}</div>
+          <div class="conf"><i style="width:${Math.max(0, Math.min(100, +r.bias?.confidence || 0))}%"></i></div>
+          <div class="muted">الثقة ${esc(r.bias?.confidence)}%</div><p>${esc(r.bias?.reason)}</p></div>
+      </div>
+      <h3>السيناريوهات A وB وC</h3>
+      ${(r.scenarios || []).map(s => `<div class="sc"><div class="sc-top"><span>${esc(s.label)}. ${esc(s.name)}</span><span class="num">${esc(s.prob)}%</span></div>
+        <div class="conf"><i style="width:${Math.max(0, Math.min(100, +s.prob || 0))}%"></i></div>
+        <p><b>المُحفِّز:</b> ${esc(s.trigger)}</p><p class="muted">${esc(s.reason)}</p></div>`).join("")}
+      ${r.gates_read ? `<h3>قراءة بوابات NQ</h3><div class="box sec-body"><p>${esc(r.gates_read)}</p></div>` : ""}
+      ${(r.sections || []).map(s => `<h3>${esc(s.heading)}</h3><div class="box sec-body"><p>${esc(s.body)}</p></div>`).join("")}
+      <div class="ai-grid">${list("ما يستحق المتابعة", r.watch)}${list("المخاطر", r.risks)}</div>
+      <div class="ai-grid">${list("تدقيق البيانات", r.data_audit)}
+        ${r.events && r.events.length ? `<div class="box"><h4>الأحداث المؤثرة</h4><ul>${r.events.map(e =>
+          `<li>${esc(e.date || "")} <a href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.title)}</a></li>`).join("")}</ul></div>` : ""}</div>
+      ${r.one_liner ? `<div class="one-liner">${esc(r.one_liner)}</div>` : ""}
+      ${r.sources && r.sources.length ? `<details class="about"><summary>مصادر البحث (${r.sources.length})</summary><div class="body"><ul>${r.sources.map(s =>
+        `<li><a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title || s.url)}</a></li>`).join("")}</ul></div></details>` : ""}`;
+    const pick = $("#aiPick"); if (pick) pick.onchange = () => view(+pick.value);
+  };
+  view(0);
+}
+
+/* ---------- methodology ---------- */
+function renderMethod(data) {
+  $("#p-method").innerHTML = `<div class="sec-head"><h2>المنهجية وحالة البيانات</h2><p>من أين تأتي الأرقام، وكيف تُفحص قبل النشر، وحالة كل مصدر الآن.</p></div>
+    <div class="ai-grid">
+      <div class="box"><h4>المصدر والتحديث</h4><p>كل السلاسل من FRED (بنك الاحتياطي الفيدرالي في سانت لويس)، وتُحدَّث تلقائياً عبر GitHub Actions عدة مرات في كل يوم عمل.</p></div>
+      <div class="box"><h4>الفحص قبل النشر</h4><p>تُرفض السلسلة إن جاءت قصيرة أو بتاريخ أقدم من المحفوظ أو بسجل ناقص، وتبقى آخر نسخة سليمة مع تحذير. وتُعلَّم القفزة غير المعتادة والقيمة التي تجاوز عمرها التأخر الطبيعي لتكرارها.</p></div>
+      <div class="box"><h4>المربع: النمو × التضخم</h4><p>النمو صاعد إذا كان الإنتاج الصناعي (تغير سنوي) والتوظيف (متوسط 3 أشهر) موجبين معاً، والتضخم ساخن إذا تجاوز Core PCE (تغير سنوي) 2.5%. تصنيف وصفي لا توقع.</p></div>
+      <div class="box"><h4>Sahm Rule</h4><p>متوسط البطالة لثلاثة أشهر ناقص أدنى متوسط ثلاثة أشهر في الاثني عشر شهراً السابقة. العتبة 0.50 نقطة مئوية.</p></div>
+    </div>
+    <h3>حالة المصادر</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>المؤشر</th><th>FRED</th><th>التكرار</th><th>آخر قيمة بتاريخ</th><th>العمر (يوم)</th><th>الحالة</th></tr></thead><tbody>
+    ${data.indicators.map(i => `<tr><td>${esc(i.name_ar)}</td><td class="num">${esc(i.id)}</td><td>${esc(FREQ[i.freq] || "")}</td>
+      <td class="num">${esc(i.as_of || "—")}</td><td class="num">${esc(i.age_days ?? "—")}</td>
+      <td><span class="dot ${esc(i.state)}"></span>${i.state === "ok" ? "سليم" : i.state === "stale" ? "متأخر" : "خطأ"}${(i.issues || []).length ? `<span class="en">${esc(i.issues.join("؛ "))}</span>` : ""}</td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+/* ---------- boot ---------- */
+async function getJSON(f) {
+  const r = await fetch(f + "?t=" + Date.now(), {cache: "no-store"});
+  if (!r.ok) throw new Error(f + ": HTTP " + r.status);
+  return r.json();
+}
+(async () => {
+  try {
+    const data = await getJSON("data.json");
+    let hist = [];
+    if (data.ai_available) { try { hist = await getJSON("data/ai_history.json"); } catch (e) { hist = []; } }
+    renderHeader(data);
+    renderAI(hist);
+    renderOverview(data);
+    renderCategories(data);
+    renderMethod(data);
+    setupTabs(data);
+  } catch (e) {
+    $("#main").innerHTML = `<div class="warn-box">تعذّر تحميل البيانات: ${esc(e.message)}</div>`;
+  }
+})();
+</script>
+</body>
+</html>

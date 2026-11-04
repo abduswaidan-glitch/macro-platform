@@ -1,0 +1,54 @@
+name: تحديث بيانات الاقتصاد الكلي
+
+on:
+  schedule:
+    # كل يوم عمل: حول الافتتاح (تقرير Claude بعد 8:30 بتوقيت نيويورك، صيفاً وشتاءً)، ثم منتصف اليوم وبعد الإغلاق.
+    # جدولة GitHub قد تتأخر أو تُسقط بعض التشغيلات، لذلك المواعيد متعددة.
+    - cron: "7,37 12,13,14 * * 1-5"
+    - cron: "17 17,21 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      ai_force:
+        description: "اكتب تقرير Claude الآن (true / false)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: macro-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: تثبيت المكتبات
+        run: pip install -r requirements.txt anthropic curl_cffi
+
+      - name: جلب البيانات وكتابة data.json
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AI_FORCE: ${{ github.event.inputs.ai_force }}
+        run: python fetch_macro.py
+
+      - name: حفظ التحديث
+        run: |
+          git config user.name "macro-data-bot"
+          git config user.email "macro-data-bot@users.noreply.github.com"
+          git add -A data.json data
+          git diff --cached --quiet && { echo "no changes"; exit 0; }
+          git commit -qm "تحديث بيانات الاقتصاد الكلي $(date -u +%F)"
+          for i in 1 2 3; do
+            git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" || { git rebase --abort; break; }
+          done
+          echo "push failed"; exit 1

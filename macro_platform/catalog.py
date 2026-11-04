@@ -62,6 +62,8 @@ INDICATORS: tuple[Indicator, ...] = (
     Indicator("VIXCLS", "مؤشر VIX", "VIX", "markets", "D", "level", "", False),
     Indicator("DTWEXBGS", "مؤشر الدولار الواسع", "Broad USD Index", "markets", "D", "level", "", None),
     Indicator("DCOILWTICO", "نفط WTI", "WTI Crude", "markets", "D", "level", "$", None),
+    Indicator("NASDAQ100", "مؤشر Nasdaq 100", "Nasdaq 100 Index", "markets", "D", "level", "", None),
+    Indicator("SP500", "مؤشر S&P 500", "S&P 500 Index", "markets", "D", "level", "", None),
     Indicator("UMCSENT", "ثقة المستهلك (Michigan)", "UMich Sentiment", "markets", "M", "level", "", True),
 )
 
