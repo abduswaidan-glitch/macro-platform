@@ -1,0 +1,114 @@
+{
+ "fetched_utc": "2026-11-04T22:37:45Z",
+ "series": {
+  "GDPC1": {
+   "state": "ok",
+   "issues": []
+  },
+  "INDPRO": {
+   "state": "ok",
+   "issues": []
+  },
+  "RSAFS": {
+   "state": "ok",
+   "issues": []
+  },
+  "HOUST": {
+   "state": "ok",
+   "issues": []
+  },
+  "PAYEMS": {
+   "state": "ok",
+   "issues": []
+  },
+  "UNRATE": {
+   "state": "ok",
+   "issues": []
+  },
+  "ICSA": {
+   "state": "ok",
+   "issues": []
+  },
+  "JTSJOL": {
+   "state": "ok",
+   "issues": []
+  },
+  "CPIAUCSL": {
+   "state": "ok",
+   "issues": []
+  },
+  "CPILFESL": {
+   "state": "ok",
+   "issues": []
+  },
+  "PCEPILFE": {
+   "state": "ok",
+   "issues": []
+  },
+  "FEDFUNDS": {
+   "state": "ok",
+   "issues": []
+  },
+  "DGS2": {
+   "state": "ok",
+   "issues": []
+  },
+  "DGS10": {
+   "state": "ok",
+   "issues": []
+  },
+  "T10Y2Y": {
+   "state": "ok",
+   "issues": []
+  },
+  "DFII10": {
+   "state": "ok",
+   "issues": []
+  },
+  "T10YIE": {
+   "state": "ok",
+   "issues": []
+  },
+  "MORTGAGE30US": {
+   "state": "ok",
+   "issues": []
+  },
+  "M2SL": {
+   "state": "ok",
+   "issues": []
+  },
+  "WALCL": {
+   "state": "ok",
+   "issues": []
+  },
+  "BAMLH0A0HYM2": {
+   "state": "ok",
+   "issues": []
+  },
+  "VIXCLS": {
+   "state": "ok",
+   "issues": []
+  },
+  "DTWEXBGS": {
+   "state": "ok",
+   "issues": []
+  },
+  "DCOILWTICO": {
+   "state": "ok",
+   "issues": []
+  },
+  "NASDAQ100": {
+   "state": "ok",
+   "issues": []
+  },
+  "SP500": {
+   "state": "ok",
+   "issues": []
+  },
+  "UMCSENT": {
+   "state": "ok",
+   "issues": []
+  }
+ },
+ "extra_warnings": []
+}
