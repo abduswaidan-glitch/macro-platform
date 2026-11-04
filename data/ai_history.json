@@ -1,0 +1,471 @@
+[
+ {
+  "title": "ارتياح سياسي وانهيار النفط يرفعان الأسهم، لكن بوابات العائد ما زالت مغلقة أمام NQ قبل NFP",
+  "summary": [
+   "سيطر الديمقراطيون على الكونغرس وقبل ترامب النتائج، فارتفعت الأسهم بقيادة Dow. وتخلّف NQ نسبياً بسبب ضعف أسهم AI infrastructure رغم صعود Apple وAlphabet.",
+   "هبط النفط نحو 9% بعد ربط البيت الأبيض الخسارة الانتخابية بحرب إيران. آخر رقم للمنصة هو WTI عند 99.64 بتاريخ 11-03، وأسعار اليوم تقديرات من الأخبار.",
+   "بوابات المنصة: 10Y عند 4.91% (+41 bp فوق الحد 4.50%) والعائد الحقيقي 2.62%، وكلاهما قرب أعلى 3% من نطاق خمس سنوات. VIX عند 20.8 وNQ متأخر عن ES بـ6.77% في 20 يوماً.",
+   "التضخم: CPI الرئيسي 4.02% مقابل الأساسي 2.79%، أي أن صدمة الطاقة هي المحرّك. وCore PCE عند 3.12% ما زال فوق الهدف، والفيدرالي في وضع تشديد مع 2Y−FF بـ+71 bp.",
+   "سوق العمل منخفض التوظيف ومنخفض التسريح: طلبات الإعانة 194k مقابل متوسط وظائف 51k شهرياً. ADP اليوم +86k، وNFP الجمعة هو المحفّز الأكبر للأسبوع.",
+   "الانحياز لجلسة الخميس محايد؛ استمرار الارتداد مشروط بكسر 10Y دون 4.85% وعودة VIX تحت 20."
+  ],
+  "bias": {
+   "direction": "neutral",
+   "confidence": 55,
+   "reason": "أرقام المنصة لا تدعم انحيازاً صاعداً واضحاً: بوابة 10Y سلبية، والعائد الحقيقي وVIX والقيادة في منطقة تحذير، والائتمان وحده إيجابي (HY OAS عند 3.40%). أما مكاسب اليوم فقائمة على عنوانين خارج بيانات المنصة: زوال المخاطرة السياسية وانهيار النفط. ولم نتحقق بعد من انتقالهما إلى عائد 10Y، فآخر قراءة متاحة بتاريخ 11-02. يُضاف إلى ذلك أن تقرير NFP يصدر الجمعة، ما يرجّح تذبذباً بنطاق محدود يوم الخميس (استنتاج غير مثبت إحصائياً). لذلك الانحياز محايد مع ميل مشروط للصعود إذا تأكد هبوط العوائد."
+  },
+  "scenarios": [
+   {
+    "label": "A",
+    "name": "استمرار الارتداد بقيادة العوائد",
+    "prob": 30,
+    "trigger": "10Y دون 4.85% وVIX دون 20 خلال الساعة الأولى، وطلبات الإعانة (8:30 ET) قريبة من 195–200k دون مفاجأة، وبقاء WTI دون 90 دولاراً، وتفوّق NQ على ES في الافتتاح.",
+    "reason": "هبوط النفط يخفّض توقعات التضخم وتسعير رفع الفائدة، وهذا يخفف الضغط على تقييمات النمو. شرطه أن ينتقل ذلك إلى العائد الحقيقي، وهو عند 2.62% أعلى عامل ضغط على NQ."
+   },
+   {
+    "label": "B",
+    "name": "هضم المكاسب وتذبذب ما قبل NFP مع استمرار الدوران",
+    "prob": 45,
+    "trigger": "10Y بين 4.85% و4.95%، وVIX بين 19 و22، واستمرار تفوّق Dow وES على NQ، وتباين داخل NQ: Mega-cap استهلاكية قوية مقابل ضعف أسهم الرقائق ومراكز البيانات.",
+    "reason": "قراءة القيادة عند −6.77% تعكس دوراناً بعيداً عن النمو. وفوز الديمقراطيين يضيف علامة استفهام تنظيمية على AI buildout. والسوق ينتظر NFP وتصريحات Williams وBowman قبل التزام اتجاه."
+   },
+   {
+    "label": "C",
+    "name": "انعكاس هابط: عودة النفط أو العوائد",
+    "prob": 25,
+    "trigger": "نفي إيراني جديد لتقدم المفاوضات يرفع النفط أكثر من 5%، أو صعود 10Y فوق 4.95–5.00%، أو VIX فوق 22، أو نبرة متشددة من Barkin (9:10 ET) تدعم رفعاً إضافياً.",
+    "reason": "تقارير Al-Jadeed السابقة عن التقدم نُفيت سابقاً. ومؤشر أسعار ISM للخدمات عند 73.0 مرتفع جداً، والفيدرالي شهد معارضتين تطالبان بالرفع. أي ارتداد في الطاقة يعيد سيناريو التشديد ويضغط على NQ المتأخر أصلاً."
+   }
+  ],
+  "sections": [
+   {
+    "heading": "النمو: تسخين اقتصادي مع جيوب ضعف",
+    "body": "أرقام المنصة الرسمية: GDP الحقيقي +2.07% سنوياً لربع يبدأ في 2026-07-01 (Q3)، بتراجع طفيف من 2.19%. الإنتاج الصناعي +2.25% سنوياً، وهو عند المئين 86.9 من نطاق خمس سنوات. مبيعات التجزئة الاسمية +6.29% سنوياً بتاريخ سبتمبر وعمرها 64 يوماً؛ وبعد خصم CPI البالغ 4.02% يبقى نمو حقيقي تقريبي قرب 2.2%، وهذا استنتاج مني. ISM للخدمات اليوم 54.5 مقابل توقع 54.8، مع تباطؤ الطلبيات الجديدة إلى 55.9 من 59.8. نقاط الضعف في الإسكان والمعنويات: بدايات البناء 1221k عند المئين 3.3، وثقة UMich عند 48.1 عند المئين 3.3. المربع حسب المنصة هو Reflation، أي نمو إيجابي مع تضخم حار، وهي بيئة لا تساعد أسهم النمو طويلة الأمد عبر قناة العوائد."
+   },
+   {
+    "heading": "سوق العمل: توظيف ضعيف وتسريح منخفض",
+    "body": "معدل البطالة 4.2% في سبتمبر (عمره 64 يوماً)، ومتوسط NFP لثلاثة أشهر 51k فقط، وكانت قراءة سبتمبر +29k. في المقابل طلبات الإعانة الأولية 194k في أسبوع 10-24 (عمرها 11 يوماً)، وهي عند المئين 1.5، أي من أدنى مستويات خمس سنوات. هذا تعارض واضح: الطلب على العمالة لا ينهار، لكن صافي التوظيف ضئيل. قد يعكس ذلك تباطؤ عرض العمالة، وهو استنتاج غير مثبت. JOLTS ارتفعت إلى 7.52 مليون، وSahm Rule عند +0.00 بعيدة عن عتبة 0.50. ADP اليوم +86k فوق تقدير 69k، وهي إشارة إيجابية لكن علاقتها بـNFP الرسمي ضعيفة تاريخياً. تقرير الجمعة حاسم: القوة تدعم تسعير الرفع، والضعف يعيد الحديث عن التيسير."
+   },
+   {
+    "heading": "التضخم: صدمة طاقة في الرئيسي وثبات في الأساسي",
+    "body": "CPI الرئيسي 4.02% مقابل الأساسي 2.79% بتاريخ سبتمبر، أي فجوة نحو 123 bp يفسرها النفط الذي كان فوق 100 دولار. التعارض الأهم أن Core PCE عند 3.12% أعلى من Core CPI عند 2.79%، وهذا انعكاس للعلاقة المعتادة. قد يرتبط ذلك بأوزان الخدمات المالية والصحية في PCE، وهو استنتاج غير مؤكد. اعتمدت PCE مرجعاً لأنه هدف الفيدرالي. توقعات التضخم 10Y Breakeven عند 2.30% فقط، فالسوق يرى صدمة الطاقة مؤقتة. لكن الأسعار المدفوعة في ISM عند 73.0 تبقي خطر الانتقال إلى الأساسي قائماً. هبوط النفط اليوم بنحو 9% إن استمر يخفّف ضغط CPI الرئيسي لشهري نوفمبر وديسمبر، وهذا استنتاج. أما بيانات أكتوبر لـCPI وPCE فلم تصدر بعد."
+   },
+   {
+    "heading": "الفائدة والفيدرالي: تشديد قائم وعوائد قرب القمة",
+    "body": "سعر الفائدة الفعلي 3.88% ضمن نطاق 3.75–4.00% بعد رفع سبتمبر، والتثبيت في 28 أكتوبر جاء بتصويت 10 مقابل 2، والمعارضان أرادا الرفع. فارق 2Y−FF عند +71 bp (2Y عند 4.59%) يعني أن السوق يسعّر مزيداً من الرفع. ويتفق ذلك مع تقدير سوقي بتاريخ 28 أكتوبر برفع إضافي في 2026، وهو تقدير قد يكون تغيّر بعد هبوط النفط ولم نتحقق من FedWatch اليوم. 10Y عند 4.91% (المئين 96.9) بعد قمة 5.05% في 10-28، ويتكون تقريباً من عائد حقيقي 2.62% وBreakeven 2.30%. معنى ذلك أن ضغط العوائد حقيقي وليس تضخمياً، وهو الأسوأ لتقييمات NQ. المنحنى 10Y-2Y عند +0.34% طبيعي. الخزانة أبقت حجم إعادة التمويل عند 125 مليار دولار دون زيادة، وهذا محايد إلى إيجابي لسوق السندات. لكن ارتفاع رصيد TGA المتوقع إلى 1.03 تريليون دولار أواخر نوفمبر قد يسحب سيولة، وهو استنتاج."
+   },
+   {
+    "heading": "المخاطر والأسواق: ارتياح سياسي ودوران بعيداً عن AI",
+    "body": "آخر إغلاق في المنصة: NDX عند 28180 بتاريخ 11-03، بارتفاع 190 نقطة لكنه دون قمة 29813 في 10-28 بنحو 5.5%. وS&P عند 7569 دون قمته بنحو 2.3%، فالتأخر النسبي لـNQ واضح. اليوم وفق العناوين: Dow +2.95% وNasdaq نحو +2% في وقت مبكر، وApple +6.7% وAlphabet +5.8%. في المقابل افتتحت Nvidia وOracle على انخفاض، وخفّضت BofA السعر المستهدف لـAMD، وتراجعت أسهم الرقائق الآسيوية. القراءة الأقرب أن السوق يعيد تسعير مخاطر تنظيمية على AI buildout تحت كونغرس ديمقراطي، مقابل ارتياح من الحكومة المنقسمة وهبوط النفط. هبوط Fannie Mae وFreddie Mac بنحو 25% يشير إلى إعادة تسعير ملفات سياسية. الائتمان هادئ (HY OAS عند 3.40%)، وVIX عند 20.83 أمس وقراءة اليوم غير متاحة في المنصة. أما فكرة أن الحكومة المنقسمة إيجابية للأسهم تاريخياً فعيّنتها صغيرة وتبقى غير مثبتة."
+   }
+  ],
+  "gates_read": "بوابة 10Y هي الأهم وما زالت مغلقة: 4.91% بتاريخ 11-02، فوق الحد الحرج 4.50% بـ41 bp، رغم تراجع أسبوعي بـ9 bp من قمة 5.05%. العائد الحقيقي 2.62% فوق حد التقييد 2.00% بـ62 bp وعند أعلى مستويات خمس سنوات تقريباً، فهو العامل الذي يضغط مباشرة على مضاعفات أسهم النمو. VIX عند 20.83 فوق حد الهدوء 20 بقليل ودون حد التوتر 25، فالمطلوب حذر في حجم المراكز وليس ذعراً. القيادة سلبية بوضوح: NDX/SPX عند −6.77% في 20 يوماً، وحتى ارتداد اليوم قادته Dow وليس NQ. الائتمان هو البوابة الوحيدة الخضراء (HY عند 3.40% مقابل حد 5.0%). الحصيلة: بوابة حمراء وثلاث صفراء وواحدة خضراء. أي صعود في NQ يحتاج تأكيداً من كسر 10Y دون 4.85% وانخفاض VIX دون 20؛ وبدون ذلك يُعامل الارتفاع على أنه ارتداد داخل اتجاه دوران وليس عودة لقيادة النمو.",
+  "watch": [
+   "الخميس 2026-11-05 الساعة 08:30 ET: طلبات إعانة البطالة الأولية. آخر قراءة رسمية 194k، وأي قفزة فوق نحو 215k تكسر رواية انخفاض التسريح.",
+   "الخميس 2026-11-05 الساعة 09:10 ET: Barkin (رئيس Richmond Fed). وفي اليوم نفسه Hammack (من المعارضين المطالبين بالرفع) في ندوة SNB، والتوقيت غير مؤكد.",
+   "الخميس 2026-11-05 الساعة 19:00 ET: Logan (رئيسة Dallas Fed)، بعد إغلاق السوق.",
+   "الجمعة 2026-11-06 الساعة 04:30 ET: Williams (رئيس New York Fed)، وهو الأقرب إلى قلب اللجنة.",
+   "الجمعة 2026-11-06 الساعة 08:30 ET: تقرير NFP لشهر أكتوبر. السابق +29k والبطالة 4.2%، ولم أجد Consensus موثقاً.",
+   "الجمعة 2026-11-06: Surveys of Consumers من جامعة Michigan (التوقيت المعتاد 10:00 ET، غير مؤكد) مع توقعات التضخم لسنة.",
+   "الجمعة 2026-11-06 الساعة 12:15 ET: Bowman بعد NFP مباشرة.",
+   "الجمعة: وضوح مسار المفاوضات الأمريكية الإيرانية وفق مصادر Al-Jadeed، وموثوقيتها منخفضة.",
+   "مستويات الجلسة: 10Y عند 4.85% و5.00%، وVIX عند 20 و22، وWTI عند 90 دولاراً، ونسبة NQ/ES في أول 30 دقيقة.",
+   "الأسبوع القادم: مزادات إعادة التمويل (3Y بـ58 مليار دولار، و10Y بـ42 مليار، و30Y بـ25 مليار)، والتواريخ الدقيقة لم أتحقق منها.",
+   "منتصف نوفمبر: CPI لشهر أكتوبر (التاريخ غير مؤكد). ثم اجتماع FOMC في 8–9 ديسمبر وفق التقويم المنشور."
+  ],
+  "risks": [
+   "ارتداد النفط إذا نفت إيران التقدم في المفاوضات، فقد نُفيت تقارير مماثلة سابقاً، وهذا يعيد ضغط التضخم والعوائد.",
+   "مفاجأة قوية في NFP مع ضغط أسعار ISM عند 73.0 تعزز تسعير الرفع في ديسمبر وتدفع العائد الحقيقي فوق 2.65%.",
+   "مخاطر تنظيمية على AI buildout ومراكز البيانات تحت كونغرس ديمقراطي، وهي تضرب أوزان NQ الكبرى في الرقائق.",
+   "عناوين ترامب: احتمال الالتفاف على الكونغرس بأوامر تنفيذية في التجارة والرسوم، ونقاش استبدال Hegseth، وتصريحات عن حرب إيران.",
+   "سحب السيولة مع ارتفاع رصيد TGA نحو 1.03 تريليون دولار أواخر نوفمبر، وهو أثر غير مثبت كمياً.",
+   "تمركز مفرط بعد ارتفاع يوم واحد قوي (أفضل يوم لـDow منذ 18 شهراً وفق CNBC) قد يقود إلى جني أرباح قبل NFP."
+  ],
+  "data_audit": [
+   "DGS10 وDGS2 وDFII10 بتاريخ 11-02 (عمرها يومان): لا تعكس رد فعل الانتخابات وانهيار النفط اليوم. لم أتحقق من مستوى 10Y اليوم، لذا بنيت الانحياز على آخر قراءة ووضعت تأكيد الهبوط شرطاً للسيناريو A.",
+   "VIX وNASDAQ100 وSP500 بتاريخ 11-03: تحركات اليوم (Nasdaq نحو +2% وDow +2.95%) مأخوذة من عناوين الأخبار وليست من المنصة.",
+   "النفط: المنصة تسجل WTI عند 99.64 بتاريخ 11-03. أرقام اليوم متضاربة بحسب التوقيت: WSJ عبر iHeart 87.61، وTradingEconomics 92.11، وعنوان صباحي 93.25. عاملتها كلها تقديرات واستخدمت الاتجاه (هبوط نحو 9%) لا المستوى.",
+   "GDPC1 بتاريخ 2026-07-01 هو Q3، وعمر 126 يوماً محسوب من بداية الربع؛ الإصدار الفعلي أحدث على الأرجح، وهذا استنتاج. وJOLTS سبتمبر صدرت في 11-03 وفق أجندة The Fed Agenda رغم أن العمر المعروض 64 يوماً.",
+   "CPI وPCE والبطالة وNFP وUMich كلها بتاريخ سبتمبر (عمرها 64 يوماً)، ولم تُعامل على أنها قراءة لشهر أكتوبر.",
+   "تعارض Core PCE (3.12%) فوق Core CPI (2.79%) غير معتاد؛ لم أجد تفسيراً موثقاً واعتمدت PCE مرجعاً للفيدرالي.",
+   "تسعير الفيدرالي: فارق 2Y−FF (+71 bp) مؤشر تقريبي. وتقدير رفع إضافي في 2026 يعود إلى 28 أكتوبر، ولم أتحقق من CME FedWatch اليوم، فلم أستخدم أي احتمال رقمي.",
+   "لم أجد Consensus موثقاً لـNFP أكتوبر، فلم أذكر رقماً متوقعاً. تقدير ADP البالغ 69k من Fox Business ومصنَّف تقديراً.",
+   "عنوان ترامب أن السوق سجل قمة تاريخية جديدة لا يتسق مع بيانات المنصة (NDX وS&P دون قمم 10-28 حتى إغلاق 11-03)، فلم أعتمده.",
+   "تقارير Al-Jadeed عن تقدم المفاوضات مع إيران عولجت كعنوان غير مؤكد بسبب نفي سابق.",
+   "مواعيد مزادات الأسبوع القادم وتاريخ CPI أكتوبر لم أتحقق منها بسبب استنفاد حد البحث، وذُكرت على هذا الأساس."
+  ],
+  "events": [
+   {
+    "title": "الديمقراطيون يسيطرون على مجلسي الكونغرس والأسواق ترتفع عند الافتتاح",
+    "date": "2026-11-04",
+    "url": "https://www.aljazeera.com/economy/2026/11/4/us-markets-rise-as-democrats-sweep-midterm-elections"
+   },
+   {
+    "title": "CNBC Live: أفضل يوم لـDow منذ 18 شهراً وانعكاس في عقود NQ وتراجع الرقائق الآسيوية",
+    "date": "2026-11-04",
+    "url": "https://www.cnbc.com/2026/11/03/stock-market-today-live-updates.html"
+   },
+   {
+    "title": "ما يعنيه فوز الديمقراطيين للاستثمارات: مراجعة أسهم مراكز البيانات والدفاع",
+    "date": "2026-11-04",
+    "url": "https://www.cnbc.com/2026/11/04/2026-midterms-investments.html"
+   },
+   {
+    "title": "ISM للخدمات أكتوبر 54.5 مقابل توقع 54.8 والأسعار المدفوعة 73.0",
+    "date": "2026-11-04",
+    "url": "https://investinglive.com/news/october-us-ism-services-vs-54-8-expected/"
+   },
+   {
+    "title": "ADP: القطاع الخاص يضيف 86 ألف وظيفة في أكتوبر",
+    "date": "2026-11-04",
+    "url": "https://mediacenter.adp.com/2026-11-04-ADP-National-Employment-Report-Private-Sector-Employment-Increased-by-86,000-Jobs-in-October"
+   },
+   {
+    "title": "بيان إعادة التمويل الربعي من الخزانة: 125 مليار دولار (3Y و10Y و30Y)",
+    "date": "2026-11-04",
+    "url": "https://home.treasury.gov/news/press-releases/sb0678"
+   },
+   {
+    "title": "انهيار النفط نحو 9% مع رهانات على إنهاء حرب إيران",
+    "date": "2026-11-04",
+    "url": "https://oilprice.com/Latest-Energy-News/World-News/Oil-Crashes-9-as-Trump-and-Vance-Blame-Iran-War-for-Midterm-Rout.html"
+   },
+   {
+    "title": "FOMC يثبت الفائدة عند 3.75–4.00% مع معارضتين للرفع",
+    "date": "2026-10-28",
+    "url": "https://www.cnbc.com/2026/10/28/fed-interest-rate-decision-october-2026.html"
+   },
+   {
+    "title": "أجندة تصريحات الفيدرالي: Barkin وLogan الخميس، وWilliams وBowman الجمعة",
+    "date": "2026-11-05",
+    "url": "https://uk.investing.com/news/stock-market-news/weekly-economic-outlook-payrolls-and-fed-speakers-in-focus-93CH-4950162"
+   },
+   {
+    "title": "طلبات الإعانة الخميس، وHammack في ندوة SNB، والوظائف وSurveys of Consumers الجمعة",
+    "date": "2026-11-05",
+    "url": "https://fedagenda.substack.com/p/weekly-update-53f"
+   },
+   {
+    "title": "تقرير التوظيف لشهر أكتوبر (NFP) من BLS",
+    "date": "2026-11-06",
+    "url": "https://www.bls.gov/news.release/empsit.nr0.htm"
+   }
+  ],
+  "one_liner": "العناوين تُشعل الافتتاح لكن العائد هو من يحسم الجلسة: ما لم ينزل 10Y تحت 4.85% فارتداد NQ عابر لا اتجاه.",
+  "sources": [
+   {
+    "url": "https://mediacenter.adp.com/2026-10-27-ADP-National-Employment-Report-Preliminary-Estimate-for-October-10,-2026",
+    "title": "ADP National Employment Report Preliminary Estimate for October 10, 2026"
+   },
+   {
+    "url": "https://mediacenter.adp.com/2026-11-04-ADP-National-Employment-Report-Private-Sector-Employment-Increased-by-86,000-Jobs-in-October",
+    "title": "ADP National Employment Report: Private-Sector Employment Increased by 86,000 Jobs in October - Nov 4, 2026"
+   },
+   {
+    "url": "https://www.foxbusiness.com/economy/private-sector-added-86000-jobs-october-above-expectations-adp-says",
+    "title": "ADP report October 2026: Private sector adds 86,000 jobs"
+   },
+   {
+    "url": "https://www.nasdaq.com/press-release/adp-national-employment-report-preliminary-estimate-october-10-2026-2026-10-27",
+    "title": "ADP National Employment Report Preliminary Estimate for October 10, 2026"
+   },
+   {
+    "url": "https://mediacenter.adp.com/2026-10-20-ADP-National-Employment-Report-Preliminary-Estimate-for-October-3,-2026?asPDF=",
+    "title": "ADP Media Center"
+   },
+   {
+    "url": "https://mediacenter.adp.com/workforce-data-releases",
+    "title": "ADP Media Center - Workforce Data Releases"
+   },
+   {
+    "url": "https://www.fxstreet.com/news/adp-employment-report-expected-to-show-slower-job-growth-in-october-202611040930",
+    "title": "ADP Employment Report is expected to show a moderate slowdown in job creation in October"
+   },
+   {
+    "url": "https://www.adpresearch.com/",
+    "title": "ADP Research"
+   },
+   {
+    "url": "https://www.prnewswire.com/news-releases/adp-national-employment-report-private-sector-employment-increased-by-86-000-jobs-in-october-302929216.html",
+    "title": "ADP National Employment Report: Private-Sector Employment Increased by 86,000 Jobs in October"
+   },
+   {
+    "url": "https://www.financecalendar.com/us-adp-employment/",
+    "title": "Next US ADP Employment Report: November 4, 2026 (8:15 am ET)"
+   },
+   {
+    "url": "https://tradingeconomics.com/united-states/services-pmi",
+    "title": "United States Services PMI"
+   },
+   {
+    "url": "https://investinglive.com/news/october-us-ism-services-vs-54-8-expected/",
+    "title": "October US ISM services 54.5 vs 54.8 expected"
+   },
+   {
+    "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/rob-report-calendar/",
+    "title": "Release Dates for the ISM Manufacturing and Non-Manufacturing Report On Business®"
+   },
+   {
+    "url": "https://en.macromicro.me/series/293/ism-nmi",
+    "title": "US - ISM Services PMI"
+   },
+   {
+    "url": "https://www.prnewswire.com/news-releases/services-pmi-at-54-5-october-2026-ism-services-pmi-report-302928112.html",
+    "title": "Services PMI® at 54.5%; October 2026 ISM® Services PMI® Report"
+   },
+   {
+    "url": "https://verifiedinvesting.com/blogs/us-economic-metrics/ism-services-october-2026",
+    "title": "ISM Services PMI October 2026: 54.5 Headline, 3.9-Point New Orders Drop"
+   },
+   {
+    "url": "https://www.forexfactory.com/calendar/253-us-ism-services-pmi",
+    "title": "US ISM Services PMI"
+   },
+   {
+    "url": "https://www.financecalendar.com/us-ism-services-pmi/",
+    "title": "Next US ISM Services PMI: October 5, 2026 (10:00 am ET)"
+   },
+   {
+    "url": "https://tradingeconomics.com/united-states/non-manufacturing-pmi/news/499489",
+    "title": "US ISM Services PMI Highest since February"
+   },
+   {
+    "url": "https://www.chicagofed.org/events/index",
+    "title": "Events - Federal Reserve Bank of Chicago"
+   },
+   {
+    "url": "https://uk.investing.com/news/stock-market-news/weekly-economic-outlook-payrolls-and-fed-speakers-in-focus-93CH-4950162",
+    "title": "Weekly economic outlook: payrolls and Fed speakers in focus By Investing.com"
+   },
+   {
+    "url": "https://www.chicagofed.org/utilities/about-us/office-of-the-president/office-of-the-president-speaking",
+    "title": "Office of the President: Speaking Engagements - Federal Reserve Bank of Chicago"
+   },
+   {
+    "url": "https://fedagenda.substack.com/p/weekly-update-53f",
+    "title": "Weekly Update - by Bryan P. Cutsinger - The Fed Agenda"
+   },
+   {
+    "url": "https://www.federalreserve.gov/newsevents/2026-november.htm",
+    "title": "Federal Reserve Board - Calendar: November 2026"
+   },
+   {
+    "url": "https://www.kiplinger.com/investing/economy/this-weeks-economic-calendar",
+    "title": "What to Look Out for in Economic Data This Week (November 2-6)"
+   },
+   {
+    "url": "https://fattail.ai/fattail-week-ahead-nov-2-6-2026/",
+    "title": "FatTail Week Ahead: Nov 2–6, 2026 - FatTail"
+   },
+   {
+    "url": "https://riotimesonline.com/global-economy-briefing-november-4-2026",
+    "title": "Fed Hike Bets Lift US Yields, Nasdaq Gains 0.8%"
+   },
+   {
+    "url": "https://nexusresearchreports.substack.com/p/nexus-retail-morning-note-0f1",
+    "title": "NEXUS Retail Morning Note - by Adam Reisboard"
+   },
+   {
+    "url": "https://www.fxstreet.com/news/forex-today-central-bank-speakers-in-the-limelight-202111080620",
+    "title": "forex today central bank speakers in the limelight 202111080620"
+   },
+   {
+    "url": "https://variety.com/2026/biz/news/stocks-midterm-elections-democrats-congress-1236939220/",
+    "title": "Midterm Elections: Stocks Surge After Democrats Flip Congress"
+   },
+   {
+    "url": "https://www.aljazeera.com/economy/2026/11/4/us-markets-rise-as-democrats-sweep-midterm-elections",
+    "title": "US markets rise as Democrats sweep midterm elections"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/stocks/articles/dow-p-500-nasdaq-futures-030931252.html",
+    "title": "Dow, S&P 500, Nasdaq Futures Fall As Markets Weigh A Potential Democratic Sweep In Midterms: DJT, AMD, SMCI, SOXL In Focus"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/03/stock-market-today-live-updates.html",
+    "title": "Dow rallies 1,500 points, heads for best day in 18 months, on decisive Democratic win, oil price plunge: Live updates"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/04/2026-midterms-investments.html",
+    "title": "What Democrats’ midterm sweep means for your investments"
+   },
+   {
+    "url": "https://www.cnn.com/2026/11/04/investing/us-markets-midterm-elections",
+    "title": "Dow eyes best post-midterm elections day in 44 years as Democrats take control of Congress"
+   },
+   {
+    "url": "https://thehill.com/business/6197256-stocks-rally-democrats-midterm-victory/",
+    "title": "Stocks rally after Democrats march to midterm victories"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections",
+    "title": "2026 United States House of Representatives elections"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/2026_United_States_state_legislative_elections",
+    "title": "2026 United States state legislative elections"
+   },
+   {
+    "url": "https://tradingeconomics.com/commodity/crude-oil",
+    "title": "Crude Oil - Price - Chart - Historical Data - News"
+   },
+   {
+    "url": "https://www.angelone.in/news/commodities/crude-oil-prices-rise-as-mixed-us-iran-signals-weigh-on-peace-hopes-november-4-2026",
+    "title": "Crude Oil Prices Rise as Mixed US-Iran Signals Weigh on Peace Hopes"
+   },
+   {
+    "url": "https://www.bloomberg.com/news/articles/2026-11-03/latest-oil-market-news-and-analysis-for-nov-4",
+    "title": "Oil Edges Higher as Progress on US-Iran Talks Remains Mixed"
+   },
+   {
+    "url": "https://oilprice.com/Latest-Energy-News/World-News/Oil-Crashes-9-as-Trump-and-Vance-Blame-Iran-War-for-Midterm-Rout.html",
+    "title": "Oil Crashes 9% as Trump and Vance Blame Iran War for Midterm Rout"
+   },
+   {
+    "url": "https://kogo.iheart.com/content/2026-11-04-oil-prices-tumble-after-midterm-elections-and-iran-war-developments/",
+    "title": "Oil Prices Tumble After Midterm Elections and Iran War Developments"
+   },
+   {
+    "url": "https://qz.com/oil-prices-fall-iran-peace-talks-supply-fears-110226",
+    "title": "Oil prices fall more than 4% as Iran peace talks ease supply fears"
+   },
+   {
+    "url": "https://energynow.com/2026/11/oil-prices-plunge-more-than-4-as-u-s-iran-peace-talks-raise-hopes-of-easing-middle-east-supply-disruptions/",
+    "title": "Oil Prices Plunge More Than 4% as U.S.-Iran Peace Talks Raise Hopes of Easing Middle East Supply Disruptions - Energy News, Top Headlines, Commentaries, Features & Events - EnergyNow.com"
+   },
+   {
+    "url": "https://energynow.com/2026/11/oil-prices-fall-as-democrats-seize-control-of-u-s-congress-and-uncertainty-grows-over-iran-conflict-wti-below-95-brent-near-102/",
+    "title": "Oil Prices Fall as Democrats Seize Control of U.S. Congress and Uncertainty Grows Over Iran Conflict - WTI Below $95, Brent Near $102 - Energy News, Top Headlines, Commentaries, Features & Events - EnergyNow.com"
+   },
+   {
+    "url": "https://tradingeconomics.com/commodity/crude-oil/news/528850",
+    "title": "Oil Rises as Iran Nuclear Talks Extend"
+   },
+   {
+    "url": "https://foxbusiness.com/economy/private-sector-added-86000-jobs-october-above-expectations-adp-says",
+    "title": "ADP report October 2026: Private sector adds 86,000 jobs"
+   },
+   {
+    "url": "https://www.bls.gov/schedule/news_release/empsit.htm",
+    "title": "Schedule of Releases for the Employment Situation"
+   },
+   {
+    "url": "https://www.bls.gov/schedule/news_release/current_year.asp",
+    "title": "Schedule of Selected Releases 2026"
+   },
+   {
+    "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+    "title": "Employment Situation Summary - 2026 M09 Results"
+   },
+   {
+    "url": "https://www.calendarx.com/events/jobs-report-october-2026",
+    "title": "US Jobs Report"
+   },
+   {
+    "url": "https://gobull.ai/blog/october-jobs-report-2026",
+    "title": "October Jobs Report 2026: Release Date, Payrolls and Fed Impact"
+   },
+   {
+    "url": "https://hub.riserealestatecommunity.com/calendar/jobs-report-bls-employment-situation-for-october-2026-8-30-a-m-et-2026-11-06",
+    "title": "October 2026 jobs report (BLS), Nov 6, 2026"
+   },
+   {
+    "url": "https://www.financecalendar.com/us-jobs-report/",
+    "title": "Next Jobs Report: November 6, 2026 (8:30am ET)"
+   },
+   {
+    "url": "https://qqqtradeidea.substack.com/p/is-friday-the-biggest-day-of-the",
+    "title": "is friday the biggest day of the"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/10/28/fed-interest-rate-decision-october-2026.html",
+    "title": "Fed interest rate decision October 2026: Fed holds rates steady"
+   },
+   {
+    "url": "https://www.advisorperspectives.com/dshort/updates/2026/10/28/feds-interest-rate-decision-october-28-2026",
+    "title": "Fed’s Interest Rate Decision: October 28, 2026 - dshort - Advisor Perspectives"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/10/28/fed-meeting-today-live-updates.html",
+    "title": "Fed rate decision October 2026"
+   },
+   {
+    "url": "https://www.raisin.com/en-us/news/post-fomc-policy-breakdown-navigating-rates-q4-2026/",
+    "title": "Post-FOMC policy breakdown: Navigating rates heading into Q4"
+   },
+   {
+    "url": "https://seekingalpha.com/article/4958991-feds-interest-rate-decision-october-28-2026",
+    "title": "Fed’s Interest Rate Decision: October 28, 2026"
+   },
+   {
+    "url": "https://www.foxbusiness.com/economy/federal-reserve-interest-rate-decision-october-28-2026",
+    "title": "October FOMC: Federal Reserves holds rates steady ahead of election"
+   },
+   {
+    "url": "https://am.jpmorgan.com/us/en/asset-management/adv/insights/portfolio-insights/fixed-income/fixed-income-perspectives/fomc-statement-october-2026/",
+    "title": "FOMC Statement: October 2026"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/interest-rate-decision-168",
+    "title": "United States Federal Reserve Interest Rate Decision"
+   },
+   {
+    "url": "https://cambridgecurrencies.com/next-federal-reserve-interest-rate-decision/",
+    "title": "Federal Reserve Interest Rate Decision: 3.75%-4.00%, Next 9 Dec"
+   },
+   {
+    "url": "https://www.cmelitegroup.com/knowledge-hub/fomc-meeting-fed-decision-day/",
+    "title": "FOMC Meeting: Fed Decision, Next Meeting and Schedule"
+   },
+   {
+    "url": "https://home.treasury.gov/news/press-releases/sb0678",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   },
+   {
+    "url": "https://home.treasury.gov/policy-issues/financing-the-government/quarterly-refunding/most-recent-quarterly-refunding-documents",
+    "title": "Most Recent Quarterly Refunding Documents"
+   },
+   {
+    "url": "https://www.tradingview.com/news/seekingalpha:f723db647094b:0-treasury-holds-quarterly-refunding-amounts-maturity-mix/",
+    "title": "Treasury holds quarterly refunding amounts, maturity mix — TradingView News"
+   },
+   {
+    "url": "https://home.treasury.gov/news/press-releases/sb0590",
+    "title": "Quarterly Refunding Statement of Deputy Assistant Secretary for Federal Finance Brian Smith"
+   },
+   {
+    "url": "https://seekingalpha.com/news/4664756-treasury-holds-quarterly-refunding-amounts-maturity-mix",
+    "title": "Treasury holds quarterly refunding amounts, maturity mix"
+   },
+   {
+    "url": "https://home.treasury.gov/news/press-releases/sb0607",
+    "title": "Treasury Announces Increased Sizes of Nominal Long-End Liquidity Support Buybacks Beginning September 9"
+   },
+   {
+    "url": "https://500metrics.com/treasury/refunding",
+    "title": "Treasury Quarterly Refunding: Documents and Dates"
+   },
+   {
+    "url": "https://www.mtsinsights.com/events/4689/",
+    "title": "US Treasury Refunding Financing Estimates"
+   },
+   {
+    "url": "https://marketsandnews.com/rates/treasury-quarterly-refunding-november-4-2026-buybacks-yields/",
+    "title": "Treasury Financing Estimate Due Today at 3 PM ET — What It Sets Up for Nov. 4 Refunding"
+   },
+   {
+    "url": "https://www.einpresswire.com/article/954528240/quarterly-refunding-statement-of-assistant-secretary-for-financial-markets-hunter-mcmaster",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   }
+  ],
+  "meta": {
+   "written_at": "2026-11-04T19:41:56Z",
+   "ny_date": "2026-11-04",
+   "model": "claude-opus-5-5",
+   "usage": {
+    "input_tokens": 221144,
+    "output_tokens": 18065
+   }
+  }
+ }
+]
