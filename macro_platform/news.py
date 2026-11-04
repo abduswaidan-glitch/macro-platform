@@ -95,7 +95,9 @@ def merge(store: dict[str, dict], fresh: list[dict]) -> int:
             "id": d["id"], "utc": d.get("datePublished"), "title_en": title[:300],
             "labels": [str(x) for x in (d.get("labels") or [])][:6],
             "breaking": bool(d.get("breaking")), "level": int(d.get("level") or 0),
-            "link": d.get("link") if str(d.get("link", "")).startswith("https://") else None,
+            # رابط القصة من FinancialJuice يُحوَّل إلى صفحات Reuters قديمة لا علاقة لها بالخبر (تحقّق 4 نوفمبر)،
+            # فلا يُعرض ولا يُحفظ؛ يبقى اسم المصدر وعنوان الخبر.
+            "link": None,
         }
         if old and old.get("title_en") == item["title_en"] and old.get("title_ar"):
             item["title_ar"] = old["title_ar"]
