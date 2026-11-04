@@ -62,6 +62,7 @@ def main(argv=None) -> int:
     now = datetime.now(timezone.utc)
     prev = load_live(args.seed_url)
     store = {str(i["id"]): i for i in prev.get("items", []) if isinstance(i, dict) and "id" in i}
+    cal = {str(e["id"]): e for e in prev.get("calendar", []) if isinstance(e, dict) and "id" in e}
     errors: list[str] = []
     translator = prev.get("translator")
     raw_key = os.environ.get("FJ_API_KEY", "")
@@ -83,7 +84,14 @@ def main(argv=None) -> int:
             except Exception as e:
                 errors.append(str(e)[:160])
                 log("fetch failed:", str(e)[:160])
+            try:
+                fresh_cal = news.fetch_calendar(key, now)
+                log(f"calendar: fetched {len(fresh_cal)}, changed {news.merge_calendar(cal, fresh_cal)}")
+            except Exception as e:
+                errors.append("التقويم: " + str(e)[:140])
+                log("calendar fetch failed:", str(e)[:160])
         store = news.prune(store, now)
+        cal = news.prune_calendar(cal, now)
         akey = os.environ.get("ANTHROPIC_API_KEY", "")
         clean = akey.strip().strip("\"'").strip()
         if clean:
@@ -92,17 +100,19 @@ def main(argv=None) -> int:
             log(f"anthropic key shape: length {len(clean)}, prefix {clean[:10]!r}, trimmed {len(akey) - len(clean)} chars")
         if clean:
             done, terr = news.translate_missing(store)
-            errors += terr
+            cdone, cerr = news.translate_missing(cal, field="title")
+            errors += terr + cerr
+            done += cdone
             translator = news.TRANSLATOR if (done or translator) else None
             log(f"translated {done} with {news.TRANSLATOR}" if done else "nothing to translate")
         else:
             log("no ANTHROPIC_API_KEY: headlines shown in English")
-        out = news.payload(store, now, translator, errors)
+        out = news.payload(store, now, translator, errors, calendar=cal)
     else:
         out = prev or news.payload({}, now, None, ["لم تُجلب الأخبار بعد"])
 
     (site / "news.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    log(f"site built: {len(out.get('items', []))} headlines")
+    log(f"site built: {len(out.get('items', []))} headlines, {len(out.get('calendar', []))} calendar events")
     return 0
 
 

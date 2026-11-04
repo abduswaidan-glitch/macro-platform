@@ -12,3 +12,7 @@
   `data/raw` and `data/fetch_status.json`, so code changes are live within a minute of a push.
 - Pages source is GitHub Actions; `news.json` is likewise deployed only, never committed. Demo data must never be committed.
 - Page text is Arabic; every string from data or Claude goes through `esc()`, links through `safeUrl()`.
+- `news.json` is read by `gold-dashboard` (`macro_wire()` in `fetch_gold.py`, and its news tab). Keep `items[]`
+  (`id`, `utc`, `title_en`, `title_ar`, `labels`, `breaking`, `link`) and `calendar[]` with FinancialJuice's own
+  calendar field names (`id`, `title`, `country`, `timeUtc`, `impact`, `actual`, `forecast`, `previous`, `revision`)
+  unchanged; gold feeds `calendar` straight into `fj_calendar_apply`.

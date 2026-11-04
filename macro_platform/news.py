@@ -146,17 +146,17 @@ def haiku_translate(batch: list[dict]) -> dict[int, str]:
     return {int(x["id"]): x["ar"].strip() for x in json.loads(text).get("items", []) if x.get("ar")}
 
 
-def translate_missing(store: dict[str, dict], translator=haiku_translate) -> tuple[int, list[str]]:
+def translate_missing(store: dict[str, dict], translator=haiku_translate, field: str = "title_en") -> tuple[int, list[str]]:
     """يترجم فقط ما يحتاج ترجمة ولم يُترجم بعد. يعيد (عدد المترجم، الأخطاء)."""
-    todo = [i for i in store.values() if not i.get("title_ar") and needs_translation(i["title_en"])]
+    todo = [i for i in store.values() if not i.get("title_ar") and needs_translation(i.get(field) or "")]
     for i in store.values():  # لا يحتاج ترجمة: يُعرض كما هو بلا Haiku
-        if not i.get("title_ar") and not needs_translation(i["title_en"]):
-            i["title_ar"] = i["title_en"]
+        if not i.get("title_ar") and i.get(field) and not needs_translation(i[field]):
+            i["title_ar"] = i[field]
     done, errors = 0, []
     for k in range(0, len(todo), BATCH):
         batch = todo[k:k + BATCH]
         try:
-            got = translator(batch)
+            got = translator([{"id": i["id"], "title_en": i[field]} for i in batch])
         except Exception as e:
             errors.append(f"الترجمة: {type(e).__name__}: {str(e)[:120]}")
             break
@@ -167,10 +167,67 @@ def translate_missing(store: dict[str, dict], translator=haiku_translate) -> tup
     return done, errors
 
 
-def payload(store: dict[str, dict], now: datetime, translator: str | None, errors: list[str]) -> dict:
+def payload(store: dict[str, dict], now: datetime, translator: str | None, errors: list[str],
+            calendar: dict[str, dict] | None = None) -> dict:
     items = sorted(store.values(), key=lambda i: i.get("utc") or "", reverse=True)
-    return {"updated": _iso(now), "source": "FinancialJuice", "delay_minutes": 10, "translator": translator,
-            "errors": errors, "items": items}
+    out = {"updated": _iso(now), "source": "FinancialJuice", "delay_minutes": 10, "translator": translator,
+           "errors": errors, "items": items}
+    if calendar is not None:
+        out["calendar"] = sorted(calendar.values(), key=lambda e: e.get("timeUtc") or "")
+    return out
+
+
+# ---------------------------------------------------------------- economic calendar (released figures)
+# نفس حقول كائن calendar في FinancialJuice بلا تغيير، فتقرؤه منصة الذهب كما تقرأ مستمعها (fj_calendar_apply).
+FJ_CAL = "https://stream.financialjuice.com/v1/calendar"
+CAL_FIELDS = ("id", "title", "country", "timeUtc", "impact", "type", "actual", "forecast", "previous",
+              "revision", "unit", "breaking")
+CAL_BACK_DAYS = 3      # الخطة المجانية تصل 24 ساعة للخلف، فنراكم بين الدورات لنبقي 3 أيام من البيانات الصادرة
+CAL_AHEAD_DAYS = 7
+US_CODES = {"US", "USA", "UNITED STATES"}
+
+
+def fetch_calendar(key: str, now: datetime, get=http_get_json, max_pages: int = 5) -> list[dict]:
+    """أحداث التقويم من 23 ساعة مضت (حد الخطة المجانية 24 ساعة) إلى 7 أيام قادمة."""
+    url = FJ_CAL + "?" + urllib.parse.urlencode({"from": _iso(now - timedelta(hours=23)),
+                                                 "to": _iso(now + timedelta(days=CAL_AHEAD_DAYS)), "limit": 500})
+    out: list[dict] = []
+    for _ in range(max_pages):
+        page = get(url, key)
+        out += [d for d in page.get("data", []) if isinstance(d, dict) and d.get("id") is not None]
+        nxt = page.get("next")
+        if not nxt:
+            break
+        url = urllib.parse.urljoin("https://stream.financialjuice.com", nxt)
+    return out
+
+
+def merge_calendar(store: dict[str, dict], fresh: list[dict]) -> int:
+    """كل الأحداث الأمريكية، ومن غيرها المرتفع والمتوسط التأثير فقط. الترجمة تبقى ما لم يتغير العنوان."""
+    changed = 0
+    for d in fresh:
+        country = str(d.get("country") or "").upper()
+        if country not in US_CODES and d.get("impact") not in (1, 2):
+            continue
+        item = {k: d.get(k) for k in CAL_FIELDS}
+        item["title"] = str(item.get("title") or "").strip()[:200]
+        if not item["title"]:
+            continue
+        item["us"] = country in US_CODES
+        old = store.get(str(d["id"]))
+        if old and old.get("title") == item["title"] and old.get("title_ar"):
+            item["title_ar"] = old["title_ar"]
+        if old != item:
+            changed += 1
+        store[str(d["id"])] = item
+    return changed
+
+
+def prune_calendar(store: dict[str, dict], now: datetime) -> dict[str, dict]:
+    lo, hi = now - timedelta(days=CAL_BACK_DAYS), now + timedelta(days=CAL_AHEAD_DAYS + 1)
+    keep = [e for e in store.values() if (t := _parse_t(e.get("timeUtc"))) and lo <= t <= hi]
+    keep.sort(key=lambda e: e.get("timeUtc") or "")
+    return {str(e["id"]): e for e in keep}
 
 
 def since_for(store: dict[str, dict], now: datetime) -> datetime:

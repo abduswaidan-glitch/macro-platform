@@ -9,6 +9,13 @@ from macro_platform import news
 NOW = datetime(2026, 11, 4, 14, 0, tzinfo=timezone.utc)
 
 
+def cal_raw(i, mins_from_now, title, country="US", impact=1, actual=None, base=None):
+    t = (base or datetime.now(timezone.utc)) + timedelta(minutes=mins_from_now)
+    return {"id": i, "title": title, "country": country, "timeUtc": t.strftime("%Y-%m-%dT%H:%M:%SZ"), "impact": impact,
+            "type": 1, "actual": actual, "forecast": "110K", "previous": "132K", "revision": None, "unit": "K",
+            "breaking": False}
+
+
 def raw(i, mins_ago, title, labels=("USD",), breaking=False, level=0):
     return {"id": i, "datePublished": (NOW - timedelta(minutes=mins_ago)).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "title": title, "labels": list(labels), "breaking": breaking, "level": level,
@@ -118,12 +125,20 @@ def test_fetch_news_end_to_end_with_fakes(tmp_path, monkeypatch):
     item = raw(9, 1, "Treasury yields climb")
     item["datePublished"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     monkeypatch.setattr(news, "fetch", lambda key, since: [item])
-    monkeypatch.setattr(news, "translate_missing",
-                        lambda store, translator=None: (store["9"].update(title_ar="ترتفع عوائد السندات") or 1, []))
+    monkeypatch.setattr(news, "fetch_calendar", lambda key, now: [cal_raw(70, 30, "Non-Farm Payrolls", actual="85K")])
+
+    def fake_translate(store, translator=None, field="title_en"):
+        for i in store.values():
+            i["title_ar"] = "ترتفع عوائد السندات" if field == "title_en" else "الوظائف غير الزراعية"
+        return len(store), []
+
+    monkeypatch.setattr(news, "translate_missing", fake_translate)
     site = tmp_path / "_site"
     fetch_news.main(["--site", str(site)])
     out = json.loads((site / "news.json").read_text(encoding="utf-8"))
     assert out["translator"] == news.TRANSLATOR and out["items"][0]["title_ar"] == "ترتفع عوائد السندات"
+    ev = out["calendar"][0]
+    assert ev["actual"] == "85K" and ev["us"] and ev["title_ar"] == "الوظائف غير الزراعية"
 
 
 def test_key_with_quotes_and_newline_is_cleaned(tmp_path, monkeypatch):
@@ -134,3 +149,57 @@ def test_key_with_quotes_and_newline_is_cleaned(tmp_path, monkeypatch):
     monkeypatch.setattr(news, "fetch", lambda key, since: seen.setdefault("key", key) and [])
     fetch_news.main(["--site", str(tmp_path / "s")])
     assert seen["key"] == "fj_abc123"
+
+
+def test_calendar_keeps_fj_field_names_for_the_gold_platform():
+    store = {}
+    news.merge_calendar(store, [cal_raw(1, -30, "Non-Farm Payrolls", actual="85K", base=NOW)])
+    e = store["1"]
+    # fj_calendar_apply في منصة الذهب يقرأ هذه الحقول بأسمائها الأصلية
+    for k in ("id", "title", "country", "timeUtc", "impact", "actual", "forecast", "previous", "revision"):
+        assert k in e
+    assert e["actual"] == "85K" and e["us"] is True
+
+
+def test_calendar_filter_us_all_others_high_and_medium_only():
+    store = {}
+    news.merge_calendar(store, [cal_raw(1, 60, "US Wholesale Inventories", impact=3, base=NOW),
+                                cal_raw(2, 60, "German Ifo", country="DE", impact=3, base=NOW),
+                                cal_raw(3, 60, "ECB Rate Decision", country="EU", impact=1, base=NOW)])
+    assert sorted(store) == ["1", "3"]
+
+
+def test_calendar_accumulates_beyond_the_24h_api_window_then_prunes():
+    store = {}
+    news.merge_calendar(store, [cal_raw(1, -60 * 50, "CPI m/m", actual="0.3%", base=NOW),   # قبل يومين: من دورة سابقة
+                                cal_raw(2, -60 * 24 * 4, "Old", base=NOW),                   # أقدم من 3 أيام
+                                cal_raw(3, 60 * 24 * 9, "Far", base=NOW)])                   # أبعد من 8 أيام
+    store = news.prune_calendar(store, NOW)
+    assert list(store) == ["1"]
+
+
+def test_calendar_fetch_window_and_pages():
+    calls = []
+
+    def get(url, key):
+        calls.append(url)
+        return {"data": [cal_raw(len(calls), 0, "x", base=NOW)], "next": "/v1/calendar?after=1" if len(calls) == 1 else None}
+
+    out = news.fetch_calendar("k", NOW, get=get)
+    assert len(out) == 2
+    assert "from=2026-11-03T15%3A00%3A00Z" in calls[0] and "to=2026-11-11T14%3A00%3A00Z" in calls[0]
+
+
+def test_calendar_titles_translated_once_by_title_field():
+    store = {}
+    news.merge_calendar(store, [cal_raw(1, 60, "Non-Farm Payrolls", base=NOW)])
+    sent = []
+
+    def fake(batch):
+        sent.extend(b["title_en"] for b in batch)
+        return {b["id"]: "الوظائف" for b in batch}
+
+    news.translate_missing(store, translator=fake, field="title")
+    news.merge_calendar(store, [cal_raw(1, 60, "Non-Farm Payrolls", actual="85K", base=NOW)])  # صدر الرقم
+    news.translate_missing(store, translator=fake, field="title")
+    assert sent == ["Non-Farm Payrolls"] and store["1"]["title_ar"] == "الوظائف" and store["1"]["actual"] == "85K"

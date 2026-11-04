@@ -182,6 +182,14 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
 .news .brk{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--bad);border-radius:5px;padding:0 6px;margin-inline-end:6px}
 .news li.hi .h{font-weight:600}
 .news li.new{animation:flash 2.5s ease-out}
+.cal tbody tr{cursor:default}
+.cal .brk,.cal .lb{display:inline-block;font-size:11px;border-radius:5px;padding:0 6px;margin-inline-end:4px}
+.cal .brk{color:#fff;background:var(--bad);font-weight:700}
+.cal .lb{color:var(--muted);border:1px solid var(--rule)}
+.cal td .en{display:block;color:var(--muted);font-size:12px;direction:ltr;text-align:start}
+#calBox .news-meta{margin-top:-4px}
+.cal td:nth-child(2){white-space:normal;min-width:110px}
+@media (max-width:760px){.cal th,.cal td{padding:8px 5px;font-size:13px}.cal th{font-size:11.5px;white-space:normal}.cal td:nth-child(2){min-width:96px}}
 @keyframes flash{from{background:var(--acc-soft)}to{background:transparent}}
 @media (prefers-reduced-motion:reduce){.news li.new{animation:none}}
 </style>
@@ -397,6 +405,8 @@ function renderOverview(data) {
     ${w.length ? `<div class="warn-box"><b>تنبيهات البيانات (${w.length})</b><ul>${w.slice(0, 8).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     <h3>الأخبار اللحظية</h3>
     <div id="newsBox"><p class="empty">جارٍ تحميل الأخبار…</p></div>
+    <h3>تقويم البيانات الأمريكية</h3>
+    <div id="calBox"><p class="empty">جارٍ تحميل التقويم…</p></div>
     <h3>بوابات NQ</h3>
     <details class="about"><summary>كيف أقرأ البوابات؟</summary><div class="body">
       <p>العائد 10Y فوق الحد الحرج يضغط على تقييمات أسهم النمو، وVIX يحدد نوع اليوم (Mean reversion تحت ${esc(data.config.gates.vix_calm)}، وتوسّع تذبذب فوق ${esc(data.config.gates.vix_stress)}). تُعدَّل الحدود من <code>config.json</code>.</p>
@@ -535,9 +545,30 @@ function renderNews() {
   NEWS.first = false;
   box.querySelectorAll(".chip-btn").forEach(b => b.onclick = () => { NEWS.filter = b.dataset.f; store.set("macro-news-filter", NEWS.filter); renderNews(); });
 }
+function renderCalendar() {
+  const box = $("#calBox"); if (!box) return;
+  const all = ((NEWS.data && NEWS.data.calendar) || []).filter(e => e.us && (e.impact === 1 || e.impact === 2));
+  if (!all.length) { box.innerHTML = '<p class="empty">لا أحداث بعد. يمتلئ التقويم مع دورات الأخبار القادمة.</p>'; return; }
+  const out = e => e.actual !== null && e.actual !== undefined && e.actual !== "";
+  const done = all.filter(out).slice(-12).reverse();
+  const soon = all.filter(e => !out(e) && Date.parse(e.timeUtc) >= Date.now() - 36e5).slice(0, 15);
+  const row = e => {
+    const ar = e.title_ar && e.title_ar !== e.title ? e.title_ar : null;
+    return `<tr><td class="num">${esc(nyDay(e.timeUtc).slice(5))} ${esc(nyTime(e.timeUtc))}</td>
+      <td>${e.impact === 1 ? '<span class="brk">مرتفع</span>' : '<span class="lb">متوسط</span>'} ${esc(ar || e.title)}${ar ? `<span class="en">${esc(e.title)}</span>` : ""}</td>
+      <td class="num"><b>${esc(out(e) ? e.actual : "—")}</b></td><td class="num">${esc(e.forecast ?? "—")}</td>
+      <td class="num">${esc(e.revision ? e.revision + " (معدّل)" : e.previous ?? "—")}</td></tr>`;
+  };
+  const table = (title, rows) => rows.length ? `<div class="tbl-wrap cal" style="margin-top:10px"><table><thead><tr>
+      <th>${title} · نيويورك</th><th>الحدث</th><th>الفعلي</th><th>التوقع</th><th>السابق</th></tr></thead>
+      <tbody>${rows.map(row).join("")}</tbody></table></div>` : "";
+  box.innerHTML = `<div class="news-meta">FinancialJuice · الأحداث الأمريكية مرتفعة ومتوسطة التأثير · الفعلي يظهر بعد نحو 10 دقائق من صدوره</div>
+    ${table("صدرت (آخر 3 أيام)", done)}${table("القادمة (7 أيام)", soon)}`;
+}
 async function loadNews() {
   try { NEWS.data = await getJSON("news.json"); } catch (e) { if (!NEWS.data) NEWS.data = null; }
   renderNews();
+  renderCalendar();
 }
 setInterval(() => { if (!document.hidden) loadNews(); }, 120000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) loadNews(); });
