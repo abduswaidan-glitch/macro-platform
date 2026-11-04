@@ -175,8 +175,9 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
 .news li:last-child{border-bottom:0}
 .news time{font-size:12.5px;color:var(--muted);direction:ltr;text-align:start;padding-top:2px}
 .news .h{font-size:14.5px;line-height:1.55}
-.news .h a{color:inherit;text-decoration:none}
-.news .h a:hover{text-decoration:underline;text-decoration-color:var(--acc)}
+.news .h .t{display:inline}
+.news .cp{border:1px solid var(--rule);background:var(--surface);color:var(--muted);border-radius:6px;padding:0 6px;margin-inline-start:6px;font-size:13px;line-height:20px;cursor:pointer;vertical-align:middle}
+.news .cp:hover{color:var(--acc);border-color:var(--acc)}
 .news .en{display:block;color:var(--muted);font-size:12px;direction:ltr;text-align:start;margin-top:2px}
 .news .lb{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--rule);border-radius:5px;padding:0 5px;margin-inline-start:4px;direction:ltr}
 .news .brk{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--bad);border-radius:5px;padding:0 6px;margin-inline-end:6px}
@@ -520,6 +521,14 @@ function renderMethod(data) {
 const NEWS = {data: null, filter: store.get("macro-news-filter") || "us", seen: new Set(), first: true};
 const nyTime = iso => { try { return new Date(iso).toLocaleTimeString("en-GB", {timeZone: "America/New_York", hour: "2-digit", minute: "2-digit"}); } catch (e) { return ""; } };
 const nyDay = iso => { try { return new Date(iso).toLocaleDateString("en-CA", {timeZone: "America/New_York"}); } catch (e) { return ""; } };
+/* نسخ نص الخبر الأصلي بالإنجليزية كما نشرته FinancialJuice (الترجمة آلية، فلا تُنسخ) */
+function copyText(text, btn) {
+  const done = ok => { btn.textContent = ok ? '✓' : '✕'; setTimeout(() => btn.textContent = '⧉', 1400); };
+  if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(() => done(true), () => done(false)); return; }
+  const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); done(ok);
+}
 function renderNews() {
   const box = $("#newsBox"); if (!box) return;
   const d = NEWS.data;
@@ -538,12 +547,14 @@ function renderNews() {
       const fresh = !NEWS.first && !NEWS.seen.has(i.id);
       const day = nyDay(i.utc);
       return `<li class="${i.breaking || i.level >= 3 ? "hi" : ""}${fresh ? " new" : ""}"><time datetime="${esc(i.utc)}">${esc(nyTime(i.utc))}${day !== today ? `<br>${esc(day.slice(5))}` : ""}</time>
-        <div class="h">${i.breaking ? '<span class="brk">عاجل</span>' : ""}<a href="${safeUrl(i.link)}" target="_blank" rel="noopener noreferrer">${esc(ar || i.title_en)}</a>
-        ${ar ? `<span class="en">${esc(i.title_en)}</span>` : ""}${(i.labels || []).slice(0, 3).map(l => `<span class="lb">${esc(l)}</span>`).join("")}</div></li>`;
+        <div class="h">${i.breaking ? '<span class="brk">عاجل</span>' : ""}<span class="t">${esc(ar || i.title_en)}</span>
+        ${ar ? `<span class="en">${esc(i.title_en)}</span>` : ""}${(i.labels || []).slice(0, 3).map(l => `<span class="lb">${esc(l)}</span>`).join("")}
+        <button class="cp" type="button" data-cp="${esc(`${i.title_en}\n${nyDay(i.utc)} ${nyTime(i.utc)} (نيويورك) · FinancialJuice`)}" aria-label="نسخ عنوان الخبر الأصلي" title="نسخ عنوان الخبر الأصلي">⧉</button></div></li>`;
     }).join("")}</ol>` : '<p class="empty" style="padding:12px 14px">لا عناوين في هذا التصنيف خلال آخر 24 ساعة.</p>'}</div>`;
   all.forEach(i => NEWS.seen.add(i.id));
   NEWS.first = false;
   box.querySelectorAll(".chip-btn").forEach(b => b.onclick = () => { NEWS.filter = b.dataset.f; store.set("macro-news-filter", NEWS.filter); renderNews(); });
+  box.querySelectorAll(".cp").forEach(b => b.onclick = () => copyText(b.dataset.cp, b));
 }
 function renderCalendar() {
   const box = $("#calBox"); if (!box) return;
