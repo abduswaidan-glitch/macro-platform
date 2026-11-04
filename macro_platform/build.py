@@ -21,6 +21,8 @@ from macro_platform.fred import FredError, fetch_series
 
 MIN_ROWS = {"D": 200, "W": 50, "M": 24, "Q": 8}
 MAX_AGE_DAYS = {"D": 7, "W": 14, "M": 80, "Q": 220}  # تأخر النشر الطبيعي لكل تكرار
+# سلاسل يومية ينشرها FRED متأخرة أسبوعاً عادةً (نفط WTI من EIA، الدولار الواسع من الفيدرالي)
+MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14}
 KPI_IDS = ("DGS10", "DGS2", "T10Y2Y", "FEDFUNDS", "PCEPILFE", "UNRATE", "VIXCLS", "NASDAQ100")
 DEFAULT_CONFIG = {
     "start": "2000-01-01",
@@ -246,7 +248,7 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
             warnings.append(f"{ind.name_ar} ({ind.id}): لا بيانات")
             continue
         age = staleness_days(ind, s, now_ts)
-        if age > MAX_AGE_DAYS[ind.freq] and st["state"] == "ok":
+        if age > MAX_AGE_OVERRIDE.get(ind.id, MAX_AGE_DAYS[ind.freq]) and st["state"] == "ok":
             st["state"] = "stale"
             st["issues"] = st["issues"] + [f"آخر قيمة عمرها {age} يوماً"]
         if st["issues"]:
