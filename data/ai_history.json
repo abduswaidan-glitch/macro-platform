@@ -1,5 +1,473 @@
 [
  {
+  "title": "صدمة AI سياسية تكسر NQ: بوابة VIX تجاوزت 25 وعائد 2Y يهبط، وNFP غداً يحسم بين الارتداد واستمرار التصفية",
+  "summary": [
+   "هبط Nasdaq 100 أكثر من 6% أثناء الجلسة وتجاوز VIX مستوى 25 لأول مرة منذ أبريل (عناوين الوكالة). أرقام المنصة VIX 16.61 وNDX 28437 تعود إلى إغلاق 11-04 ولا تعكس اليوم.",
+   "المحرك قطاعي وسياسي: فوز الديمقراطيين بحكم ولايات تتركز فيها مراكز البيانات، ومنها Texas، وتعهدهم بتشديد القيود عليها، إضافة إلى تقارير عن تراجع اهتمام Microsoft بمزودي الحوسبة السحابية المتخصصين في AI (neoclouds). هبط مؤشر SOX نحو 9–10%.",
+   "السندات تعمل ملاذاً: هبط عائد 2Y بـ10 bp إلى 4.48% اليوم حسب عنوان الوكالة، مقابل 4.61% على المنصة بتاريخ 11-03. ومع ذلك يبقى 10Y فوق الحد الحرج 4.50%، والعائد الحقيقي 2.65% أعلى بوضوح من حد التقييد 2.00%.",
+   "سوق العمل ما زال متماسكاً: طلبات الإعانة 189k مقابل توقع 196k، وهي الأدنى في السلسلة الحديثة. وفي القراءة الأولية للربع الثالث جاءت الإنتاجية 3.6% وتكلفة وحدة العمل -0.7%، وهي إشارة تخفف ضغط الأجور على التضخم.",
+   "الفيدرالي يميل إلى رفع الفائدة: يرى Hammack ضرورة سياسة مقيِّدة، ويرى Barkin أن التضخم هو الخطر الأول ويؤيد التدرّج. احتمال رفع في 9 ديسمبر كان نحو 85% حسب FedWatch قبل أسبوع، وهو تقدير قديم.",
+   "الحدث الحاسم غداً تقرير NFP الساعة 8:30 ET: التوقع 65k والبطالة 4.2% ومتوسط الأجر في الساعة (AHE) 0.3% شهرياً، وكلها تقديرات السوق (Consensus)."
+  ],
+  "bias": {
+   "direction": "bearish",
+   "confidence": 55,
+   "reason": "البوابات الأربع لـNQ كلها سلبية الآن. أولاً، 10Y عند 4.95% بتاريخ 11-03، أي 45 bp فوق الحد 4.50%؛ وتراجع اليوم لم يُعِده تحت الحد على الأرجح (استنتاج، فلا رقم مؤكد لليوم). ثانياً، العائد الحقيقي 2.65%، أي 65 bp فوق حد التقييد. ثالثاً، VIX انتقل من منطقة الهدوء إلى منطقة الضغط فوق 25. رابعاً، قيادة NQ مقابل ES على 20 يوماً عند -7.40%، وتتدهور إلى نحو -9% إذا ثبتت فجوة الأداء اليوم (NDX نحو -6% مقابل SPX نحو -4.1%؛ استنتاج). سبب البيع، وهو إعادة تسعير إنفاق AI الرأسمالي (capex) بفعل قيود مراكز البيانات، لم يُحسم في جلسة واحدة. ما يخفف الثقة: هبوط العوائد، وفارق High Yield 3.32% دون ضغط ائتماني (قراءة 11-04 أي قبل البيع)، واحتمال ارتداد عنيف لتغطية المراكز البيعية بعد هبوط بهذا الحجم. لذلك الثقة متوسطة."
+  },
+  "scenarios": [
+   {
+    "label": "A",
+    "name": "ارتداد فني متقلب ثم تماسك",
+    "prob": 35,
+    "trigger": "عودة VIX تحت 25 قبل افتتاح 9:30 ET، وNFP قرب التوقع أو أضعف قليلاً (نحو 30–90k) مع AHE لا يتجاوز 0.3% والبطالة لا تتجاوز 4.2%، وثبات NQ فوق قاع الخميس في أول 30 دقيقة، وتماسك SOX في التداول المسبق (premarket).",
+    "reason": "هبوط بنحو 6% في يوم واحد يترك المراكز مشبعة بالبيع. ومع هبوط 2Y إلى 4.48% وتراجع تسعير الرفع قد يحدث ارتداد لتغطية المراكز البيعية. لكنه سيبقى ارتداداً داخل نظام تذبذب مرتفع، لا انعكاساً للاتجاه."
+   },
+   {
+    "label": "B",
+    "name": "استمرار تصفية مراكز AI والرقائق",
+    "prob": 40,
+    "trigger": "بقاء VIX فوق 25 وكسر قاع الخميس في الساعة الأولى، ومواصلة SOX الهبوط في التداول المسبق، وعناوين جديدة عن تأجيل مشاريع مراكز البيانات أو خفض الإنفاق الرأسمالي من الشركات الكبرى أو قيود من الحكام المنتخبين.",
+    "reason": "الصدمة تمس توقعات الأرباح والإنفاق الرأسمالي لا المضاعفات وحدها. فحسب تقدير منسوب إلى Wells Fargo، كل خفض بنسبة 10% في السعة المخططة في Texas يقابله خفض نحو 1.6% في إنفاق شركات التقنية الكبرى على بنية AI. وإعادة تسعير كهذه تمتد عادة لأكثر من جلسة، وهذا استنتاج غير مثبت إحصائياً."
+   },
+   {
+    "label": "C",
+    "name": "صدمة فائدة فوق صدمة AI",
+    "prob": 25,
+    "trigger": "NFP قوي فوق 100k أو AHE عند 0.4% فأكثر أو بطالة 4.1%، يليه ارتداد 2Y نحو 4.60% وارتفاع تسعير رفع ديسمبر وصعود العائد الحقيقي، مع نبرة متشددة من Logan أو Williams أو Musalem.",
+    "reason": "الفيدرالي في وضع رفع، والتضخم الأساسي بمقياس PCE عند 3.12%. بيانات عمل ساخنة تُلغي دعم هبوط العوائد الذي ظهر اليوم، فيُضرب NQ من جهتين: إعادة تسعير AI وارتفاع العائد الحقيقي."
+   }
+  ],
+  "sections": [
+   {
+    "heading": "النمو",
+    "body": "الناتج المحلي الحقيقي GDP نما 2.07% سنوياً في الربع الثالث (بيانات عمرها 127 يوماً) مقابل 2.19% في الربع السابق، أي تباطؤ طفيف لا انكماش. الإنتاج الصناعي +2.25% سنوياً في سبتمبر (عمره 65 يوماً، المئين 86.9 على 5 سنوات). مبيعات التجزئة +6.29% اسمياً، أي نحو +2.2% حقيقياً بعد خصم CPI البالغ 4.02% (استنتاج). في المقابل، بدء الإسكان 1221k عند المئين 3.3%، وفائدة الرهن لـ30 سنة 7.18%، ومعنويات ميشيغان 48.1 عند المئين 3.3. هذا تعارض واضح بين بيانات إنفاق قوية ومعنويات منهارة. المسوح الحديثة: ISM Services عند 54.5 مقابل توقع 54.8، والقراءة النهائية لمؤشر S&P Composite عند 55.9 مقابل توقع 57.3، أي توسع مستمر مع تبريد طفيف. تصنيف المنصة للاقتصاد هو Reflation (نمو مع تضخم ساخن)، لكنه مبني على بيانات 30 سبتمبر."
+   },
+   {
+    "heading": "سوق العمل",
+    "body": "طلبات الإعانة الأولية 189k للأسبوع المنتهي في 31 أكتوبر مقابل توقع 196k، وهي أدنى قراءة في السلسلة الحديثة (z = -2.19). الطلبات المستمرة 1.718M. في المقابل، ارتفعت البطالة إلى 4.2% في سبتمبر (عمرها 65 يوماً)، ومتوسط الوظائف غير الزراعية لثلاثة أشهر 50.7k فقط، وفرص العمل JOLTS عند 7.523M. التعارض بين طلبات إعانة شديدة الانخفاض وتوظيف ضعيف يعني سوقاً قليلة التوظيف وقليلة التسريح، وهو ما وصفه Barkin بقوله إن الشركات حذرة في التوظيف لكنها لا تسرّح. Sahm Rule عند +0.00 pp، أي غير مفعّلة. ADP لشهر أكتوبر جاء 86k مقابل توقع 67k. والأهم أن الإنتاجية 3.6% وتكلفة وحدة العمل -0.7% في القراءة الأولية، وهذا لا يدعم رواية تضخم مدفوع بالأجور."
+   },
+   {
+    "heading": "التضخم",
+    "body": "أرقام المنصة لشهر سبتمبر (عمرها 65 يوماً): CPI العام 4.02%، وCPI الأساسي 2.79%، وPCE الأساسي 3.12%. هنا تعارضان. الأول: PCE الأساسي أعلى من CPI الأساسي، وهذا عكس المعتاد ولا أملك له تفسيراً مثبتاً. الثاني: تقويم المنصة يذكر القراءتين السابقتين لـCPI عند 3.7% للعام و2.6% للأساسي، أي أقل من حساب المنصة. اعتمدت أرقام المنصة الرسمية ووسمت الفارق. الفجوة بين CPI العام والأساسي تعكس على الأرجح الطاقة، فـWTI قرب 99.64 دولاراً بتاريخ 11-03 مع أزمة Hormuz (استنتاج). مؤشر أسعار ISM Services ما زال مرتفعاً عند 73.0. توقعات السوق لتضخم 10 سنوات (Breakeven) هبطت إلى 2.26% بتاريخ 11-04، بينما كانت توقعات الأسر لدى ميشيغان في القراءة السابقة 4.7% لسنة و3.5% لخمس سنوات. هذا تعارض واضح بين توقعات السوق وتوقعات المستهلكين. بيانات CPI لشهر أكتوبر تصدر الثلاثاء 10 نوفمبر، والتوقع 0.2% شهرياً للأساسي (Consensus)."
+   },
+   {
+    "heading": "الفائدة والفيدرالي",
+    "body": "أبقى FOMC النطاق عند 3.75–4.00% في 28 أكتوبر مع انقسام داخل اللجنة. وسعر Fed Funds الفعلي على المنصة 3.88% لشهر أكتوبر. الاجتماع القادم في 9 ديسمبر، وكان احتمال الرفع فيه نحو 85% حسب FedWatch قبل أسبوع (تقدير قديم). هبوط 2Y اليوم إلى 4.48% يعني على الأرجح تراجع هذا الاحتمال، لكن لا رقم حالياً لدي. فارق 2Y عن Fed Funds ينخفض من +73 bp على المنصة إلى نحو +60 bp (استنتاج). تصريحات اليوم: قال Hammack إن السياسة تحتاج إلى أن تصبح مقيِّدة وإن الضغوط التضخمية تتسع، وقال Barkin إن السياسة قرب المستوى المحايد وإن التدرّج منطقي وإن التضخم هو الخطر الأول. منحنى 10Y-2Y عند +32 bp. العائد الاسمي 10Y عند 4.95% يتكوّن من عائد حقيقي 2.65% وBreakeven عند 2.26%، أي أن معظمه عائد حقيقي، وهذا هو المقيِّد لأسهم النمو. التمويل الربعي (QRA) يتضمن مزادات بقيمة 125 مليار دولار الأسبوع القادم: 3Y بـ58 مليار، و10Y بـ42 ملياراً، و30Y بـ25 ملياراً."
+   },
+   {
+    "heading": "المخاطر والأسواق",
+    "body": "حسب عناوين الوكالة: هبط SOX نحو 9–10%، وNvidia وصل إلى أدنى مستوى منذ أبريل، وNasdaq 100 انخفض أكثر من 6% أثناء الجلسة، ودخل Nasdaq Composite منطقة التصحيح (أكثر من 10% دون قمة 6 أكتوبر)، وتجاوز VIX مستوى 25. السبب: فوز الديمقراطيين بحكم Texas وGeorgia وOhio وNevada بتعهدات تقييد مراكز البيانات، إذ يقدّر Goldman أن 45% من السعة المخططة ستقع في ولايات يحكمها ديمقراطيون يؤيدون فرض وقف مؤقت على بنائها (moratorium) أو تمديده. أضف إلى ذلك تحذير Fitch من تأخر مشاريع مراكز البيانات، وعنوان Microsoft عن مزودي neoclouds. هذا البيع يمحو صعود الأربعاء الذي جاء بعد الانتخابات. جيوسياسياً، أعلنت إيران تضرر خمس ناقلات بألغام في Hormuz. بقية الأسواق: الائتمان (High Yield OAS عند 3.32%) هادئ حتى 11-04 ولم تصل بعد قراءة اليوم، ومؤشر الدولار الواسع قديم (10-30)."
+   }
+  ],
+  "gates_read": "بوابة 10Y: آخر رقم على المنصة 4.95% بتاريخ 11-03، أي 45 bp فوق الحد 4.50%. أظهرت CNBC الأربعاء نحو 4.88% أثناء الجلسة، والعوائد اليوم عند أدنى مستوياتها منذ سبتمبر حسب الوكالة دون رقم محدد. الأرجح أن 10Y ما زال فوق الحد بنحو 30–40 bp (استنتاج)، فالبوابة سلبية لكنها تتحسن. بوابة VIX: المنصة تُظهر 16.6، أي هدوء، لكن الرقم من 11-04. عملياً تجاوز VIX اليوم 25، فالبوابة الآن في منطقة الضغط، والارتداد إلى المتوسط لم يعد السيناريو الافتراضي. العائد الحقيقي: 2.65% بتاريخ 11-03، أي 65 bp فوق حد التقييد. ولأن جزءاً من هبوط العائد الاسمي يأتي من هبوط Breakeven، فتراجع العائد الحقيقي أقل من تراجع الاسمي (استنتاج)، وتبقى البوابة مقيِّدة. قيادة NQ مقابل ES: -7.40% على 20 يوماً، وتتدهور إلى نحو -9% إذا أُغلقت الجلسة على الفارق الحالي (استنتاج). الخلاصة: البوابات الأربع سلبية، والإيجابي الوحيد اتجاه هبوط العوائد مع ائتمان هادئ حتى أمس.",
+  "watch": [
+   "الخميس 11-05: إغلاق VIX فوق 25 أو دونه، وإغلاق NDX وSOX مقارنة بقاع اليوم (أرقام الإغلاق غير متاحة وقت الكتابة).",
+   "الخميس 11-05 الساعة 19:00 ET: كلمة Logan من الفيدرالي.",
+   "الجمعة 11-06 الساعة 04:30 ET: كلمة Williams.",
+   "الجمعة 11-06 الساعة 08:30 ET: NFP (التوقع 65k، السابق 29k)، والبطالة (4.2%)، وAHE (0.3% شهرياً و2.9% سنوياً). كلها تقديرات السوق.",
+   "الجمعة 11-06 الساعة 09:10 ET: كلمة Musalem قبل الافتتاح.",
+   "الجمعة 11-06 الساعة 10:00 ET: القراءة الأولية لمعنويات ميشيغان (التوقع 48)، وتوقعات التضخم لسنة (4.7%) ولخمس سنوات (3.5%).",
+   "الجمعة 11-06 الساعة 12:15 ET: كلمة Bowman، والساعة 15:00 ET: الائتمان الاستهلاكي.",
+   "الاثنين 11-09 الساعة 13:00 ET: مزاد 3Y بقيمة 58 مليار دولار (العائد في المزاد السابق 4.932%).",
+   "الثلاثاء 11-10 الساعة 08:30 ET: CPI لشهر أكتوبر (توقع الأساسي 0.2% والعام 0.3% شهرياً)، والساعة 13:00 ET: مزاد 10Y بقيمة 42 مليار دولار (السابق 5.300%).",
+   "الخميس 11-12 الساعة 08:30 ET: طلبات الإعانة، والساعة 13:00 ET: مزاد 30Y بقيمة 25 مليار دولار (السابق 5.618%).",
+   "الأربعاء 12-09: قرار FOMC.",
+   "عناوين Hormuz وإيران، وأي إعلانات من الحكام المنتخبين أو الشركات الكبرى عن مشاريع مراكز البيانات."
+  ],
+  "risks": [
+   "امتداد إعادة تسعير إنفاق AI الرأسمالي إلى مراجعات الأرباح، لا المضاعفات فقط، مما يطيل موجة البيع.",
+   "بيانات وظائف أو أجور ساخنة تعيد تسعير رفع ديسمبر وتمحو دعم هبوط العوائد.",
+   "تصعيد في Hormuz يعيد النفط فوق 105–110 دولارات، فيرتفع التضخم العام وتتشدد لغة الفيدرالي.",
+   "تذبذب مرتفع مع VIX فوق 25: نطاقات تداول أوسع وفجوات سعرية عند الافتتاح بعد NFP، وصعوبة في تنفيذ الأوامر بالأسعار المطلوبة.",
+   "خطر معاكس لمن يراهن على الهبوط: ارتداد عنيف لتغطية المراكز البيعية بعد هبوط بنحو 6%.",
+   "اضطراب سياسي بعد خسارة الجمهوريين: عناوين عن احتمال رحيل Rubio وتصويت محتمل على عزل Hegseth، مع غياب أي مراجعة قريبة للرسوم الجمركية حسب تصريحات Lagarde وMacklem.",
+   "اتساع فارق الائتمان، إذ لا نملك قراءة High Yield لليوم."
+  ],
+  "data_audit": [
+   "قراءة VIX على المنصة (16.61) من 11-04 وتعكس هدوءاً لم يعد قائماً. اعتمدت عنوان الوكالة (فوق 25 الساعة 10:48 ET) وصنّفت البوابة في منطقة الضغط.",
+   "DGS10 (4.95%) وDFII10 (2.65%) وDGS2 (4.61%) أرقام 11-03. هبوط 2Y إلى 4.48% مصدره عنوان وكالة، وفارق +60 bp عن Fed Funds حساب مني. لا رقم مؤكداً لـ10Y اليوم، فلم أخترع رقماً.",
+   "آخر قراءة لـNDX على المنصة 28437 بتاريخ 11-04. مستوى نحو 26,700–26,900 مجرد استنتاج من نسب الهبوط المعلنة (5.4–6%). وعناوين الوكالة تخلط بين Nasdaq Composite وNasdaq 100.",
+   "تعارض في CPI: المنصة تُظهر 4.02% للعام و2.79% للأساسي لشهر سبتمبر، بينما يذكر التقويم قراءة سابقة 3.7% و2.6%. اعتمدت أرقام المنصة الرسمية ووسمت الفارق.",
+   "PCE الأساسي (3.12%) أعلى من CPI الأساسي (2.79%)، وهذا غير معتاد. تفسيره غير مثبت.",
+   "كل البيانات الشهرية عمرها 65 يوماً (سبتمبر)، وGDP عمره 127 يوماً، وتصنيف الاقتصاد مبني على بيانات 30 سبتمبر. عاملتها خلفيةً لا قراءةً لليوم.",
+   "احتمال 85% لرفع ديسمبر تقدير من FedWatch عمره نحو أسبوع، ويُرجَّح أنه تغيّر اليوم.",
+   "توقعات NFP وCPI وميشيغان تقديرات السوق (Consensus) لا أرقام رسمية.",
+   "مؤشر الدولار الواسع عمره 6 أيام، وفارق High Yield من 11-04 أي قبل البيع.",
+   "وصف اليوم بأنه أسوأ يوم بعد انتخابات نصفية منذ 1896 مبني على عيّنة صغيرة جداً، وقيمته التنبؤية غير مثبتة."
+  ],
+  "events": [
+   {
+    "title": "بيع الرقائق وAI يدفع Nasdaq إلى التصحيح ويمحو صعود ما بعد الانتخابات",
+    "date": "2026-11-05",
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-thursday-november-5-dow-sp-500-nasdaq-oil-rises-chip-stocks-141439950.html"
+   },
+   {
+    "title": "Nasdaq يدخل منطقة التصحيح بعد بيع أسهم الرقائق وAI",
+    "date": "2026-11-05",
+    "url": "https://www.schaeffersresearch.com/content/ezines/2026/11/05/ai-chip-selloff-sends-nasdaq-into-correction-territory"
+   },
+   {
+    "title": "Reuters: افتتاح Nasdaq على هبوط مع ضغط أسهم الرقائق ومراكز البيانات",
+    "date": "2026-11-05",
+    "url": "https://finance.yahoo.com/markets/stocks/articles/nasdaq-falls-open-midterms-fueled-143711697.html"
+   },
+   {
+    "title": "موجة تقييد مراكز البيانات بعد الانتخابات وتبعاتها الاقتصادية",
+    "date": "2026-11-05",
+    "url": "https://www.cnn.com/2026/11/05/economy/data-center-texas-election"
+   },
+   {
+    "title": "فوز الديمقراطيين بحكم Texas يضغط على أسهم مراكز البيانات",
+    "date": "2026-11-04",
+    "url": "https://www.cnbc.com/2026/11/04/ai-stocks-texas-governor-data-centers.html"
+   },
+   {
+    "title": "Hammack: الحاجة إلى سياسة مقيِّدة لخفض التضخم",
+    "date": "2026-11-05",
+    "url": "https://www.bloomberg.com/news/articles/2026-11-05/fed-s-hammack-says-restrictive-rates-needed-to-cool-inflation"
+   },
+   {
+    "title": "Barkin يؤيد التدرّج في رفع الفائدة",
+    "date": "2026-11-05",
+    "url": "https://www.gurufocus.com/news/9175288/richmond-feds-barkin-supports-gradual-rate-hikes-amid-inflation-concerns"
+   },
+   {
+    "title": "إيران: احتراق خمس ناقلات بعد اصطدامها بألغام في Hormuz",
+    "date": "2026-11-05",
+    "url": "https://www.aljazeera.com/news/2026/11/5/iran-says-tankers-struck-in-hormuz-amid-fears-of-new-us-attack"
+   },
+   {
+    "title": "بيان التمويل الربعي للخزانة: 125 مليار دولار عبر مزادات 3Y و10Y و30Y",
+    "date": "2026-11-04",
+    "url": "https://home.treasury.gov/news/press-releases/sb0678/"
+   },
+   {
+    "title": "هبوط عائد 10Y بعد فوز الديمقراطيين في الانتخابات النصفية",
+    "date": "2026-11-04",
+    "url": "https://www.cnbc.com/2026/11/03/treasury-yields-fall-as-democrats-win-big-in-us-midterm-elections.html"
+   },
+   {
+    "title": "FOMC يثبّت الفائدة عند 3.75–4.00%",
+    "date": "2026-10-28",
+    "url": "https://www.schwab.com/learn/story/fomc-meeting"
+   },
+   {
+    "title": "تقدير FedWatch: احتمال رفع ديسمبر نحو 85% (قبل أسبوع)",
+    "date": "2026-10-29",
+    "url": "https://www.noradarealestate.com/blog/interest-rates-hike-odds-december-2026-jump-85-after-feds-recent-decision/"
+   },
+   {
+    "title": "تقرير الوظائف الجمعة 6 نوفمبر: التوقع 65k",
+    "date": "2026-11-06",
+    "url": "https://in.investing.com/news/stock-market-news/jobs-report-unemployment-rate-and-earnings-among-economic-data-due-friday-93CH-5684628"
+   }
+  ],
+  "one_liner": "ما جرى اليوم صدمة في قطاع AI وليس ركوداً؛ الماكرو لم يتغير بين ليلة وضحاها، والذي تغيّر هو التذبذب. احترم VIX فوق 25، ودع NFP يتكلم قبل أي قرار.",
+  "sources": [
+   {
+    "url": "https://www.aljazeera.com/news/2026/11/5/iran-says-tankers-struck-in-hormuz-amid-fears-of-new-us-attack",
+    "title": "Iran says tankers struck in Hormuz amid fears of new US attack"
+   },
+   {
+    "url": "https://www.scmp.com/news/world/middle-east/article/3373454/iran-says-5-tankers-catch-fire-after-striking-naval-mines-strait-hormuz",
+    "title": "Iran says 5 tankers catch fire after striking naval mines in Strait of Hormuz"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis",
+    "title": "2026 Strait of Hormuz crisis"
+   },
+   {
+    "url": "https://hormuz.now/oil",
+    "title": "Strait of Hormuz Oil & LNG: How Much Flows Now vs Before the War"
+   },
+   {
+    "url": "https://straits.live/briefs/2026-11-05",
+    "title": "Strait of Hormuz News, November 5, 2026: Straits Daily Brief"
+   },
+   {
+    "url": "https://straits.live/",
+    "title": "Strait of Hormuz Closed, Day 249"
+   },
+   {
+    "url": "https://straits.live/briefs/2026-11-01",
+    "title": "Strait of Hormuz News, November 1, 2026: Straits Daily Brief"
+   },
+   {
+    "url": "https://ua.news/en/dovkolo-svitu/iran-zaiaviv-pro-poshkodzhennia-piati-tankeriv-u-prototsi-ormuz-al-jazeera",
+    "title": "Iran reports damage to five tankers in Strait of Hormuz — Al Jazeera"
+   },
+   {
+    "url": "https://www.byteseu.com/2500227/",
+    "title": "Iran says tankers struck in Hormuz amid fears of new US attack"
+   },
+   {
+    "url": "https://struggleman.substack.com/p/the-warsh-reaction-function",
+    "title": "The Warsh Reaction Function - Longhand Research"
+   },
+   {
+    "url": "https://www.noradarealestate.com/blog/interest-rates-hike-odds-december-2026-jump-85-after-feds-recent-decision/",
+    "title": "Interest Rates Hike Odds for December 2026 Jump to 85% After Fed's Recent Decision"
+   },
+   {
+    "url": "https://www.schwab.com/learn/story/why-fed-forecasting-tools-are-worth-watching",
+    "title": "How to Use the FedWatch Tool to Gauge Fed Policy"
+   },
+   {
+    "url": "https://centralbank.watch/federal-reserve/",
+    "title": "Fed Rate Probability"
+   },
+   {
+    "url": "https://www.schwab.com/learn/story/fomc-meeting",
+    "title": "Fed Chooses Patience, Leaves Rates Unchanged"
+   },
+   {
+    "url": "https://finance.yahoo.com/economy/policy/articles/fed-hike-rates-december-prediction-075612146.html",
+    "title": "Will the Fed Hike Rates in December? Here’s What the Prediction Market Is Saying"
+   },
+   {
+    "url": "https://www.tradingandinvestmentnews.co.uk/goldman-sachs-fed-cut-bitcoin-etf/",
+    "title": "Goldman Sachs Fed Cut Call Outdated: Bitcoin ETFs Draw $75M"
+   },
+   {
+    "url": "https://www.forbes.com/advisor/banking/savings/potential-fed-rate-hike-december-lmandp5/",
+    "title": "Experts Predict Fed Rate Hike For December—What This Would Mean For Your Money"
+   },
+   {
+    "url": "https://www.fxstreet.com/news/cme-group-fedwatchs-december-hike-probability-advanced-to-47-201708041659",
+    "title": "cme group fedwatchs december hike probability advanced to 47 201708041659"
+   },
+   {
+    "url": "https://www.techpolicy.press/data-centers-were-on-the-ballot-across-the-us-and-they-lost-what-comes-next/",
+    "title": "Data Centers Were on the Ballot Across the US, and They Lost. What Comes Next?"
+   },
+   {
+    "url": "https://datacenterwatch.substack.com/p/support-for-data-center-regulation",
+    "title": "Support for Data Center Regulation Gains Ground in 2026 Midterm Elections"
+   },
+   {
+    "url": "https://www.cnn.com/2026/11/05/economy/data-center-texas-election",
+    "title": "America got the anti-data-center wave it voted for. Here come the economic consequences"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/04/ai-stocks-texas-governor-data-centers.html",
+    "title": "AI data center stocks and Musk's SpaceX decline as Texas governor result raises risks of a slowdown"
+   },
+   {
+    "url": "https://www.scrippsnews.com/politics/america-votes/voters-elected-governors-to-curb-data-centers-lowering-bills-for-gas-and-groceries-is-harder",
+    "title": "Voters elected governors to curb data centers. Lowering bills for gas and groceries is harder"
+   },
+   {
+    "url": "https://ua.news/en/money/peremozhtsi-viboriv-gubernatoriv-u-ssha-obitsiaiut-obmezhiti-data-tsentri-fortune",
+    "title": "US governors-elect promise to limit data centers — Fortune"
+   },
+   {
+    "url": "https://www.forbes.com/sites/zacharyfolk/2026/11/04/heres-where-voters-are-rejecting-data-centers-at-the-ballot-full-list/",
+    "title": "Here’s Where Voters Are Rejecting Data Centers On Midterm Ballots (Full List)"
+   },
+   {
+    "url": "https://www.yahoo.com/news/articles/temporarily-banning-data-centers-draws-185934834.html",
+    "title": "Temporarily banning data centers draws more interest from state, local officials"
+   },
+   {
+    "url": "https://datacenterwatch.substack.com/p/briefing-01302026",
+    "title": "Briefing 01/30/2026"
+   },
+   {
+    "url": "https://pro.thestreet.com/stock-market-today/2026-11-05#update-wp:28078",
+    "title": "Stock Market Today: November 5, 2026"
+   },
+   {
+    "url": "https://www.bloomberg.com/news/articles/2026-11-05/fed-s-hammack-says-restrictive-rates-needed-to-cool-inflation",
+    "title": "Cleveland Fed’s Hammack Calls for Tighter Policy to Meet 2% Inflation Target - Bloomberg"
+   },
+   {
+    "url": "https://qz.com/cleveland-fed-hammack-restrictive-rates-inflation-110526",
+    "title": "Fed's Beth Hammack says restrictive rates needed to cool inflation"
+   },
+   {
+    "url": "https://www.gurufocus.com/news/9175288/richmond-feds-barkin-supports-gradual-rate-hikes-amid-inflation-concerns",
+    "title": "Richmond Fed's Barkin Supports Gradual Rate Hikes Amid Inflation Concerns"
+   },
+   {
+    "url": "https://cryptobriefing.com/feds-barkin-sees-stable-inflation-no-immediate-policy-changes/",
+    "title": "Fed's Barkin sees stable inflation, no immediate policy changes"
+   },
+   {
+    "url": "https://rallies.ai/news/feds-hammack-barkin-favor-gradual-rate-hike-path-to-lower-inflation-4db698c746b617ca",
+    "title": "Fed's Hammack, Barkin favor gradual rate-hike path to lower inflation - TLT News"
+   },
+   {
+    "url": "https://features.financialjuice.com/2026/11/05/morning-juice-us-session-prep-5th-november-2/",
+    "title": "Morning Juice - US Session Prep (5th November) - FinancialJuice"
+   },
+   {
+    "url": "https://www.staradvertiser.com/2026/11/05/breaking-news/nasdaq-heads-for-correction-as-ai-stocks-plunge-after-midterms/",
+    "title": "Nasdaq heads for correction as AI stocks plunge after midterms"
+   },
+   {
+    "url": "https://www.catacal.com/catalyst/federal-reserve-bank-of-richmond-president-thomas-barkin-speech",
+    "title": "Federal Reserve Bank of... 2026 Date, Time & Investor Calendar Details"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-thursday-november-5-dow-sp-500-nasdaq-oil-rises-chip-stocks-141439950.html",
+    "title": "Stock market today: Nasdaq plunges 5% amid chip stock wipeout, Dow and S&P 500 erase post-election rally gains"
+   },
+   {
+    "url": "https://www.schaeffersresearch.com/content/ezines/2026/11/05/ai-chip-selloff-sends-nasdaq-into-correction-territory",
+    "title": "AI Chip Selloff Sends Nasdaq Into Correction Territory - Schaeffer's Investment Research"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/stocks/articles/nasdaq-falls-open-midterms-fueled-143711697.html",
+    "title": "Nasdaq falls at open after midterms-fueled surge as chip, data center stocks fall"
+   },
+   {
+    "url": "https://www.stocktitan.net/articles/stock-market-today-live-november-5-2026",
+    "title": "The AI Chip Selloff Spreads Across the Stock Market Today Live, November 5, 2026"
+   },
+   {
+    "url": "https://grafa.com/en/news/united-states/us-semiconductor-stocks-selloff-ai-trade-unwind-november-2026",
+    "title": "US Chip Stocks Fall 9% as AI Trade Unwinds"
+   },
+   {
+    "url": "https://eurasiabusinessnews.com/2026/11/05/stock-market-today-nasdaq-sinks-5-as-ai-selloff-hits-chip-and-data-center-stocks/",
+    "title": "Stock Market Today: Nasdaq Sinks 5% as AI Selloff Hits Chip and Data-Center Stocks, Oil price at $96"
+   },
+   {
+    "url": "https://it.tradingview.com/chart/IXIC/686WJ05E-Daily-Market-Update-for-11-4",
+    "title": "686WJ05E Daily Market Update for 11 4"
+   },
+   {
+    "url": "https://barchart.com/futures/quotes/NQ*0",
+    "title": "barchart.com"
+   },
+   {
+    "url": "https://finance.yahoo.com/news/live/stock-market-today-sp-500-dow-rise-to-end-a-rocky-month-nasdaq-snaps-7-month-win-streak-180355656.html",
+    "title": "Stock market today: S&P 500, Dow rise to end a rocky month, Nasdaq snaps 7-month win streak"
+   },
+   {
+    "url": "https://tradingeconomics.com/united-states/government-bond-yield",
+    "title": "US 10 Year Treasury Note Yield - Quote - Chart - Historical Data - News"
+   },
+   {
+    "url": "https://tradingeconomics.com/united-states/2-year-note-yield",
+    "title": "US 2 Year Treasury Bond Note Yield - Quote - Chart - Historical Data - News"
+   },
+   {
+    "url": "https://www.cnbc.com/amp/2026/11/03/treasury-yields-fall-as-democrats-win-big-in-us-midterm-elections.html",
+    "title": "Treasury yields fall as investors crowd into bonds for safety amid election stock sell-off"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/series/DGS10",
+    "title": "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis (DGS10)"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/03/treasury-yields-fall-as-democrats-win-big-in-us-midterm-elections.html",
+    "title": "10-year Treasury yield slides as traders mull over Democrats' midterm victories, oil prices drop"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/05/treasury-yields-bonds-interest-rates.html",
+    "title": "10-year Treasury yield falls as traders exit tech stocks, look ahead to jobs data"
+   },
+   {
+    "url": "https://www.investing.com/rates-bonds/u.s.-10-year-bond-yield-historical-data",
+    "title": "United States 10-Year Bond Historical Data - Investing.com"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/series/T10Y3M",
+    "title": "10-Year Treasury Constant Maturity Minus 3-Month Treasury Constant Maturity (T10Y3M)"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/series/dgs5",
+    "title": "Market Yield on U.S. Treasury Securities at 5-Year Constant Maturity, Quoted on an Investment Basis (DGS5)"
+   },
+   {
+    "url": "https://www.kiplinger.com/investing/economy/this-weeks-economic-calendar",
+    "title": "What to Look Out for in Economic Data This Week (November 2-6)"
+   },
+   {
+    "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+    "title": "Employment Situation Summary - 2026 M09 Results"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/nonfarm-payrolls-227",
+    "title": "United States Nonfarm Payrolls"
+   },
+   {
+    "url": "https://in.investing.com/news/stock-market-news/jobs-report-unemployment-rate-and-earnings-among-economic-data-due-friday-93CH-5684628",
+    "title": "Jobs report, unemployment rate and earnings among economic data due Friday By Investing.com"
+   },
+   {
+    "url": "https://fxmacrodata.com/usd/labor/non-farm-payrolls/releases/usd_non_farm_payrolls_2026-11-06",
+    "title": "United States Non-Farm Payrolls (NFP)"
+   },
+   {
+    "url": "https://tradingeconomics.com/united-states/non-farm-payrolls",
+    "title": "United States Non Farm Payrolls"
+   },
+   {
+    "url": "https://fedratecalc.com/nonfarm-payrolls-release-date/",
+    "title": "Latest U.S. Jobs Report: September 2026 Payrolls"
+   },
+   {
+    "url": "https://tiomarkets.com/article/nfp-nonfarm-payrolls-preview-november-2026",
+    "title": "NFP Preview: Will US Jobs Rebound After September's 29,000?"
+   },
+   {
+    "url": "https://www.tradingkey.com/analysis/stocks/us-stocks/262279310-us-nfp-preview-october-employment-recovery-stocks-dollar-gold-test-tradingkey",
+    "title": "US October Nonfarm Payrolls Preview: Can Employment Rebound? US Stocks, Dollar and Gold Face Key Test"
+   },
+   {
+    "url": "https://www.treasury.gov/resource-center/data-chart-center/quarterly-refunding/Documents/auctions.pdf",
+    "title": "Tentative Auction Schedule of U.S. Treasury Securities Security Type"
+   },
+   {
+    "url": "https://home.treasury.gov/news/press-releases/sb0678/",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   },
+   {
+    "url": "https://www.tokenpost.com/news/insights/49061",
+    "title": "Treasury Shifts Seven-Year Notes to Quarterly Issues Starting in March 2027"
+   },
+   {
+    "url": "https://www.tradingview.com/news/seekingalpha:f723db647094b:0-treasury-holds-quarterly-refunding-amounts-maturity-mix/",
+    "title": "Treasury holds quarterly refunding amounts, maturity mix — TradingView News"
+   },
+   {
+    "url": "https://www.tokenpost.com/news/insights/49033",
+    "title": "U.S. Treasury Sets $125 Billion Refunding, Drops 'At Least' From Guidance"
+   },
+   {
+    "url": "https://www.heygotrade.com/en/news/gold-above-4100-fed-lisa-cook-hearing-delayed-treasury-auction-changes/",
+    "title": "Gold Above $4,100, Fed Lisa Cook Hearing Delayed, Treasury Auction Changes"
+   },
+   {
+    "url": "https://home.treasury.gov/system/files/221/Tentative-Auction-Schedule.pdf",
+    "title": "Tentative Auction Schedule of U.S. Treasury Securities Security Type"
+   },
+   {
+    "url": "https://sellthenews.org/catalyx/event/2026-11-04-us-treasury-quarterly-refunding-announcement-q4-dce3a3",
+    "title": "Treasury sets $125 billion refunding, opens door to future auction changes"
+   },
+   {
+    "url": "https://www.einpresswire.com/article/954528240/quarterly-refunding-statement-of-assistant-secretary-for-financial-markets-hunter-mcmaster",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   },
+   {
+    "url": "https://thecurrencyanalytics.com/regulations/treasury-refunding-plan-december-liquidity-bitcoin-307916",
+    "title": "Treasury Refunding Plan and Bitcoin Liquidity"
+   }
+  ],
+  "meta": {
+   "written_at": "2026-11-05T19:53:12Z",
+   "ny_date": "2026-11-05",
+   "model": "claude-opus-5-5",
+   "usage": {
+    "input_tokens": 227717,
+    "output_tokens": 21833
+   }
+  }
+ },
+ {
   "title": "ارتياح سياسي وانهيار النفط يرفعان الأسهم، لكن بوابات العائد ما زالت مغلقة أمام NQ قبل NFP",
   "summary": [
    "سيطر الديمقراطيون على الكونغرس وقبل ترامب النتائج، فارتفعت الأسهم بقيادة Dow. وتخلّف NQ نسبياً بسبب ضعف أسهم AI infrastructure رغم صعود Apple وAlphabet.",
