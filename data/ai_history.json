@@ -1,5 +1,495 @@
 [
  {
+  "title": "وظائف قوية وفيدرالي يميل إلى الرفع فوق سوق جريح: ارتداد NQ بعد أسوأ يوم منذ 2020 لم تؤكده البوابات بعد",
+  "summary": [
+   "جاء NFP أكتوبر عند 165k، بينما تراوحت التوقعات بين 59k و70k حسب المصدر. نزلت البطالة إلى 4.1%، وأضافت المراجعات 84k لشهري أغسطس وسبتمبر، فصار متوسط 3 أشهر على المنصة 137k.",
+   "ارتفعت الأجور 0.4% شهرياً و3.1% سنوياً، وهذا أقل من CPI الكلي البالغ 4.02% (سبتمبر، عمره 66 يوماً). أي أن الأجور الحقيقية سالبة، وهو ما أشارت إليه Daly.",
+   "قالت Daly إن مزيداً من التشديد مرجح. ويقدّر FedWatch، بحسب مصدر ثانوي، احتمال رفع ديسمبر بنحو 77.7% بعد التقرير مقابل 72.8% قبله.",
+   "البوابات: 10Y عند 4.90%، أي +40 bp فوق الحد (بيانات 4 نوفمبر). العائد الحقيقي 2.64%، وVIX 28.18، وقيادة NQ/ES عند −8.48% على 20 يوماً. وحده الائتمان هادئ (HY OAS 3.48%).",
+   "هبط NDX يوم الخميس 6.36% بسبب مخاوف تنظيم الذكاء الاصطناعي بعد الانتخابات النصفية، وارتد جزئياً اليوم بقيادة SOX وNvidia.",
+   "الأسبوع القادم مزدحم: مزادات 3Y و10Y و30Y بإجمالي 125 مليار $، ثم CPI يوم الثلاثاء 10 نوفمبر، وPPI يوم الجمعة 13 نوفمبر."
+  ],
+  "bias": {
+   "direction": "bearish",
+   "confidence": 55,
+   "reason": "من البوابات الخمس، أربع سلبية أو تحذيرية. 10Y فوق الحد 4.50% بـ40 bp، ويرجَّح أنه ارتفع اليوم لأن عنوان الوكالة يقول إن Treasuries تراجعت بعد NFP، لكن المنصة لا تعطي رقماً لهذا. العائد الحقيقي 2.64% يقع في الشريحة 97.9% لخمس سنوات، وVIX فوق 25، وES يقود NQ. الوظائف القوية والأجور الساخنة تزيد احتمال رفع الفائدة، فلا تُقرأ كخبر جيد عن النمو لصالح الأسهم. ما يخفف الانحياز أن الائتمان هادئ، وتوقعات التضخم تتراجع (Breakeven عند 2.24% وتوقعات ميشيغان لسنة عند 4.3%)، وتكلفة وحدة العمل −0.7%. الثقة متوسطة لأن الارتداد بعد يوم −6% وقبل CPI يمكن أن يولّد حركات معاكسة عنيفة. هذا انحياز تحليلي وليس توصية."
+  },
+  "scenarios": [
+   {
+    "label": "A",
+    "name": "تذبذب واسع بلا حسم قبل CPI",
+    "prob": 40,
+    "trigger": "10Y يبقى داخل نطاقه الأخير بين 4.90% و5.05% تقريباً، وVIX بين 22 و28، ومزاد 3Y يوم الاثنين الساعة 1:00 PM ET يمر بلا ذيل كبير.",
+    "reason": "السوق سينتظر CPI يوم الثلاثاء. مع VIX مرتفع تتسع النطاقات داخل اليوم ويضعف استمرار الاتجاه قبل حدث بهذا الحجم. هذا استنتاج مني."
+   },
+   {
+    "label": "B",
+    "name": "عودة البيع في أسهم النمو",
+    "prob": 35,
+    "trigger": "10Y يعود فوق 5.00%، وأعلى قراءة حديثة كانت 5.05% في 28 أكتوبر. أو ذيل ضعيف في مزاد 3Y، أو عناوين تنظيمية جديدة على AI ومراكز البيانات، أو تصعيد في هرمز يرفع WTI فوق 105$.",
+    "reason": "الفيدرالي يميل إلى الرفع، والعائد الحقيقي مقيِّد، وES يقود، وFedWatch يسعّر الرفع بقوة. كل ذلك يضغط على تقييمات NQ، والخطر التنظيمي على AI لم يُحسم."
+   },
+   {
+    "label": "C",
+    "name": "تمدد ارتداد الإغاثة",
+    "prob": 25,
+    "trigger": "VIX يغلق دون 25، و10Y ينزل دون 4.85%، وSOX يستمر في القيادة، مع عناوين إيجابية من مفاوضات إيران أو التزام صيني بهدنة Busan.",
+    "reason": "السوق في تشبع بيعي بعد هبوط تجاوز 10% من القمة، والائتمان لم يتأزم، وتوقعات التضخم تتراجع، وإنتاجية الربع قوية. لكن أنماط الارتداد بعد هبوط بهذا الحجم مبنية على عينة صغيرة جداً، فهي غير مثبتة."
+   }
+  ],
+  "sections": [
+   {
+    "heading": "النمو",
+    "body": "الناتج الحقيقي GDP نما 2.07% سنوياً في الربع الثالث مقابل 2.19% قبله، أي تباطؤ طفيف، والرقم عمره 128 يوماً بتاريخ المنصة. الإنتاج الصناعي نما 2.25% سنوياً في سبتمبر (الشريحة 86.9%). مبيعات التجزئة نمت 6.29% اسمياً، وبعد خصم CPI الكلي يبقى نمو حقيقي يقارب 2%، وهذا استنتاج تقريبي مني. المربع الذي تحدده المنصة هو تسخين اقتصادي (Reflation). في المقابل، بدايات الإسكان 1,221k في الشريحة 3.3% مع رهن عقاري 30Y عند 7.18%. جاءت S&P Composite PMI النهائية عند 55.9 مقابل 57.3 متوقعة، وISM الخدمات عند 54.5. أما الإنتاجية فبلغت 3.6% مقابل 2.7% متوقعة. ثقة ميشيغان الأولية لنوفمبر 51.0 مقابل 48 متوقعة، وما زالت منخفضة تاريخياً. الخلاصة: النمو صلب والإسكان هو الحلقة الأضعف."
+   },
+   {
+    "heading": "سوق العمل",
+    "body": "صدر NFP أكتوبر اليوم: 165k، منها 159k في القطاع الخاص. نزلت البطالة إلى 4.1%، وارتفعت المشاركة إلى 61.9%، وزادت قوة العمل 421k. تظهر بيانات المنصة بعمر 36 يوماً لأن FRED يؤرخها ببداية الشهر، لكن محتواها جديد. طلبات الإعانة 189k، وهي في الشريحة 0.8% لخمس سنوات، والمستمرة 1.718M. فرص العمل JOLTS بلغت 7,523k لشهر سبتمبر. Sahm Rule غير مفعّلة. لا تعارض بين البطالة وطلبات الإعانة، فكلاهما يشير إلى سوق ضيق. التعارض الوحيد هو أن الأجور (3.1%) تنمو أبطأ من CPI الكلي (4.02%)."
+   },
+   {
+    "heading": "التضخم",
+    "body": "آخر الأرقام الرسمية لسبتمبر وعمرها 66 يوماً: CPI الكلي 4.02% والأساسي 2.79%، وCore PCE عند 3.12%. هناك شذوذ لافت: Core CPI أقل من Core PCE، والمعتاد العكس. سببه غير مثبت، وربما يعود إلى اختلاف الأوزان. وهناك تعارض في المصادر: تقويم المنصة يضع القراءة السابقة لـCPI عند 3.7% وللأساسي عند 2.6%. التضخم الكلي تقوده الطاقة، فـWTI قرب 100$، ويقول Musalem وHassett إن الطاقة وإيران وراءه. ضغوط الأنابيب مرتفعة: PPI السابق 6.3% سنوياً وأسعار ISM الخدمات 73. في المقابل، توقعات ميشيغان لسنة نزلت إلى 4.3% ولخمس إلى عشر سنوات إلى 3.4%، وBreakeven 10Y نزل من 2.38% إلى 2.24% خلال أسبوع. تكلفة وحدة العمل −0.7% تعوّض جزئياً أجوراً بلغت +0.4% شهرياً."
+   },
+   {
+    "heading": "الفائدة والفيدرالي",
+    "body": "سعر الفائدة الفعلي 3.88%، والنطاق 3.75–4.00% بعد رفع سبتمبر والتثبيت في أكتوبر. 2Y عند 4.58%، أي +70 bp فوق سعر الفائدة، فالسوق يسعّر مزيداً من الرفع. قالت Daly اليوم إن مزيداً من التشديد مرجح، والتضخم أولويتها الأولى، لكنها تفضّل التدرج. ويرى Barkin أيضاً رفعاً قادماً من دون جدول زمني. تقدير FedWatch من مصادر ثانوية: نحو 77.7% لرفع ديسمبر بعد التقرير. المنحنى 10Y-2Y عند +0.38%، أي طبيعي، وقد اتسع 6 bp يوم الخميس. الأرجح أن السبب نزول 2Y مع العزوف عن المخاطرة، وهذا استنتاج مني. على الصعيد المؤسسي: قال Hassett إن ترامب سيقرر بشأن Cook بعد قراءة التقرير، وهذا خطر على صورة استقلالية الفيدرالي. وثبّتت وزارة الخزانة حجم إعادة التمويل الفصلية عند 125 مليار $."
+   },
+   {
+    "heading": "المخاطر والأسواق",
+    "body": "يوم الخميس: NDX عند 26,629.81 (−6.36%) وSPX عند 7,353.73 (−4.36%)، وقفز VIX من 16.61 إلى 28.18. فجوة اليوم الواحد بين المؤشرين تقارب 2 نقطة مئوية لصالح ES. اتسع HY OAS من 3.14% إلى 3.48% خلال أسبوع، لكنه بعيد عن حد 5%. اليوم ارتد Nasdaq Composite بنحو 1.4%، وSOX بنحو 4% في الساعة الأولى، وNvidia بنحو 6.8%. يحدث هذا وسط ضجيج يخص AI: Microsoft تنهي تدريجياً صفقة السعة السحابية مع Oracle، وGoogle اشترت موقع Crusoe في Wyoming، ورؤساء لجان في مجلس النواب طلبوا إحاطة مغلقة من Jensen Huang، والديمقراطيون يعتزمون التحقيق مع Apple وMeta وشركات Musk. وقالت مديرة IMF إن تقلبات AI مرجحة الاستمرار. جيوسياسياً: هجمات هرمز تتزايد، ونقلت Sepah الإيرانية أنباء عن غرق ناقلة لم تُؤكد بعد، بينما تصدر إشارات تفاوض إيجابية نسبياً من طهران."
+   },
+   {
+    "heading": "السياسة والتجارة",
+    "body": "طالب Bessent وGreer نائب رئيس الوزراء الصيني He بتنفيذ التزامات هدنة Busan فوراً، وكانت الهدنة قد مُددت حتى 10 يناير. أي تعثر فيها يعيد خطر الرسوم ويضغط على أشباه الموصلات. وعيّن ترامب Miller كبيراً لموظفي البيت الأبيض بدءاً من 9 نوفمبر، فيما تواصل كندا التفاوض على اتفاق تجاري. الأثر المباشر على NQ يأتي من الصين ومن تنظيم AI أكثر مما يأتي من التغييرات الإدارية."
+   }
+  ],
+  "gates_read": "العائد 10Y عند 4.90% فوق الحد 4.50% بـ40 bp، في الشريحة 96.6% لخمس سنوات. الرقم بتاريخ 4 نوفمبر، فهو لا يشمل الخميس ولا بيع السندات اليوم بعد NFP، وقد تكون البوابة أسوأ مما تظهر. VIX عند 28.18 بإغلاق الخميس فوق حد الضغط 25، وهذا نظام تذبذب واسع تتكرر فيه Trend days، ولا تعطي المنصة مستوى اليوم. العائد الحقيقي 2.64% فوق حد التقييد 2.00% بـ64 bp وثابت تقريباً، أي أن نزول الاسمي الأخير جاء من الـBreakeven لا من تيسير حقيقي، وهذا سلبي لأسهم النمو. قيادة NQ مقابل ES عند −8.48% على 20 يوماً، دوران واضح بعيداً عن النمو، وارتداد اليوم لا يكفي لعكسه. الإشارة الإيجابية الوحيدة هي الائتمان عند 3.48%. لتحسّن الصورة نحتاج إلى نزول 10Y دون 4.85% وإغلاق VIX دون 25 معاً، ولتسوء نحتاج إلى عودة 10Y فوق 5.00%.",
+  "watch": [
+   "الجمعة 6 نوفمبر 3:00 PM ET: Consumer Credit (التوقع 13.8B).",
+   "عطلة نهاية الأسبوع: عناوين هرمز وإيران، والتزام الصين بهدنة Busan، وأي قرار لترامب بشأن Cook، وعناوين تنظيم AI ومراكز البيانات.",
+   "الاثنين 9 نوفمبر 10:00 AM ET: Wholesale Inventories. ثم 1:00 PM ET: مزاد 3Y بقيمة 58 مليار $ (العائد السابق 4.932%، ونسبة التغطية 2.62).",
+   "الثلاثاء 10 نوفمبر 4:00 AM ET: Waller. ثم 8:30 AM ET: CPI أكتوبر (Consensus من تقويم المنصة: الأساسي 0.2% والكلي 0.3% شهرياً). ثم 12:00 PM ET: EIA STEO. ثم 1:00 PM ET: مزاد 10Y بقيمة 42 مليار $ (العائد السابق 5.300%).",
+   "الأربعاء 11 نوفمبر: Veterans Day، وسوق السندات يغلق عادة فيه بينما تبقى الأسهم مفتوحة (يُرجى التحقق). الساعة 8:00 AM ET: تقرير OPEC الشهري.",
+   "الخميس 12 نوفمبر 8:30 AM ET: Claims (التوقع 195k). ثم 10:00 AM ET: Existing Home Sales. ثم 12:00 PM ET: مخزونات EIA. ثم 1:00 PM ET: مزاد 30Y بقيمة 25 مليار $ (العائد السابق 5.618%).",
+   "الجمعة 13 نوفمبر 8:30 AM ET: PPI (التوقع 6.6% سنوياً و0.4% شهرياً، والأساسي 5% سنوياً).",
+   "مستويات البوابات: 10Y عند 5.00% و4.85%، وVIX عند 25 و20، والعائد الحقيقي عند 2.60%."
+  ],
+  "risks": [
+   "CPI ساخن يوم الثلاثاء يثبّت رفع ديسمبر ويدفع 10Y فوق 5%، في الأسبوع نفسه لمزادات 10Y و30Y.",
+   "ذيل ضعيف في مزادات إعادة التمويل مع عوائد قريبة من القمم.",
+   "تصعيد في هرمز يعيد WTI فوق 105$ ويضغط على التضخم الكلي وتوقعاته.",
+   "عناوين تنظيمية أو تحقيقات جديدة بعد الانتخابات تستهدف AI ومراكز البيانات، أو خفض في إنفاق Capex مثل خطوة Microsoft مع Oracle.",
+   "انهيار هدنة Busan أو عودة تهديدات الرسوم على الصين.",
+   "قرار من ترامب بشأن Cook يثير قلقاً على استقلالية الفيدرالي ويرفع علاوة الأجل.",
+   "خطر معاكس للانحياز: موجة تغطية مراكز قصيرة حادة إن جاء CPI هادئاً، فـVIX المرتفع يضخّم الحركة في الاتجاهين."
+  ],
+  "data_audit": [
+   "DGS10 وDGS2 وDFII10 بتاريخ 4 نوفمبر، عمرها يومان، ولا تشمل حركة الخميس ولا بيع Treasuries بعد NFP اليوم. استعملتها كما هي، ونبّهت إلى أن بوابة 10Y ربما أسوأ الآن.",
+   "منحنى 10Y-2Y بتاريخ 5 نوفمبر بينما مكوّناه بتاريخ 4 نوفمبر، فالفارق 0.38% لا يساوي 4.90−4.58=0.32%. السبب اختلاف التاريخ لا خطأ في البيانات.",
+   "القفزات المعلَّمة في VIX وNDX وSPX حقيقية، وتؤكدها تغطية CNN لهبوط NDX بنسبة 6.36%. مستوى VIX اليوم غير متوفر.",
+   "مؤشر الدولار عمره 7 أيام، وWTI عمره 3 أيام، أي قبل عناوين هرمز الأخيرة، فلم أبنِ عليهما استنتاجاً قوياً.",
+   "البيانات الشهرية لسبتمبر (CPI وPCE وINDPRO والتجزئة وJOLTS والإسكان وميشيغان) عمرها 66 يوماً، وGDP الربع الثالث عمره 128 يوماً بتاريخ المنصة.",
+   "PAYEMS وUNRATE تظهر بعمر 36 يوماً لأن FRED يؤرخها ببداية الشهر، لكنها صدرت اليوم فعاملتها كبيانات جديدة.",
+   "تعارض في CPI سبتمبر: المنصة تعطي 4.02% للكلي و2.79% للأساسي، والتقويم يعطي القراءة السابقة 3.7% و2.6%. قد يكون السبب الفرق بين SA وNSA أو خطأ محاذاة في التقويم. لم أحسمه، ولن أعتمد أياً منهما أساساً لمقارنة CPI أكتوبر.",
+   "Core CPI أقل من Core PCE على المنصة، وهذا عكس المعتاد. سجلته شذوذاً وسببه غير مثبت.",
+   "توقعات NFP مختلفة بين المصادر: 59k (Dow Jones) و65k و70k (التقويم). المفاجأة كبيرة أياً كان المعيار.",
+   "القراءة السابقة لـNFP في التقويم 29k قبل المراجعة، والرقم المعدَّل 60k.",
+   "احتمالات FedWatch (72.8% ثم 77.7%) منقولة عن مصادر ثانوية لا عن CME مباشرة، وعاملتها كتقديرات.",
+   "خبر غرق الناقلة في هرمز مصدره Sepah الإيرانية ولم يُؤكَّد. حادثة UKMTO في 5 نوفمبر انتهت باستمرار السفينة في رحلتها.",
+   "استنفدتُ عدد عمليات البحث، فلم أتحقق من إغلاق 10Y أو VIX اليوم، ولا من موعد اجتماع FOMC في ديسمبر، ولا من جدول عطلة Veterans Day.",
+   "أي استدلال على الارتداد بعد يوم هبوط بنسبة 6% أو أكثر مبني على عينة صغيرة جداً، فهو غير مثبت."
+  ],
+  "events": [
+   {
+    "title": "تقرير الوظائف لأكتوبر: NFP عند 165k والبطالة 4.1% (BLS)",
+    "date": "2026-11-06",
+    "url": "https://www.bls.gov/news.release/pdf/empsit.pdf"
+   },
+   {
+    "title": "تغطية CNBC لتقرير الوظائف والمراجعات الصعودية",
+    "date": "2026-11-06",
+    "url": "https://www.cnbc.com/2026/11/06/jobs-report-october-2026.html"
+   },
+   {
+    "title": "Daly: مزيد من رفع الفائدة مرجح",
+    "date": "2026-11-06",
+    "url": "https://www.cnbc.com/2026/11/06/fed-daly-interest-rates-inflation.html"
+   },
+   {
+    "title": "تقدير FedWatch: احتمال رفع ديسمبر نحو 77.7% بعد NFP (مصدر ثانوي)",
+    "date": "2026-11-06",
+    "url": "https://www.kucoin.com/news/flash/u-s-nonfarm-payrolls-boost-probability-of-fed-rate-hike-in-december-to-77-7"
+   },
+   {
+    "title": "NDX يهبط 6.36%، أسوأ يوم منذ مارس 2020، على مخاوف AI بعد الانتخابات النصفية",
+    "date": "2026-11-05",
+    "url": "https://www.cnn.com/2026/11/05/investing/tech-heavy-nasdaq-plunges"
+   },
+   {
+    "title": "مخاوف تنظيمية على AI بعد اكتساح الديمقراطيين",
+    "date": "2026-11-05",
+    "url": "https://www.foxbusiness.com/markets/stocks-nov-5-2026"
+   },
+   {
+    "title": "ارتداد أشباه الموصلات وNasdaq بعد التقرير",
+    "date": "2026-11-06",
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-november-6-dow-sp-500-nasdaq-jobs-report-earnings-135953863.html"
+   },
+   {
+    "title": "Nvidia ترتد وطلب إحاطة مغلقة من Jensen Huang في الكونغرس",
+    "date": "2026-11-06",
+    "url": "https://www.tradingview.com/news/gurufocus:fdc9bb544094b:0-nvidia-stocks-rebound-6-78-as-lawmakers-call-jensen-huang-to-closed-door-briefing/"
+   },
+   {
+    "title": "Bessent وGreer يطالبان الصين بتنفيذ هدنة Busan فوراً",
+    "date": "2026-11-06",
+    "url": "https://www.koreatimes.co.kr/world/20261107/us-warns-china-it-must-immediately-meet-terms-of-busan-trade-truce-ft-reports"
+   },
+   {
+    "title": "تمديد هدنة Busan التجارية حتى 10 يناير",
+    "date": "2026-09-24",
+    "url": "https://www.nbcnews.com/business/economy/us-china-extend-trade-truce-trump-rcna599525"
+   },
+   {
+    "title": "تصاعد الهجمات على السفن في هرمز (JMIC/UKMTO)",
+    "date": "2026-11-05",
+    "url": "https://gulfnews.com/business/energy/hormuz-attacks-rise-as-iran-steps-up-pressure-on-shipping-ukmto-warns-1.500737866"
+   },
+   {
+    "title": "بيان إعادة التمويل الفصلية: 125 مليار $",
+    "date": "2026-11-04",
+    "url": "https://home.treasury.gov/news/press-releases/sb0678"
+   },
+   {
+    "title": "مزاد 3Y بقيمة 58 مليار $",
+    "date": "2026-11-09",
+    "url": "https://www.tokenpost.com/news/insights/49061"
+   },
+   {
+    "title": "مزاد 10Y بقيمة 42 مليار $",
+    "date": "2026-11-10",
+    "url": "https://www.tokenpost.com/news/insights/49061"
+   },
+   {
+    "title": "مزاد 30Y بقيمة 25 مليار $",
+    "date": "2026-11-12",
+    "url": "https://www.tokenpost.com/news/insights/49061"
+   }
+  ],
+  "one_liner": "حين يكون الفيدرالي في وضع الرفع، لا تكون الوظائف القوية هدية لـNQ. البوابات لم تنقلب بعد، والحكم الحقيقي يصدر مع CPI يوم الثلاثاء.",
+  "sources": [
+   {
+    "url": "https://home.treasury.gov/news/press-releases/sb0678",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   },
+   {
+    "url": "https://www.treasury.gov/resource-center/data-chart-center/quarterly-refunding/Documents/auctions.pdf/",
+    "title": "Tentative Auction Schedule of U.S. Treasury Securities Security Type"
+   },
+   {
+    "url": "https://www.tokenpost.com/news/insights/49061",
+    "title": "Treasury Shifts Seven-Year Notes to Quarterly Issues Starting in March 2027"
+   },
+   {
+    "url": "https://www.tradingview.com/news/seekingalpha:f723db647094b:0-treasury-holds-quarterly-refunding-amounts-maturity-mix/",
+    "title": "Treasury holds quarterly refunding amounts, maturity mix — TradingView News"
+   },
+   {
+    "url": "https://helious.io/auctions",
+    "title": "Treasury Auction Results, Schedule & History"
+   },
+   {
+    "url": "https://home.treasury.gov/system/files/221/Tentative-Auction-Schedule.pdf",
+    "title": "Tentative Auction Schedule of U.S. Treasury Securities Security Type"
+   },
+   {
+    "url": "https://www.tokenpost.com/news/insights/49033",
+    "title": "U.S. Treasury Sets $125 Billion Refunding, Drops 'At Least' From Guidance"
+   },
+   {
+    "url": "https://sellthenews.org/catalyx/event/2026-11-04-us-treasury-quarterly-refunding-announcement-q4-dce3a3",
+    "title": "Treasury sets $125 billion refunding, opens door to future auction changes"
+   },
+   {
+    "url": "https://rates.brinkeradvisor.com/treasury-auctions/",
+    "title": "Upcoming U.S. Treasury Auctions"
+   },
+   {
+    "url": "https://www.einpresswire.com/article/954528240/quarterly-refunding-statement-of-assistant-secretary-for-financial-markets-hunter-mcmaster",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/10/14/container-ship-sinks-strait-hormuz-as-iran-war-attacks.html",
+    "title": "Container ship sinks in Strait of Hormuz as Iran steps up attacks"
+   },
+   {
+    "url": "https://www.seatrade-maritime.com/security/tanker-hit-off-saudi-and-offshore-tug-struck-in-hormuz",
+    "title": "Tanker hit off Saudi and offshore tug struck in Hormuz"
+   },
+   {
+    "url": "https://gulfnews.com/business/energy/hormuz-attacks-rise-as-iran-steps-up-pressure-on-shipping-ukmto-warns-1.500737866",
+    "title": "Strait of Hormuz Attacks Surge: Iran Intensifies Pressure on Global Shipping"
+   },
+   {
+    "url": "https://teenscript.substack.com/p/untitled",
+    "title": "teenscript.substack.com"
+   },
+   {
+    "url": "https://www.yahoo.com/news/articles/decades-old-photo-sinking-tanker-091717644.html",
+    "title": "Decades-old photo of sinking tanker falsely linked to Middle East war"
+   },
+   {
+    "url": "https://www.cbsnews.com/news/us-navy-ship-collides-with-oil-tanker-in-gulf",
+    "title": "Watch CBS News"
+   },
+   {
+    "url": "https://www.nbcnews.com/news/amp/ncna358811",
+    "title": "Iran Fires on Singapore-Flagged Tanker in Strait of Hormuz: U.S. Officials"
+   },
+   {
+    "url": "https://gulfnews.com/business/energy/iranian-gunboats-approach-us-tanker-in-strait-of-hormuz-1.500430556",
+    "title": "Iranian gunboats approach US tanker in Strait of Hormuz"
+   },
+   {
+    "url": "https://www.nbcnews.com/world/iran/iran-seizes-tanker-strait-hormuz-us-official-says-tensions-remain-high-rcna244067",
+    "title": "Iran confirms seizure of oil tanker in the Strait of Hormuz"
+   },
+   {
+    "url": "https://www.deccanherald.com/amp/story/world%2Fthree-tankers-divert-away-from-strait-of-hormuz-amid-rising-west-asia-tensions-3598695",
+    "title": "world%2Fthree tankers divert away from strait of hormuz amid rising west asia tensions 3598695"
+   },
+   {
+    "url": "https://www.koreatimes.co.kr/world/20261107/us-warns-china-it-must-immediately-meet-terms-of-busan-trade-truce-ft-reports",
+    "title": "US warns China it must 'immediately' meet terms of Busan trade truce, FT reports - The Korea Times"
+   },
+   {
+    "url": "https://www.koreatimes.co.kr/world/20260924/us-open-to-extending-china-trade-truce-or-bigger-deal-bessent-says",
+    "title": "US open to extending China trade truce, or bigger deal, Bessent says - The Korea Times"
+   },
+   {
+    "url": "https://www.nbcnews.com/business/economy/us-china-extend-trade-truce-trump-rcna599525",
+    "title": "U.S. and China agree to extend trade truce through Jan. 10, Bessent says"
+   },
+   {
+    "url": "https://www.koreatimes.co.kr/world/20261107/us-urged-beijing-to-implement-commitments-of-busan-trade-deal-treasury-says",
+    "title": "US urged Beijing to implement commitments of Busan trade deal, Treasury says - The Korea Times"
+   },
+   {
+    "url": "https://www.tftc.io/bessent-he-lifeng-trade-talks-trump-xi-summit-november-truce",
+    "title": "Bessent and He Lifeng Open Pre-Summit Trade Talks With November Cliff in View"
+   },
+   {
+    "url": "https://investinglive.com/news/us-presses-china-to-honor-busan-trade-truce-as-rare-earth-shipments-fall-short/",
+    "title": "US presses China to honor Busan trade truce as rare earth shipments fall short."
+   },
+   {
+    "url": "https://rallies.ai/news/us-reportedly-warns-china-it-must-immediately-meet-terms-of-busan-trade-truce-2a9a9ff92243d56f",
+    "title": "US reportedly warns China it must immediately meet terms of Busan trade truce - SPY News"
+   },
+   {
+    "url": "https://www.devdiscourse.com/article/international/4002935-us-warns-china-it-must-immediately-meet-terms-of-busan-trade-truce-ft-reports",
+    "title": "US warns China it must ‘immediately’ meet terms of Busan trade truce, FT reports"
+   },
+   {
+    "url": "https://www.yahoo.com/news/bessent-greer-meet-chinese-officials-220649441.html",
+    "title": "Bessent, Greer to meet with Chinese officials in Switzerland this week"
+   },
+   {
+    "url": "https://www.foxbusiness.com/markets/stocks-nov-5-2026",
+    "title": "Stocks plunge as Dem midterm sweep fuels AI regulatory concerns"
+   },
+   {
+    "url": "https://www.cnn.com/2026/11/05/investing/tech-heavy-nasdaq-plunges",
+    "title": "Stock markets plunge as massive tech sell-off wipes $2.5 trillion"
+   },
+   {
+    "url": "https://www.axios.com/2026/11/05/nasdaq-plummets-correction",
+    "title": "Tech stocks tumble as election rattles AI trade"
+   },
+   {
+    "url": "https://www.heygotrade.com/en/news/nasdaq-record-point-loss-ai-stock-rout-wipes-25-trillion-us-futures-mixed-before-payrolls/",
+    "title": "Nasdaq Record Point Loss: AI Stock Rout Wipes $2.5 Trillion, US Futures Mixed Before Payrolls"
+   },
+   {
+    "url": "https://americanbazaaronline.com/2026/11/05/nasdaq-faces-1-8-trillion-selloff-risk-as-ai-stocks-grapple-with-regulatory-uncertainty-after-midterms-491636/",
+    "title": "Nasdaq faces $1.8 trillion selloff risk as AI stocks grapple with regulatory uncertainty after midterms"
+   },
+   {
+    "url": "https://kingy.ai/blog/ai-stock-selloff-november-2026/",
+    "title": "AI Stock Selloff, Nov 5 2026: What It Means for AI Users"
+   },
+   {
+    "url": "https://www.stocktitan.net/articles/stock-market-today-live-november-5-2026",
+    "title": "The Stock Market Today, November 5, 2026, Closed Sharply Lower as the AI Chip Selloff Spread"
+   },
+   {
+    "url": "https://thetechmarketer.com/nasdaq-correction-ai-stock-selloff-november/",
+    "title": "Nasdaq Correction Deepens as AI Stocks Plunge and Wall Street Reassesses Technology Spending"
+   },
+   {
+    "url": "https://finance.yahoo.com/news/index-monthly-scorecard-november-2025-214210167.html",
+    "title": "Nasdaq Monthly Index Performance Commentary – November 2025"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/06/fed-daly-interest-rates-inflation.html",
+    "title": "San Francisco Fed President Daly says higher rates 'are likely to be needed' in inflation fight"
+   },
+   {
+    "url": "https://www.investing.com/news/economy-news/daly-says-fed-rate-hike-likely-despite-painful-techstock-dive-5009005",
+    "title": "Daly says Fed rate hike likely, despite ’painful’ tech-stock dive By Reuters"
+   },
+   {
+    "url": "https://cryptobriefing.com/feds-daly-signals-further-policy-tightening-amid-inflation-concerns/",
+    "title": "Fed's Daly signals further policy tightening amid inflation concerns"
+   },
+   {
+    "url": "https://in.investing.com/news/economy-news/feds-daly-says-further-rate-hikes-likely-needed-to-curb-inflation-5687960",
+    "title": "Fed’s Daly says further rate hikes likely needed to curb inflation By Investing.com"
+   },
+   {
+    "url": "https://www.france24.com/en/americas/20261106-live-european-stocks-plunge-after-us-midterm-election-results-shock-markets",
+    "title": "Live: European stocks plunge after US midterm election results shock markets - France 24"
+   },
+   {
+    "url": "https://biztoc.com/x/c4f1bab2bbc455a1",
+    "title": "San Francisco Fed President Daly says higher rates 'are likely to be needed' in inflation fight"
+   },
+   {
+    "url": "https://rallies.ai/news/daly-says-fed-rate-hike-likely-despite-painful-tech-stock-dive-a06afc4b5c6670e3",
+    "title": "Daly says Fed rate hike likely, despite ‘painful’ tech-stock dive - TLT News"
+   },
+   {
+    "url": "https://phemex.com/news/article/feds-daly-signals-further-rate-hikes-needed-to-combat-stubborn-inflation-102686",
+    "title": "Fed's Daly Warns of Further Tightening as Inflation Persists"
+   },
+   {
+    "url": "https://10bmnews.com/san-francisco-fed-president-daly-says-higher-rates-are-likely-to-be-needed-in-inflation-fight/",
+    "title": "San Francisco Fed President Daly says higher rates 'are likely to be needed' in inflation fight - 10bmnews.com"
+   },
+   {
+    "url": "https://www.kucoin.com/news/flash/fed-s-december-rate-hike-probability-at-72-8-before-nonfarm-payrolls-release",
+    "title": "The Fed's probability of a December rate hike stands at 72.8% ahead of the Nonfarm Payrolls release."
+   },
+   {
+    "url": "https://x.com/CoinDesk/status/2115518751730778285",
+    "title": "CoinDesk on X: \"MARKETS: Traders now see an 86% chance of a Federal Reserve rate hike in December, up from 78% yesterday and 76% last week, according to CME FedWatch.\" / X"
+   },
+   {
+    "url": "https://www.kucoin.com/news/flash/u-s-nonfarm-payrolls-boost-probability-of-fed-rate-hike-in-december-to-77-7",
+    "title": "U.S. Nonfarm Payrolls Increase Probability of December Fed Rate Hike to 77.7%"
+   },
+   {
+    "url": "https://www.mpamag.com/us/mortgage-industry/industry-trends/october-jobs-shock-seals-case-for-december-fed-rate-hike/596487",
+    "title": "October jobs shock seals case for December Fed rate hike"
+   },
+   {
+    "url": "https://www.noradarealestate.com/blog/interest-rates-hike-odds-december-2026-jump-85-after-feds-recent-decision/",
+    "title": "Interest Rates Hike Odds for December 2026 Jump to 85% After Fed's Recent Decision"
+   },
+   {
+    "url": "https://www.actionforex.com/action-insight/market-overview/660105-strong-us-jobs-lift-dollar-and-yields-but-tech-rebound-faces-the-real-test/",
+    "title": "Strong US Jobs Lift Dollar and Yields, but Tech Rebound Faces the Real Test - ActionForex"
+   },
+   {
+    "url": "https://phemex.com/news/article/fed-december-rate-hike-odds-hit-728-ahead-of-nonfarm-payrolls-report-102649",
+    "title": "Fed December Rate Hike Probability at 72.8% Before NFP Data"
+   },
+   {
+    "url": "https://mlq.ai/news/us-adds-165000-jobs-in-october-nearly-three-times-forecasts-as-december-fed-hike-odds-climb/",
+    "title": "U.S. adds 165,000 jobs in October, nearly three times forecasts, as December Fed hike odds climb"
+   },
+   {
+    "url": "https://finwire.io/news/economy-news/fed-rate-hike-odds-jump-after-october-jobs-report-as-officials-signal-more-tightening",
+    "title": "Fed rate hike odds jump after October jobs report as officials signal more tightening"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/06/jobs-report-october-2026.html",
+    "title": "Jobs report October 2026: U.S. economy added 165,000 jobs"
+   },
+   {
+    "url": "https://www.benzinga.com/markets/economic-data/26/11/62974776/october-jobs-report-nonfarm-payrolls-unemployment-rate",
+    "title": "October Jobs Report: Payrolls Smash Estimates at 165K - Advanced Micro Devices (NASDAQ:AMD) - Benzinga"
+   },
+   {
+    "url": "https://www.morningstar.com/economy/october-us-jobs-report-165000-rise-payrolls-beating-expectations",
+    "title": "October US Jobs Report: 165,000 Rise in Payrolls, Beating Expectations"
+   },
+   {
+    "url": "https://www.morningstar.com/economy/hot-october-jobs-report-raises-odds-december-rate-hike",
+    "title": "Hot October Jobs Report Raises Odds of December Rate Hike"
+   },
+   {
+    "url": "https://www.bls.gov/news.release/pdf/empsit.pdf",
+    "title": "Transmission of material in this news release is embargoed until USDL-26-1632"
+   },
+   {
+    "url": "https://www.coindesk.com/markets/2026/11/06/u-s-added-165-000-jobs-in-october-blowing-past-65-000-estimate",
+    "title": "U.S. added 165,000 jobs in October, blowing past 65,000 estimate"
+   },
+   {
+    "url": "https://finance.yahoo.com/video/us-labor-market-adds-165k-jobs-in-oct--much-higher-than-the-expected-70k-133943555.html",
+    "title": "US labor market adds 165K jobs in Oct. — much higher than the expected 70K"
+   },
+   {
+    "url": "https://www.investing.com/news/economic-indicators/us-adds-165000-jobs-in-october-unemployment-rate-dips-to-41-5008176",
+    "title": "U.S. adds 165,000 jobs in October, exceeding forecasts By Investing.com"
+   },
+   {
+    "url": "https://pomegra.io/news/october-jobs-report-us-adds-165k-jobless-rate-at-41",
+    "title": "October Jobs Report: US Adds 165K, Jobless Rate at 4.1%"
+   },
+   {
+    "url": "https://www.world-today-news.com/us-october-nonfarm-payrolls-rise-by-165000-as-unemployment-falls-to-4-1/",
+    "title": "US October nonfarm payrolls rise by 165,000 as unemployment falls to 4.1% - World Today News"
+   },
+   {
+    "url": "https://www.kucoin.com/news/flash/nvidia-shares-rebound-5-after-400-billion-market-value-loss",
+    "title": "NVIDIA Shares Rebound 5% After $400 Billion Market Value Loss"
+   },
+   {
+    "url": "https://www.tradingview.com/news/gurufocus:fdc9bb544094b:0-nvidia-stocks-rebound-6-78-as-lawmakers-call-jensen-huang-to-closed-door-briefing/",
+    "title": "NVIDIA Stocks Rebound 6.78% as Lawmakers Call Jensen Huang to Closed-Door Briefing — TradingView News"
+   },
+   {
+    "url": "https://beinsure.com/news/ai-stocks-rebound-as-nvidia-and-semiconductor-companies-recover/",
+    "title": "AI stocks rebound as Nvidia, AMD, Intel, Broadcom and Micron recover from sell-off"
+   },
+   {
+    "url": "https://www.benzinga.com/markets/tech/26/11/62969899/nvidia-claws-back-losses-after-400-billion-bloodbath-but-the-ai-scare-isnt-over",
+    "title": "NVIDIA Claws Back Losses After $400 Billion Bloodbath, but the AI Scare Isn't Over - NVIDIA (NASDAQ:NVDA) - Benzinga"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-november-6-dow-sp-500-nasdaq-jobs-report-earnings-135953863.html",
+    "title": "Stock market today: Nasdaq, S&P 500 rebound after brutal sell-off as US adds 165K jobs"
+   },
+   {
+    "url": "https://biztoc.com/x/133724f2c7d28616",
+    "title": "NVIDIA Stocks Rebound 6.78% as Lawmakers Call Jensen Huang to Closed-Door Briefing"
+   },
+   {
+    "url": "https://moneycheck.com/nvidia-amd-and-micron-rally-as-chip-stocks-recover-from-worst-day-since-2020",
+    "title": "Nvidia, AMD and Micron Rally as Chip Stocks Recover From Worst Day Since 2020 - MoneyCheck"
+   },
+   {
+    "url": "https://www.newslooks.com/nvidia-leads-ai-stock-rebound-as-wall-street-trims-weekly-losses/",
+    "title": "Nvidia Leads AI Stock Rebound as Wall Street Trims Weekly Losses - NewsLooks"
+   },
+   {
+    "url": "https://news.ssbcrack.com/nasdaq-recovers-as-chip-stocks-bounce-back-amid-rate-hike-concerns/",
+    "title": "Nasdaq Recovers as Chip Stocks Bounce Back Amid Rate Hike Concerns - SSBCrack News"
+   }
+  ],
+  "meta": {
+   "written_at": "2026-11-06T19:18:20Z",
+   "ny_date": "2026-11-06",
+   "model": "claude-opus-5-5",
+   "usage": {
+    "input_tokens": 202155,
+    "output_tokens": 21529
+   }
+  }
+ },
+ {
   "title": "صدمة AI سياسية تكسر NQ: بوابة VIX تجاوزت 25 وعائد 2Y يهبط، وNFP غداً يحسم بين الارتداد واستمرار التصفية",
   "summary": [
    "هبط Nasdaq 100 أكثر من 6% أثناء الجلسة وتجاوز VIX مستوى 25 لأول مرة منذ أبريل (عناوين الوكالة). أرقام المنصة VIX 16.61 وNDX 28437 تعود إلى إغلاق 11-04 ولا تعكس اليوم.",
