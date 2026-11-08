@@ -229,3 +229,61 @@ def test_offline_rebuild_uses_saved_series_and_keeps_fetch_warnings(tmp_path, mo
     assert ids["DGS10"]["state"] == "error"
     assert any("فشل كتابة تقرير Claude" in w for w in d["status"]["warnings"])
     assert not (data / "state.json").exists()
+
+
+# ---------------------------------------------------------------- prompt caching in the Opus report call
+def test_call_claude_enables_prompt_caching_and_records_cache_usage(monkeypatch):
+    import sys
+    import types
+
+    calls = []
+
+    class Usage:
+        def __init__(self, i, o, cw, cr):
+            self.input_tokens, self.output_tokens = i, o
+            self.cache_creation_input_tokens, self.cache_read_input_tokens = cw, cr
+
+    class Block:
+        def __init__(self, text):
+            self.type, self.text = "text", text
+
+    class Msg:
+        def __init__(self, stop, usage, text):
+            self.model, self.stop_reason, self.usage, self.content = "claude-opus-5-5", stop, usage, [Block(text)]
+
+    replies = [Msg("pause_turn", Usage(100, 50, 20000, 0), "part1 "),
+               Msg("end_turn", Usage(80, 900, 500, 19000), "part2")]
+
+    class Stream:
+        def __init__(self, msg):
+            self.msg = msg
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def get_final_message(self):
+            return self.msg
+
+    class Client:
+        def __init__(self):
+            self.beta = types.SimpleNamespace(messages=types.SimpleNamespace(stream=self.stream))
+
+        def stream(self, **kw):
+            calls.append(kw)
+            return Stream(replies[len(calls) - 1])
+
+    monkeypatch.setitem(sys.modules, "anthropic", types.SimpleNamespace(Anthropic=Client))
+    text, sources, usage, served = ai_report.call_claude("data", "SYSTEM", "claude-opus-5-5", "high")
+
+    assert text == "part1 part2" and len(calls) == 2            # pause_turn ثم إكمال
+    for kw in calls:
+        assert kw["cache_control"] == {"type": "ephemeral"}       # caching تلقائي للمحادثة
+        assert kw["system"][-1]["cache_control"] == {"type": "ephemeral"}  # نقطة صريحة على التعليمات الثابتة
+        assert kw["system"][-1]["text"] == "SYSTEM"
+    assert usage == {"input_tokens": 180, "output_tokens": 950,
+                     "cache_creation_input_tokens": 20500, "cache_read_input_tokens": 19000}
+    # 180*4 + 950*20 + 20500*5 + 19000*0.20 = 720 + 19000 + 102500 + 3800 = 126020 / 1e6
+    assert ai_report.estimate_cost("claude-opus-5-5", usage) == round(126020 / 1e6, 4)

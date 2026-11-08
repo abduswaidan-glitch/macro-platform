@@ -107,12 +107,29 @@ def parse_report(text: str) -> dict:
     return rep
 
 
+# أسعار Opus 5.5 لكل مليون رمز (تقدير الكلفة في سجل Actions فقط): إدخال، إخراج، كتابة cache لـ5 دقائق، قراءة cache
+PRICES = {"claude-opus-5-5": (4.0, 20.0, 5.0, 0.20)}
+USAGE_KEYS = ("input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens")
+
+
+def estimate_cost(model: str, usage: dict) -> float | None:
+    p = PRICES.get(model)
+    if not p:
+        return None
+    return round(sum(usage.get(k, 0) * price for k, price in zip(USAGE_KEYS, p)) / 1e6, 4)
+
+
 def call_claude(user_text: str, system: str, model: str, effort: str) -> tuple[str, list[dict], dict, str]:
+    """Prompt caching: نقطة صريحة في آخر التعليمات الثابتة (system) + caching تلقائي يتقدّم مع المحادثة.
+    خطوات البحث داخل التقرير الواحد تعيد قراءة السياق نفسه، فتُحتسب القراءة المكررة بـ5% من سعر الإدخال؛
+    وأداة البحث تضيف نقاط cache بعد نتائجها تلقائياً حين يكون الطلب مفعّلاً للـcaching."""
     import anthropic  # يُثبَّت في GitHub Actions فقط
 
     client = anthropic.Anthropic()
+    system_blocks = [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]
     messages = [{"role": "user", "content": user_text}]
-    texts, sources, usage, served = [], {}, {"input_tokens": 0, "output_tokens": 0}, model
+    texts, sources, served = [], {}, model
+    usage = {k: 0 for k in USAGE_KEYS}
     for _ in range(5):  # pause_turn: أدوات الخادم قد توقف الدور مؤقتاً فنكمل
         with client.beta.messages.stream(
             model=model,
@@ -121,14 +138,15 @@ def call_claude(user_text: str, system: str, model: str, effort: str) -> tuple[s
             fallbacks="default",
             thinking={"type": "adaptive"},
             output_config={"effort": effort},
-            system=system,
+            system=system_blocks,
             tools=[{"type": "web_search_20260209", "name": "web_search", "max_uses": 8}],
             messages=messages,
+            cache_control={"type": "ephemeral"},
         ) as stream:
             msg = stream.get_final_message()
         served = msg.model
-        usage["input_tokens"] += msg.usage.input_tokens or 0
-        usage["output_tokens"] += msg.usage.output_tokens or 0
+        for k in USAGE_KEYS:
+            usage[k] += getattr(msg.usage, k, 0) or 0
         if msg.stop_reason == "refusal":
             raise ReportError("رفض النموذج الطلب")
         for b in msg.content:

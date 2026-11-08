@@ -100,7 +100,10 @@ def main(argv=None) -> int:
             ai_report.update_history(hist_p, rep, keep=cfg.get("ai", {}).get("keep", 14))
             state["ai_last_date"] = rep["meta"]["ny_date"]
             state_p.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
-            log(f"AI report written ({rep['meta']['model']}, {rep['meta']['usage']})")
+            u = rep["meta"]["usage"]
+            cost = ai_report.estimate_cost(rep["meta"]["model"], u)
+            log(f"AI report written ({rep['meta']['model']}, {u}"
+                + (f", est. ${cost}" if cost is not None else "") + ")")   # الكلفة في السجل فقط
         except Exception as exc:
             log("AI report FAILED:", repr(exc)[:300])
             msg = f"فشل كتابة تقرير Claude: {str(exc)[:160]}"
