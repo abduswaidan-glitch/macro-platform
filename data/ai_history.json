@@ -1,5 +1,486 @@
 [
  {
+  "title": "ارتدادٌ مدفوع بهبوط النفط وVIX ينزل تحت 20، لكن بوابتي العائد الاسمي والحقيقي ما زالتا مغلقتين وCPI غداً هو الحَكَم",
+  "summary": [
+   "ارتفع Nasdaq Composite بنحو 2.7% وS&P 500 بنحو 2.35% في ثاني يوم من الارتداد بعد هبوط NDX بنسبة 6.36% يوم 5 نوفمبر. أغلق VIX عند 19.92 بحسب خبر الوكالة، بينما بيانات المنصة (25.64) تعود لجلسة الجمعة.",
+   "انخفض العائد 10Y من 5.05% (28 أكتوبر) إلى 4.86% (6 نوفمبر). جاء الانخفاض كله تقريباً من Breakeven الذي تراجع من 2.35% إلى 2.22%، بينما بقي العائد الحقيقي عند 2.63% بلا تغيير. أي أن ضغط التقييم على NQ لم يخفّ فعلياً.",
+   "سوق العمل قوي: طلبات الإعانة 189k وهي الأدنى في العيّنة (z=-2.19)، والبطالة 4.1%، وSahm غير مفعّلة. التضخم مرتفع: Core PCE عند 3.12%، وتوقعات التضخم لسنة (NY Fed) عند 3.91%. المزيج «تسخين اقتصادي» يدعم تسعير رفع الفائدة.",
+   "يسعّر السوق رفعاً للفائدة: فارق 2Y−FF يبلغ +63 bp. واحتمال الرفع في ديسمبر 76.8% بحسب تقدير FedWatch يوم 6 نوفمبر، وهو رقم قد يكون تغيّر منذ ذلك اليوم.",
+   "غداً قبل الافتتاح: CPI أكتوبر الساعة 8:30 ET دون رقم سنوي. التوقع (Consensus) هو 0.3% للرقم الرئيسي و0.2% للأساسي على أساس شهري. بعده مزاد 10Y الساعة 13:00 ET، ومخاطر خاصة بـNvidia."
+  ],
+  "bias": {
+   "direction": "neutral",
+   "confidence": 55,
+   "reason": "بوابتان هيكليتان سلبيتان: العائد 10Y أعلى من الحد بـ36 bp، والعائد الحقيقي أعلى من 2% بـ63 bp، ودون أي تحسن في الحقيقي. وقيادة NQ على مدى 20 يوماً سلبية (-8.48%). في المقابل تحسّن قصير الأجل: VIX تحت 20، والنفط يهبط، والائتمان هادئ (HY OAS 3.42%)، وNQ تفوّق اليوم. هذا يعطي توازناً لا انحيازاً. وCPI الساعة 8:30 قبل الجلسة حدث ثنائي النتيجة يجعل أي انحياز مسبق ضعيف الثقة."
+  },
+  "scenarios": [
+   {
+    "label": "A",
+    "name": "CPI هادئ وامتداد الارتداد",
+    "prob": 35,
+    "trigger": "Core CPI MoM عند 0.2% أو أقل، ونزول 10Y تحت 4.80% بعد الإصدار، وبقاء VIX تحت 20، ومزاد 10Y بلا Tail يُذكر عند 13:00 ET",
+    "reason": "هبوط النفط يخفف علاوة التضخم، وتراجع احتمال الرفع في ديسمبر يخفض 2Y، ويستمر الشراء في أشباه الموصلات. تحفّظ: العائد الحقيقي ما زال أعلى من 2.5%، لذلك يبقى الصعود معرضاً لجني الأرباح. هذا استنتاج مني."
+   },
+   {
+    "label": "B",
+    "name": "CPI ساخن وعودة الضغط على العوائد",
+    "prob": 30,
+    "trigger": "Core CPI MoM عند 0.4% أو أعلى، أو الرقم الرئيسي عند 0.5% أو أعلى، مع صعود 2Y فوق 4.60% و10Y فوق 4.95%، وعودة VIX فوق 22",
+    "reason": "بعد أرقام وظائف قوية وتوقعات تضخم للمستهلك عند 3.91%، يرسّخ رقم ساخن الرفع في ديسمبر ويرفع العائد الحقيقي، وهذا الضغط يقع على NQ أكثر من ES. والارتداد الحالي عمره جلستان فقط."
+   },
+   {
+    "label": "C",
+    "name": "CPI قريب من التوقع وتذبذب في نطاق",
+    "prob": 35,
+    "trigger": "Core CPI MoM عند 0.2–0.3% دون اتجاه واضح للعوائد، وVIX بين 18 و22، وتنتظر السوق مزاد 10Y وتصريحات Logan وSchmid",
+    "reason": "غياب الرقم السنوي يقلل وضوح الإشارة. وسيأتي الاتجاه على الأرجح من أخبار Nvidia وإيران ومن المزاد، لا من الماكرو، فتظهر حركة رجوع إلى المتوسط بعد يومين من الصعود القوي."
+   }
+  ],
+  "sections": [
+   {
+    "heading": "النمو",
+    "body": "أرقام المنصة: GDP الحقيقي +2.07% سنوياً للربع الثالث (بداية الربع 1 يوليو، عمر 131 يوماً). الإنتاج الصناعي +2.25% سنوياً في سبتمبر (z=1.04). مبيعات التجزئة +6.29% اسمياً، أي نحو 2.2% حقيقياً بعد خصم CPI البالغ 4.0%، وهذا تقدير مني. نقاط الضعف في السكن: البدايات 1,221k عند المئين 3.3%، والرهن العقاري 7.18%. ثقة المستهلك UMich عند 48.1، وهي قراءة سبتمبر وعمرها 69 يوماً. كل الأرقام الشهرية تعود لسبتمبر، فهي صورة متأخرة شهرين ولا تعكس صدمة النفط ولا تقلبات ما بعد الانتخابات النصفية. الخلاصة: النمو ليس عائقاً أمام NQ، لكنه يمنح الـFed حجة للتشديد."
+   },
+   {
+    "heading": "سوق العمل",
+    "body": "البطالة 4.1% لأكتوبر (عمرها 39 يوماً). متوسط الوظائف لثلاثة أشهر 137k. JOLTS عند 7.52 مليون (سبتمبر). طلبات الإعانة الأولية 189k للأسبوع المنتهي في 31 أكتوبر، وهي الأدنى في السلسلة المعروضة. البطالة والطلبات متسقتان على صورة سوق ضيق، وSahm عند −0.00 pp. أما وصف Barkin اليوم لبيئة «توظيف منخفض وتسريح منخفض» فيتفق مع الطلبات المنخفضة جداً أكثر من اتفاقه مع قوة الوظائف. نتيجة سوق العمل: ليس سبباً لخفض الفائدة. الطلبات القادمة يوم الخميس الساعة 8:30 ET، والتوقع 195k."
+   },
+   {
+    "heading": "التضخم",
+    "body": "على المنصة: CPI الرئيسي 4.02% سنوياً، وCPI الأساسي 2.79%، وCore PCE 3.12%، وكلها لسبتمبر وعمرها 69 يوماً. هناك تعارضان. الأول: Core PCE أعلى من Core CPI بنحو 33 bp، وهذا انعكاس غير معتاد ولا أملك تفسيراً موثقاً له. الثاني: التقويم يذكر قراءة سابقة 3.7% للرئيسي و2.6% للأساسي، وهي لا تطابق حسابات المنصة. توقعات المستهلك لسنة (NY Fed) جاءت 3.91% مقابل توقع 3.79%. في المقابل نزل Breakeven 10Y إلى 2.22%، فالسوق يرى صدمة النفط مؤقتة. وPPI يوم الجمعة متوقع عند 6.6% سنوياً، ما يعني ضغطاً في سلسلة التوريد. الأهم غداً هو الرقم الشهري، لأن الرقم السنوي لن يُنشر."
+   },
+   {
+    "heading": "الفائدة والفيدرالي",
+    "body": "أبقى الـFed النطاق عند 3.75–4.00% في 28 أكتوبر. FEDFUNDS على المنصة 3.88%، وهو متوسط شهري وارتفع من 3.63% في الصيف بعد رفع سبتمبر. يتداول 2Y عند 4.51%، أي أعلى بـ63 bp من FF، والسوق يسعّر رفعاً إضافياً. تقدير FedWatch للرفع في 9 ديسمبر كان 76.8% يوم 6 نوفمبر. قال Barkin إن المخاطر في جانب التضخم، لكنه دعا إلى التحرك بحذر، ولا يملك تصوراً أساسياً لديسمبر. مزاد 3Y اليوم كان مختلطاً يميل إلى ضعف طفيف: عائد 4.627% مقابل WI 4.622% (Tail بنصف bp)، وBid-to-cover 2.53 مقابل 2.62، مع حصة منخفضة للمتعاملين الأساسيين (9.48%). المنحنى 10Y−2Y عند +0.32% اليوم. الميزانية العمومية للـFed مستقرة عند نحو 6.75 تريليون$."
+   },
+   {
+    "heading": "المخاطر والأسواق",
+    "body": "وصل NDX في المنصة إلى 26,990 (6 نوفمبر) بعد هبوط 6.36% في 5 نوفمبر، أسوأ يوم منذ مارس 2020. علامة «القفزة غير المعتادة» في المنصة حركة حقيقية لا خطأ بيانات. اليوم صعد NDX بنحو 3.2% بحسب مصدر خارجي، وهو تقدير. قادت أشباه الموصلات (SOX +6.8% في منتصف الجلسة) رغم هبوط NVDA 4.27%. الائتمان هادئ (HY OAS 3.42%) لكنه اتسع 28 bp منذ 28 أكتوبر. الدولار الواسع 121.88. نفط WTI في المنصة 99.64$، وهو رقم عمره 6 أيام. الأخبار تشير إلى نحو 88$ لـWTI و94$ لـBrent اليوم (تقدير خارجي). عناوين الجغرافيا السياسية متضاربة: يقول Trump إن العمل العسكري ضد إيران غير ضروري، بينما يتحدث Press TV عن تعطيل الحرس الثوري ملاحة 4 ناقلات في هرمز. وهناك مخاطر خاصة بـNQ: تحقيق Nvidia، ودفع Jeffries لإدراج قيود رقائق الصين في قانون الدفاع، وطرح Anthropic المرتقب كعرض أسهم تقنية ضخم."
+   }
+  ],
+  "gates_read": "بوابة 10Y مغلقة: 4.86% (6 نوفمبر) أعلى من الحد 4.50% بـ36 bp، رغم تحسن أسبوعي بـ-8 bp. وتقدير اليوم نحو 4.84% بحسب مصدر خارجي، أي ما زال أعلى من الحد بنحو 34 bp. بوابة VIX انتقلت على الحافة: 25.64 في المنصة ليوم الجمعة، و19.92 عند الإغلاق اليوم بحسب الوكالة، وهو أكبر هبوط يومي منذ أبريل 2025. صار تحت حد الهدوء 20 بفارق ضئيل، وارتفاعه مجدداً بعد CPI وارد بسهولة. العائد الحقيقي 2.63% أعلى من الحد 2.00% بـ63 bp، ويقع عند المئين 97.7 في خمس سنوات. هذه أهم نقطة: انخفاض العائد الاسمي جاء من Breakeven لا من الحقيقي، فالضغط على مضاعفات النمو باقٍ. قيادة NQ مقابل ES على 20 يوماً عند -8.48% (5 نوفمبر)، أي S&P يقود. تفوّق NQ اليوم (+3.2% تقديراً مقابل +2.35% لـS&P) جلسة واحدة لا تغيّر الاتجاه. البوابات: اثنتان سلبيتان (10Y والحقيقي)، وواحدة تحذيرية (القيادة)، وواحدة تتحسن (VIX)، والائتمان سليم.",
+  "watch": [
+   "الثلاثاء 10 نوفمبر 04:00 ET: كلمة Waller (تقويم المنصة)",
+   "الثلاثاء 08:30 ET: CPI أكتوبر. التوقع 0.3% للرئيسي و0.2% للأساسي شهرياً، دون رقم سنوي",
+   "الثلاثاء 09:30 ET: الافتتاح وردّ فعل 2Y و10Y على CPI. مستويات أراقبها: 10Y عند 4.80% و4.95%، و2Y عند 4.60%",
+   "الثلاثاء 10:50 ET: Logan، ثم 12:00 ET تقرير EIA STEO",
+   "الثلاثاء 13:00 ET: مزاد 10Y بقيمة 42 مليار$ (العائد في المزاد السابق 5.300%). المهم الـTail مقابل WI وBid-to-cover مقابل 2.77",
+   "الثلاثاء 13:30 ET: Schmid، و15:30 ET: Bowman، و18:30 ET: Bowman وPaulson",
+   "الأربعاء 11 نوفمبر: Veterans Day. عادةً تغلق سوق السندات النقدية وتعمل الأسهم (تحقق من جدول وسيطك)، وتقرير OPEC الساعة 08:00 ET",
+   "الخميس 12 نوفمبر: طلبات الإعانة 08:30 ET (توقع 195k)، Hammack 09:00، Barr 10:00، Goolsbee 11:15، مخزونات EIA 12:00، مزاد 30Y بقيمة 25 مليار$ الساعة 13:00 ET (سابق 5.618%)، Daly 13:10",
+   "الجمعة 13 نوفمبر 08:30 ET: PPI (توقع 6.6% سنوياً و0.4% شهرياً)، ثم Williams 09:10 وBowman 10:50",
+   "أخبار Nvidia (التحقيق وملف Megaspeed) ومسار مفاوضات إيران وهرمز، وتأثيرهما على النفط",
+   "محضر FOMC في 18 نوفمبر، وPCE في 25 نوفمبر، واجتماع الـFed في 8–9 ديسمبر"
+  ],
+  "risks": [
+   "CPI أساسي ساخن يرفع احتمال الرفع في ديسمبر فوق 85% ويعيد 10Y نحو 5%",
+   "Tail كبير في مزاد 10Y أو 30Y يرفع علاوة الأجل في منحنى تتجاوز فيه العوائد الحد أصلاً",
+   "انهيار مسار إيران أو تصعيد في هرمز يرفع النفط بسرعة ويعكس انخفاض Breakeven",
+   "مخاطر حوكمة وتنظيم في Nvidia، أكبر الأوزان في NQ، مع قيود رقائق الصين في قانون الدفاع",
+   "عرض أسهم تقنية ضخم مع طرح Anthropic قد يسحب سيولة من الأسهم التقنية الكبرى (استنتاج غير مثبت)",
+   "سياسات ما بعد الانتخابات النصفية تجاه مراكز البيانات (ضرائب Wyden وتدابير الاقتراع) تضغط على سردية الإنفاق على AI",
+   "ارتداد VIX فوق 25 بعد هبوط يومي حاد: انعكاس سريع وارد، ولا أملك عيّنة تاريخية مثبتة لتقدير احتماله"
+  ],
+  "data_audit": [
+   "VIX: رقم المنصة 25.64 من 6 نوفمبر. استخدمت إغلاق اليوم 19.92 من خبر الوكالة (FinancialJuice) لقراءة البوابة، وهو غير مؤكد من FRED بعد.",
+   "العائد 10Y والعائد الحقيقي من 6 نوفمبر (عمرهما 3 أيام). رقم 4.84% لليوم من 24/7 Wall St خلال الجلسة، فهو تقدير وليس إغلاقاً رسمياً.",
+   "WTI في المنصة 99.64$ من 3 نوفمبر (عمره 6 أيام) وقديم بوضوح. أشرت إلى نحو 88$ لـWTI و94.11$ لـBrent من الأخبار كتقدير، ولم أعتمد رقم المنصة في الاستنتاج.",
+   "علامات «القفزة غير المعتادة» على NDX وSP500 حركة حقيقية أكدتها CNN (هبوط NDX 6.36% في 5 نوفمبر) وليست خطأ بيانات. لكن SP500 في المنصة متأخر يوماً عن NDX (5 نوفمبر مقابل 6 نوفمبر)، ونسبة القيادة من 5 نوفمبر.",
+   "تعارض في CPI: المنصة تحسب 4.02% للرئيسي و2.79% للأساسي سنوياً لسبتمبر، والتقويم يذكر 3.7% و2.6% كقراءات سابقة، وقد يرجع الفرق إلى SA مقابل NSA وهذا غير مثبت. Kiplinger تقول إن الرقم السنوي لن يُنشر غداً، بينما يعرض Nowflation توقعاً سنوياً 3.9%. اعتمدت الرقم الشهري فقط.",
+   "انعكاس Core PCE (3.12%) فوق Core CPI (2.79%) غير معتاد ولم أجد له تفسيراً. عاملت Core PCE كمقياس الـFed الأساسي.",
+   "احتمال الرفع في ديسمبر (76.8%) تقدير FedWatch ليوم 6 نوفمبر، وقد يكون تغيّر بعد هبوط النفط وكلام Barkin اليوم.",
+   "البيانات الشهرية (الإنتاج الصناعي، التجزئة، CPI، PCE، JOLTS، UMich) عمرها 69 يوماً، وGDP عمره 131 يوماً من بداية الربع. لا تعكس أحداث نوفمبر.",
+   "FEDFUNDS 3.88% متوسط شهري، والنطاق الرسمي 3.75–4.00%.",
+   "موعد طرح Anthropic متعارض: التقويم يذكر 10 نوفمبر كموعد مؤقت، وعنوان WSJ يذكر الخميس أو الجمعة من الأسبوع المقبل، وYahoo يذكر 16 نوفمبر كأبكر موعد. عاملته كغير مؤكد.",
+   "نفدت حصة البحث على الويب قبل التحقق من إغلاق 10Y اليوم ومن روابط بعض كلمات الـFed (Waller وLogan وSchmid)، فاعتمدت مواعيدها على تقويم المنصة."
+  ],
+  "events": [
+   {
+    "title": "إصدار CPI أكتوبر 2026 الساعة 8:30 ET (BLS)",
+    "date": "2026-11-10",
+    "url": "https://www.bls.gov/cpi/"
+   },
+   {
+    "title": "معاينة CPI: لا رقم سنوياً هذا الشهر، والتوقع 0.3% للرئيسي و0.2% للأساسي شهرياً",
+    "date": "2026-11-10",
+    "url": "https://www.kiplinger.com/investing/economy/october-2026-cpi-report-what-to-expect"
+   },
+   {
+    "title": "مزادات إعادة التمويل الربعية: 3Y بقيمة 58 مليار$ (9 نوفمبر)، و10Y بقيمة 42 مليار$ (10 نوفمبر)، و30Y بقيمة 25 مليار$",
+    "date": "2026-11-10",
+    "url": "https://home.treasury.gov/news/press-releases/sb0678"
+   },
+   {
+    "title": "Barkin: الفائدة قرب المستوى المحايد ولا تصور أساسي لديسمبر",
+    "date": "2026-11-09",
+    "url": "https://www.fxstreet.com/news/feds-barkin-sees-rates-near-neutral-offers-no-december-signal-202611091858"
+   },
+   {
+    "title": "Barkin: المخاطر في جانب التضخم والتحرك بحذر، والأسواق تتوقع رفعاً في 8–9 ديسمبر",
+    "date": "2026-11-09",
+    "url": "https://www.investing.com/news/economy-news/fed-should-move-policy-with-care-as-it-responds-to-inflationbarkin-says-5012908"
+   },
+   {
+    "title": "إغلاق الأسهم: Nasdaq +2.74% وS&P +2.35% وNVDA −4%",
+    "date": "2026-11-09",
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-monday-november-9-dow-sp-500-nasdaq-nvidia-090535419.html"
+   },
+   {
+    "title": "هبوط Brent بنسبة 4.3% إلى 94.11$ يدعم الارتداد",
+    "date": "2026-11-09",
+    "url": "https://www.bnnbloomberg.ca/markets/dow-jones/2026/11/09/world-markets-bounce-back-after-a-recovery-for-ai-stocks-on-wall-street/"
+   },
+   {
+    "title": "Nvidia تفتح تحقيقاً مستقلاً بشأن CEO والسهم يغلق على −4.27%",
+    "date": "2026-11-09",
+    "url": "https://www.cnbc.com/2026/11/09/nvidia-jensen-huang-chinese-spy-investigation.html"
+   },
+   {
+    "title": "Nvidia تدخلت في تحقيق أمريكي بشأن تهريب رقائق عبر Megaspeed",
+    "date": "2026-11-09",
+    "url": "https://www.bloomberg.com/news/articles/2026-11-09/nvidia-intervened-in-us-probe-of-megaspeed-chip-smuggling"
+   },
+   {
+    "title": "FedWatch: احتمال الرفع في ديسمبر 76.8% بعد تقرير الوظائف (تقدير)",
+    "date": "2026-11-06",
+    "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"
+   },
+   {
+    "title": "Nasdaq 100 يهبط 6.36%، أسوأ يوم منذ مارس 2020",
+    "date": "2026-11-05",
+    "url": "https://www.cnn.com/2026/11/05/investing/tech-heavy-nasdaq-plunges"
+   },
+   {
+    "title": "أجندة نوفمبر: PPI في 13، ومحضر FOMC في 18، وPCE في 25",
+    "date": "2026-11-13",
+    "url": "https://www.analyticsinsight.net/cryptocurrency-analytics-insight/november-2026-economic-releases-and-crypto-events-to-watch-us-cpi-fed-minutes-pce-inflation-and-token-unlocks"
+   },
+   {
+    "title": "طرح Anthropic: أبكر موعد للتداول 16 نوفمبر (غير مؤكد)",
+    "date": "2026-11-16",
+    "url": "https://finance.yahoo.com/markets/article/when-is-the-anthropic-ipo-the-stock-could-start-trading-as-soon-as-nov-16-132727631.html"
+   }
+  ],
+  "one_liner": "VIX نزل تحت 20 لكن العائد الحقيقي لم يتحرك من 2.63%. الارتداد عمره جلستان، وCPI الساعة 8:30 يحكم عليه قبل أن يحكم عليه أي سرد.",
+  "sources": [
+   {
+    "url": "https://www.richmondfed.org/press_room/media_advisories/2026/20261102_barkin_greer",
+    "title": "Tom Barkin Speaking on November 9 in Greer, S.C."
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/fomc-member-barkin-speaks-1775",
+    "title": "U.S. Federal Open Market Committee (FOMC) Member Thomas Barkin Speaks"
+   },
+   {
+    "url": "https://www.investing.com/news/economy-news/fed-should-move-policy-with-care-as-it-responds-to-inflationbarkin-says-5012908",
+    "title": "Fed should move policy ’with care’ as it responds to inflation, Barkin says By Reuters"
+   },
+   {
+    "url": "https://www.fxstreet.com/news/feds-barkin-sees-rates-near-neutral-offers-no-december-signal-202611091858",
+    "title": "Fed’s Barkin sees rates near neutral, offers no December signal"
+   },
+   {
+    "url": "https://www.freedom969.com/business/fed-should-move-policy-with-care-as-it-responds-to-inflation-barkin-says",
+    "title": "Fed should move policy ‘with care’ as it responds to inflation, Barkin says - Freedom 96.9"
+   },
+   {
+    "url": "https://finobird.com/calendar/economic/analysis/fed-speakers-inflation-expectations-and-boe-bailey-what-to-watch-on-november-9-2026-2026-11-09/",
+    "title": "Economic Calendar Nov 9, 2026: Fed Speakers, Inflation"
+   },
+   {
+    "url": "https://antena1.com.br/noticias/fed-deve-agir-com-cuidado-ao-responder-a-inflacao-afirma-barkin",
+    "title": "Fed deve agir “com cuidado” ao responder à inflação, afirma Barkin"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections_in_Nebraska",
+    "title": "2026 United States House of Representatives elections in Nebraska"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Tom_Barkin",
+    "title": "Tom Barkin"
+   },
+   {
+    "url": "https://journalarta.com/en/2026/11/09/stock-market-sp-500-futures-october-jobs-fed-november-9-2026",
+    "title": "Stock Market S&P 500 — JournalArta Global"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/article/when-is-the-anthropic-ipo-the-stock-could-start-trading-as-soon-as-nov-16-132727631.html",
+    "title": "When is the Anthropic IPO? The stock could start trading as soon as Nov. 16."
+   },
+   {
+    "url": "https://smartasset.com/investing/anthropic-ipo-date-investor-timeline-valuation-and-expectations",
+    "title": "Anthropic IPO Date: Investor Timeline, Valuation and Expectations"
+   },
+   {
+    "url": "https://finance.yahoo.com/technology/ai/article/anthropic-ipo-what-we-know-143321078.html",
+    "title": "Everything you need to know ahead of Anthropic's IPO"
+   },
+   {
+    "url": "https://leverageshares.com/us/anthropic-ipo-tracker/",
+    "title": "Anthropic IPO Tracker: Date, Valuation and S-1 Status"
+   },
+   {
+    "url": "https://leverageshares.com/us/insights/when-is-the-anthropic-ipo/",
+    "title": "When Is the Anthropic IPO? What Has to Happen First"
+   },
+   {
+    "url": "https://tech-insider.org/anthropic-ipo-ant-nasdaq-17b-q3-895b-commitments-no-date-2026/",
+    "title": "Anthropic IPO: $17B Q3, $895.4B Bills, No Date [2026]"
+   },
+   {
+    "url": "https://runtimewire.com/article/anthropic-pushes-ahead-november-ipo-valuation-pushback",
+    "title": "Anthropic pushes ahead with November IPO despite investor pushback on $1.5T valuation"
+   },
+   {
+    "url": "https://cryptoticker.io/en/buy-anthropic-stock/",
+    "title": "Anthropic Stock: How to Buy, IPO Date and Pre-IPO via XTB"
+   },
+   {
+    "url": "https://sooperarticles.com/anthropic-ipo-checking-the-date-the-valuation-and-retail-access-1951102",
+    "title": "Anthropic IPO: checking the date, the valuation and retail access - Sooper Articles"
+   },
+   {
+    "url": "https://www.bls.gov/cpi/",
+    "title": "CPI Home : U.S. Bureau of Labor Statistics"
+   },
+   {
+    "url": "https://www.kiplinger.com/investing/economy/october-2026-cpi-report-what-to-expect",
+    "title": "October CPI Report: What the Inflation Data Is Expected to Show"
+   },
+   {
+    "url": "https://www.analyticsinsight.net/cryptocurrency-analytics-insight/november-2026-economic-releases-and-crypto-events-to-watch-us-cpi-fed-minutes-pce-inflation-and-token-unlocks",
+    "title": "November 2026 Economic Releases and Crypto Events to Watch: US CPI, Fed Minutes, PCE Inflation and Token Unlocks"
+   },
+   {
+    "url": "https://fedratecalc.com/cpi-release-date/",
+    "title": "Next CPI Report: Nov 10, 2026 at 8:30 AM ET (Release Dates)"
+   },
+   {
+    "url": "https://nowflation.com/cpi-release-dates",
+    "title": "CPI Release Dates 2026: Next Report Nov 10, 8:30 AM ET"
+   },
+   {
+    "url": "https://cpichart.com/cpi-release-calendar/",
+    "title": "When Is the Next CPI Report? November 10, 2026, 8:30 a.m. ET — CPI Release Schedule"
+   },
+   {
+    "url": "https://features.financialjuice.com/2026/11/09/us-cpi-prep-november-10th/",
+    "title": "US CPI Prep (November 10th) - FinancialJuice"
+   },
+   {
+    "url": "https://cryptonews.net/news/finance/33725615/",
+    "title": "US CPI Forecast November 10 2026: Will Inflation Cool or Surprise Markets?"
+   },
+   {
+    "url": "https://www.cmelitegroup.com/knowledge-hub/cpi-report-release-time-schedule-latest-data-and-how-it-moves-markets/",
+    "title": "CPI Report: Release Time, Schedule and Market Impact"
+   },
+   {
+    "url": "https://www.stocktitan.net/articles/october-2026-cpi-preview-no-yearly-rate",
+    "title": "Next CPI Report on November 10 Will Have No Yearly Inflation Rate for Overall Prices"
+   },
+   {
+    "url": "https://ng.investing.com/news/stock-market-news/form-144-host-hotels--resorts-for-9-november-93CH-2795073",
+    "title": "Form 144 HOST HOTELS & RESORTS For: 9 November By Investing.com"
+   },
+   {
+    "url": "https://www.bnnbloomberg.ca/markets/dow-jones/2026/11/09/world-markets-bounce-back-after-a-recovery-for-ai-stocks-on-wall-street/",
+    "title": "Markets today: U.S. stocks rally as crude oil prices drop"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-monday-november-9-dow-sp-500-nasdaq-nvidia-090535419.html",
+    "title": "Stock market today: Nasdaq surges despite Nvidia stock slide, Dow and S&P 500 rally as AI tech trade rises"
+   },
+   {
+    "url": "https://247wallst.com/investing/2026/11/09/stock-market-today-nvidia-pressures-indexes-to-maintain-rebound/",
+    "title": "Stock Market Today: Nvidia Pressures Indexes to Maintain Rebound - 24/7 Wall St."
+   },
+   {
+    "url": "https://www.tipranks.com/news/u-s-stocks-rebound-as-oil-prices-fall-and-nvidia-sinks",
+    "title": "Why Is the Stock Market Up Today, 11/9/26? - TipRanks.com"
+   },
+   {
+    "url": "https://journalarta.com/en/2026/11/09/stock-market-today-sp-500-rises-1-3-and-nasdaq-1-6-at-the-open-as-oil-slides-and-amd-jumps/",
+    "title": "Stock Market Today: S&P 500 +1.3%, Nasdaq +1.6% as Oil Falls — JournalArta Global"
+   },
+   {
+    "url": "https://pomegra.io/news/dow-jumps-1104-points-as-oil-slides-ai-rout-pauses",
+    "title": "Dow Jumps 1,104 Points as Oil Slides, AI Rout Pauses"
+   },
+   {
+    "url": "https://barchart.com/stocks",
+    "title": "barchart.com"
+   },
+   {
+    "url": "https://fortune.com/tag/sp-500/page/1",
+    "title": "fortune.com"
+   },
+   {
+    "url": "https://www.noradarealestate.com/blog/interest-rates-hike-odds-december-2026-jump-85-after-feds-recent-decision/",
+    "title": "Interest Rates Hike Odds for December 2026 Jump to 85% After Fed's Recent Decision"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/10/02/fed-rate-hike-odds-decline-after-september-jobs-report.html",
+    "title": "Fed rate hike odds decline after September jobs report"
+   },
+   {
+    "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/",
+    "title": "Odds of a December Rate Hike Jump to 77% After a Blowout Jobs Report - 24/7 Wall St."
+   },
+   {
+    "url": "https://centralbank.watch/federal-reserve/",
+    "title": "Fed Rate Probability"
+   },
+   {
+    "url": "https://finance.yahoo.com/economy/policy/articles/fed-hike-rates-december-prediction-075612146.html",
+    "title": "Will the Fed Hike Rates in December? Here’s What the Prediction Market Is Saying"
+   },
+   {
+    "url": "https://forexuro.com/articles/fed-rate-hike-odds-december-2026",
+    "title": "Fed Rate Hike Odds for December 2026: What to Watch"
+   },
+   {
+    "url": "https://windailysports.com/fed-rate-decision-odds-december-2026/",
+    "title": "Fed Rate Decision Odds December 2026: Markets Price a 73% Chance of a Hike"
+   },
+   {
+    "url": "https://www.forbes.com/advisor/banking/savings/potential-fed-rate-hike-december-lmandp5/",
+    "title": "Experts Predict Fed Rate Hike For December—What This Would Mean For Your Money"
+   },
+   {
+    "url": "https://www.fxstreet.com/news/cme-group-fedwatchs-december-hike-probability-advanced-to-47-201708041659",
+    "title": "cme group fedwatchs december hike probability advanced to 47 201708041659"
+   },
+   {
+    "url": "https://www.bloomberg.com/news/articles/2026-11-09/nvidia-intervened-in-us-probe-of-megaspeed-chip-smuggling",
+    "title": "Nvidia Intervened in US Probe of Megaspeed Chip Smuggling - Bloomberg"
+   },
+   {
+    "url": "https://www.bloomberg.com/news/articles/2026-10-29/nvidia-ceo-says-ties-to-company-under-spying-probe-were-normal",
+    "title": "Nvidia's Huang Defends Megaspeed Ties as US Probes China Spying Allegations - Bloomberg"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-investigation-china-spy.html",
+    "title": "Nvidia investigates CEO Jensen Huang's relationship with alleged Chinese spy"
+   },
+   {
+    "url": "https://finance.yahoo.com/technology/live/nvidia-scandal-live-updates-nvidia-stock--board-investigates-ceo-jensen-huang-affair-alleged-chinese-spy-163130372.html",
+    "title": "Nvidia live updates: Nvidia stock falls 5% as board investigates CEO's affair with alleged Chinese spy"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/09/nvidia-jensen-huang-chinese-spy-investigation.html",
+    "title": "Nvidia stock falls 4% as scrutiny turns to Jensen Huang’s affair with alleged Chinese spy"
+   },
+   {
+    "url": "https://kantan.news/news/megaspeed-chip-smuggling-investigation-transferred-to-ministry-of-justice-following-nvidia-intervention",
+    "title": "Megaspeed Chip Smuggling Investigation Transferred to Ministry of Justice Following Nvidia Intervention"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Huang_Qi",
+    "title": "Huang Qi"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Huang%27s_law",
+    "title": "Huang%27s law"
+   },
+   {
+    "url": "https://www.tipranks.com/news/the-fly/megaspeed-investigated-by-u-s-officials-over-ties-to-china-ny-times-reports-thefly",
+    "title": "megaspeed investigated by u s officials over ties to china ny times reports thefly"
+   },
+   {
+    "url": "https://www.mexc.com/news/125729",
+    "title": "www.mexc.com"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/04/stock-market-today-live-updates.html",
+    "title": "Stock market news for Nov. 5, 2026"
+   },
+   {
+    "url": "https://www.foxbusiness.com/markets/stocks-nov-5-2026",
+    "title": "Nasdaq tumbles 5%, Dow plunges more than 1,800 points"
+   },
+   {
+    "url": "https://www.cnn.com/2026/11/05/investing/tech-heavy-nasdaq-plunges",
+    "title": "Stock markets plunge as massive tech sell-off wipes $2.5 trillion"
+   },
+   {
+    "url": "https://www.upi.com/Top_News/US/2026/11/05/nasdaq-dow-ai-tech-stocks-fall-post-midterm/7071793897242/",
+    "title": "Nasdaq plunges 5.5% as AI concerns erase post-midterm gains - UPI.com"
+   },
+   {
+    "url": "https://www.fool.com/investing/2026/11/05/nasdaq-composite-shattered-single-session-point-loss-record-3-reasons-elevator-down-moves-just-beginning/",
+    "title": "The Nasdaq Composite Just Shattered Its Single-Session Point-Loss Record: 3 Reasons These Elevator-Down Moves May Be Just Beginning"
+   },
+   {
+    "url": "https://www.axios.com/2026/11/05/nasdaq-plummets-correction",
+    "title": "Tech stocks tumble as election rattles AI trade"
+   },
+   {
+    "url": "https://localnews8.com/money/cnn-business-consumer/2026/11/05/nasdaq-plunges-into-correction-territory-as-midterm-results-raise-fresh-questions-about-ai-boom/",
+    "title": "Stocks plunge as midterm results send AI trade into a tailspin - LocalNews8.com - KIFI"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/05/stock-market-selloff-ai-fears.html",
+    "title": "Magnificent 7 loses $1 trillion. The most eye-popping stats from Thursday's tech stock plunge"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Nasdaq",
+    "title": "Nasdaq"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/10-year-note-auction-571",
+    "title": "United States 10-Year Note Auction"
+   },
+   {
+    "url": "https://home.treasury.gov/news/press-releases/sb0678",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   },
+   {
+    "url": "https://saferate.com/treasury/auctions",
+    "title": "US Treasury auction schedule and results"
+   },
+   {
+    "url": "https://home.treasury.gov/system/files/221/Tentative-Auction-Schedule.pdf",
+    "title": "Tentative Auction Schedule of U.S. Treasury Securities Security Type"
+   },
+   {
+    "url": "https://home.treasury.gov/system/files/221/TentativeAuctionScheduleQ32026.pdf",
+    "title": "Tentative Auction Schedule of U.S. Treasury Securities Security Type"
+   },
+   {
+    "url": "https://wolfstreet.com/2026/10/07/thoughts-on-the-10-year-treasury-auctions-5-30-yield-highest-since-2000-it-created-demand-bond-bloodbath-continued/",
+    "title": "Thoughts on the 10-Year Treasury Auction’s 5.30% Yield, Highest since 2000: It Created Demand, Bond Bloodbath Continued"
+   },
+   {
+    "url": "https://www.fxstreet.com/economic-calendar/event/4f2c05b5-58f9-4612-b3c0-430db863e144",
+    "title": "United States 10-Year Note Auction - FXStreet Economic Calendar"
+   },
+   {
+    "url": "https://helious.io/auctions",
+    "title": "Treasury Auction Results, Schedule & History"
+   },
+   {
+    "url": "https://fedratecalc.com/treasury-auction-schedule/",
+    "title": "Treasury Auction Schedule: Bills, Notes, Bonds, TIPS, FRNs"
+   },
+   {
+    "url": "https://rates.brinkeradvisor.com/treasury-auctions/",
+    "title": "Upcoming U.S. Treasury Auctions"
+   }
+  ],
+  "meta": {
+   "written_at": "2026-11-09T22:15:29Z",
+   "ny_date": "2026-11-09",
+   "model": "claude-opus-5-5",
+   "usage": {
+    "input_tokens": 16,
+    "output_tokens": 20476,
+    "cache_creation_input_tokens": 45534,
+    "cache_read_input_tokens": 210052
+   }
+  }
+ },
+ {
   "title": "وظائف قوية وفيدرالي يميل إلى الرفع فوق سوق جريح: ارتداد NQ بعد أسوأ يوم منذ 2020 لم تؤكده البوابات بعد",
   "summary": [
    "جاء NFP أكتوبر عند 165k، بينما تراوحت التوقعات بين 59k و70k حسب المصدر. نزلت البطالة إلى 4.1%، وأضافت المراجعات 84k لشهري أغسطس وسبتمبر، فصار متوسط 3 أشهر على المنصة 137k.",
