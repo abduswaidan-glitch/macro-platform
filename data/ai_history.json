@@ -1,5 +1,462 @@
 [
  {
+  "title": "ارتداد NQ اليوم قاده الذكاء الاصطناعي والسندات مغلقة؛ غداً تعود الفائدة للتسعير عند 10Y قرب 5% ومزاد 30Y ورفعٍ شبه مؤكد في ديسمبر",
+  "summary": [
+   "تقرير CPI لشهر أكتوبر (صدر 11-10) جاء أسخن من التوقعات: الرئيسي 0.4% مقابل 0.3%، والأساسي 0.3% مقابل 0.2% على أساس شهري (تقويم المنصة).",
+   "بيانات FRED على المنصة عند 4.88% للعائد 10Y بتاريخ 11-09، أي متأخرة يوماً. التقارير الإعلامية تضع إغلاق 11-10 عند 4.98% (وصل لفترة وجيزة فوق 5%) والعائد 2Y عند 4.73%، والفارق 2s10s عند 25 bp يطابق رقم المنصة.",
+   "تحدث Waller عن احتمال رفع بمقدار 50 bp في ديسمبر، ودعمت Logan رفعين إضافيين على الأقل. احتمال الرفع في ديسمبر نحو 90% حسب FedWatch، وهو تقدير سوقي.",
+   "اليوم يرتفع Nasdaq بنحو 2% بقيادة CoreWeave وNvidia، لكن سوق السندات النقدي مغلق لعطلة Veterans Day. لذلك لم يمرّ الارتداد بعد على اختبار الفائدة.",
+   "الاستنتاج: سوق Breakeven ينخفض (2.20%) بينما العائد الاسمي يرتفع. معنى ذلك أن الصعود في العائد يأتي من العائد الحقيقي، وهذا أسوأ مزيج لتقييمات NQ."
+  ],
+  "bias": {
+   "direction": "bearish",
+   "confidence": 55,
+   "reason": "بوابتان من البوابات الحرجة سلبيتان وتزدادان سوءاً. الأولى: 10Y نحو 4.98% (تقدير إعلامي لإغلاق 11-10)، أي نحو +48 bp فوق حد 4.50%. الثانية: العائد الحقيقي المستنتج نحو 2.78%، فوق حد 2.00% وفي أعلى نطاق خمس سنوات (pct5 = 98.2 لرقم 2.66% بتاريخ 11-09). يضاف إلى ذلك أن السوق يسعّر رفعاً في ديسمبر (2Y − FF نحو +85 bp بالأرقام الإعلامية). ارتداد اليوم نحو 2% جاء من خبر شركة واحدة (CoreWeave) في يوم بلا تسعير للسندات النقدية. غداً يُعاد فتح سوق السندات، وتصدر Claims، ويُطرح مزاد 30Y بعد مزادين ضعيفين. ما يخفف الانحياز السلبي: VIX دون 20، وفارق الائتمان HY عند 3.34% دون أي ضغط. الثقة متوسطة إلى منخفضة لأن زخم AI قوي، ولأن ارتدادات NQ الحادة تكررت هذا الأسبوع."
+  },
+  "scenarios": [
+   {
+    "label": "A",
+    "name": "عودة ضغط الفائدة وتآكل ارتداد اليوم",
+    "prob": 40,
+    "trigger": "عودة 10Y فوق 5.00% عند إعادة الفتح، أو ذيل (tail) في مزاد 30Y عند 13:00 ET، أو تصريحات صقورية من Hammack/Barr/Goolsbee خلال 9:00–11:15 ET",
+    "reason": "مزادا 3Y و10Y كانا ضعيفين هذا الأسبوع (10Y: high yield 5.02% ونسبة تغطية 2.46 مقابل 2.77 سابقاً). والعائد الحقيقي في أعلى نطاقه، وقيادة NQ مقابل ES سلبية على 20 يوماً (−5.82%)."
+   },
+   {
+    "label": "B",
+    "name": "تذبذب عرضي واحتفاظ جزئي بالمكاسب",
+    "prob": 35,
+    "trigger": "استقرار 10Y بين 4.90% و5.00%، وصدور Claims قرب التوقع 195k، وبقاء VIX دون 20",
+    "reason": "تسعير رفع ديسمبر شبه مكتمل (نحو 90%)، فلا يضيف خبر صقوري متوقع الكثير. والائتمان هادئ، وبيانات العمل قوية دون تسارع إضافي."
+   },
+   {
+    "label": "C",
+    "name": "امتداد صعود AI رغم الفائدة",
+    "prob": 25,
+    "trigger": "تراجع 10Y نحو 4.90% أو أقل بعد الفتح، ومزاد 30Y قوي، واستمرار قيادة أشباه الموصلات وتفوق NQ على ES في الافتتاح",
+    "reason": "نتائج CoreWeave أعادت الطلب على أسهم AI. وانخفاض Breakeven والنفط (WTI نحو 87$ حسب تقديرات اليوم) قد يخفف علاوة التضخم إن توقف صعود العائد الحقيقي."
+   }
+  ],
+  "sections": [
+   {
+    "heading": "النمو",
+    "body": "الأرقام الرسمية على المنصة قديمة في معظمها. الناتج الحقيقي GDP للربع الثالث (as_of 2026-07-01، عمره 133 يوماً) ينمو 2.07% سنوياً، منخفضاً من 2.19%. الإنتاج الصناعي يتسارع إلى +2.25% سنوياً، ومبيعات التجزئة الاسمية إلى +6.29%، وكلاهما لسبتمبر (عمره 71 يوماً). الاستنتاج: مع تضخم رئيسي يقارب 4%، يبقى النمو الحقيقي للتجزئة نحو 2%، وهو جيد لكنه أقل لمعاناً من الرقم الاسمي. القطاع الحساس للفائدة يضعف بوضوح: بدايات الإسكان 1221 ألفاً (pct5 = 3.3)، وفائدة الرهن 30Y عند 7.18% (11-05). ثقة المستهلك UMich عند 48.1 لسبتمبر (pct5 = 3.3). المنصة تصنّف المرحلة «تسخيناً اقتصادياً (Reflation)»: نمو صناعي مع تضخم أساسي فوق 3%. هذا يدعم استمرار التشديد."
+   },
+   {
+    "heading": "سوق العمل",
+    "body": "سوق العمل لا يعطي الفيدرالي مبرراً للتريّث. معدل البطالة 4.1% لأكتوبر (عمره 41 يوماً)، ومتوسط الوظائف لثلاثة أشهر 137 ألفاً، صعوداً من 78.7 ألفاً. طلبات الإعانة الأولية 189k (أسبوع 10-31) عند أدنى نطاق خمس سنوات (pct5 = 0.8)، والوظائف الشاغرة JOLTS ارتفعت إلى 7.52 مليون (سبتمبر). قاعدة Sahm غير مفعّلة (نحو 0.00 pp). لا تعارض بين البطالة وطلبات الإعانة، فكلاهما يشير إلى سوق عمل مشدود. القراءة القادمة: Claims غداً 8:30 ET بتوقع 195k (تقدير سوقي، تقويم المنصة)."
+   },
+   {
+    "heading": "التضخم",
+    "body": "CPI أكتوبر جاء ساخناً: 0.4% للرئيسي و0.3% للأساسي شهرياً، أعلى من التوقع في الحالتين (تقويم المنصة). لم تنشر BLS معدلاً سنوياً لأكتوبر لغياب بيانات أكتوبر 2025 بسبب الإغلاق الحكومي. لذلك فالأرقام السنوية على المنصة (4.08% رئيسي، 2.87% أساسي) أرقام محسوبة، وتختلف عن «السابق» في التقويم (3.7%/2.6% لسبتمبر). نعتمد هنا الاتجاه الشهري لا المستوى السنوي. هناك أيضاً تعارض لافت: Core PCE لسبتمبر 3.12% (عمره 71 يوماً) أعلى من Core CPI المحسوب 2.87%، وهذا عكس النمط المعتاد. وفي المقابل، Breakeven 10Y ينخفض إلى 2.20% (pct5 = 8.6). أي أن سوق السندات يثق بأن الفيدرالي سيشدد، فيظهر الضغط في العائد الحقيقي لا في توقعات التضخم. الاختبار القادم PPI يوم الجمعة 8:30 ET (التوقع 0.4% شهرياً، تقدير سوقي)."
+   },
+   {
+    "heading": "الفائدة والفيدرالي",
+    "body": "سعر الفائدة الفعلي عند 3.88% لأكتوبر بعد رفع في سبتمبر، والنطاق 3.75%–4.00% بعد تثبيت في أكتوبر بتصويت 10-2. بعد CPI فتح Waller باب رفع بمقدار 50 bp في ديسمبر، ودعت Logan إلى رفعين على الأقل. السوق يسعّر رفع ديسمبر بنحو 90% حسب FedWatch، وهو تقدير. على المنحنى، 2Y عند 4.56% و10Y عند 4.88% في المنصة بتاريخ 11-09. التقارير الإعلامية لإغلاق 11-10 تعطي 4.73% و4.98%، والمنحنى 2s10s تسطّح إلى 25 bp (رقم المنصة لـ11-10). فارق 2Y − FF يرتفع بذلك من +68 إلى نحو +85 bp (استنتاج من الأرقام الإعلامية). مزاد 10Y كان ضعيفاً: high yield 5.02% ونسبة تغطية 2.46 مقابل 2.77. اليوم لا تداول نقدياً للسندات، وغداً يُطرح مزاد 30Y عند 13:00 ET، وكان سابقه 5.618%."
+   },
+   {
+    "heading": "المخاطر والأسواق",
+    "body": "أغلق NDX عند 27740.8 في 11-10، وما زال يتذبذب بعنف منذ 11-05. ذلك اليوم هبط المؤشر 6.4% بين إغلاقين (من 28437.17 إلى 26629.81)، وقفز VIX من 16.61 إلى 28.18. لم نتحقق من سبب الهبوط. عاد VIX إلى 19.46 (11-10)، وفارق HY عند 3.34% بلا ضغط ائتماني. اليوم يرتفع NQ نحو 2% (تقديرات إعلامية: العقود قرب 28,355 قبل الافتتاح)، وهو يتفوق على ES بفضل CoreWeave وNvidia. النفط في المنصة قديم: 99.64$ بتاريخ 11-03، بينما تشير تقارير اليوم إلى WTI نحو 87$ بعد قاع شهرين، مع عودة هجمات الشحن في Hormuz. وعلى الصعيد السياسي، خسر الحزب الجمهوري الانتخابات النصفية، والديمقراطيون يخططون للطعن في الرسوم الجمركية مع الكونغرس الجديد في يناير 2027. هذا ليس محفّزاً لجلسة الغد."
+   }
+  ],
+  "gates_read": "بوابة 10Y سلبية. المنصة تعرض 4.88% (11-09، +38 bp فوق 4.50%)، لكن الإغلاق الإعلامي لـ11-10 عند 4.98%، أي نحو +48 bp. هذا الرقم غير متحقق في المنصة، ولا تسعير نقدي اليوم. بوابة VIX إيجابية: 19.46 دون حد 20، ومسافة كبيرة عن حد الضغط 25. لكن قفزة 11-05 إلى 28 تُذكّر بأن الهدوء هش. بوابة العائد الحقيقي سلبية: 2.66% بتاريخ 11-09، ونحو 2.78% مستنتجة لـ11-10 من 4.98% ناقص Breakeven 2.20%. هذا فوق حد 2.00% بفارق كبير. بوابة القيادة سلبية على 20 يوماً: NDX/SPX عند −5.82%، أي دوران بعيداً عن النمو. اليوم انقلبت مؤقتاً لصالح NQ بنحو +0.5 إلى +0.8 نقطة مئوية مقارنة بـS&P (تقدير من أرقام Yahoo). يوم واحد لا يغيّر اتجاه 20 يوماً. الخلاصة: بوابتا الفائدة تعملان ضد NQ، وبوابتا التذبذب والائتمان تسمحان بالارتدادات، فالأرجح جلسات متقلبة لا اتجاه صعودي نظيف.",
+  "watch": [
+   "2026-11-12 قبل الافتتاح: إعادة فتح سوق السندات النقدي. هل يثبت 10Y فوق 5.00% أم يعود دون 4.90%؟",
+   "2026-11-12 08:30 ET: Initial Claims (توقع 195k، السابق 189k) وContinued Claims (توقع 1.71M). المصدر تقويم المنصة.",
+   "2026-11-12 09:00 ET: Hammack. ثم 10:00 ET: Existing Home Sales (توقع 3.85M) وBarr. ثم 11:15 ET: Goolsbee.",
+   "2026-11-12 12:00 ET: مخزونات EIA للنفط. ثم 13:00 ET: مزاد 30Y (السابق 5.618%، نسبة التغطية 2.54). ثم 13:10 ET: Daly، و13:30 ET: Schmid.",
+   "2026-11-12 18:30 ET: Williams. ثم 19:00 ET: Jefferson.",
+   "2026-11-13 08:30 ET: PPI (توقع 0.4% شهرياً و6.6% سنوياً، Core PPI بتوقع 0.3% شهرياً). ثم 09:10 ET: Williams، و10:50 ET: Bowman، و12:00 ET: Daly.",
+   "قيادة أشباه الموصلات (Nvidia) ونسبة NQ/ES في أول ساعة من جلسة الغد: هل استمر تأثير CoreWeave أم تلاشى؟"
+  ],
+  "risks": [
+   "رفع بمقدار 50 bp في ديسمبر، طرحه Waller، لم يُسعَّر بالكامل بعد. أي إشارة من Williams أو Jefferson لتأييده قد تدفع العائد الحقيقي أعلى.",
+   "مزاد 30Y ضعيف بعد مزادين ضعيفين قد يكسر 10Y فوق 5% بوضوح. قد يظهر أثره قبل جلسة NY أو بعدها مباشرة.",
+   "صدمة نفط جديدة من هجمات الشحن في Hormuz تعيد التضخم الرئيسي إلى الصعود.",
+   "تذبذب أسهم AI ذات الوزن الكبير، ومنها أخبار عن تحقيق داخلي يخص Nvidia يجب التحقق منها. هبوط 11-05 بنسبة 6.4% يُظهر قابلية NQ لحركات حادة.",
+   "استدلال تاريخي متداول بأن الركود تبع رفع الفائدة في ظل صدمة نفط مرتين من آخر ثلاث مرات. حجم العينة ثلاث حالات فقط، فهو «غير مثبت» ولا يُبنى عليه."
+  ],
+  "data_audit": [
+   "DGS10 (4.88%) وDFII10 (2.66%) وDGS2 (4.56%) بتاريخ 11-09، أي متأخرة يوماً. استخدمتُ إغلاق 11-10 من مصادر إعلامية (10Y 4.98%، 2Y 4.73%) بوصفها تقديرات. واستنتجتُ العائد الحقيقي نحو 2.78% من 10Y ناقص T10YIE، وقد تحققتُ أن المعادلة تطابق أرقام 11-09 بالضبط.",
+   "اليوم 11-11 عطلة لسوق السندات، فلن تظهر أرقام FRED للعوائد لهذا اليوم. لا تُفسَّر الفجوة على أنها ثبات في الفائدة.",
+   "WTI على المنصة 99.64$ بتاريخ 11-03 (عمره 8 أيام). التقارير الإعلامية اليوم تضعه نحو 86.5–87$. عاملتُ رقم المنصة على أنه قديم، والرقم الإعلامي تقديراً.",
+   "CPI السنوي: لم تنشر BLS معدلاً سنوياً لأكتوبر بسبب غياب بيانات أكتوبر 2025. الأرقام السنوية على المنصة (4.08%/2.87%) محسوبة، وتتعارض مع «السابق» في التقويم (3.7%/2.6%). اعتمدتُ القراءة الشهرية والاتجاه فقط.",
+   "تعارض Core PCE (3.12%، سبتمبر، عمره 71 يوماً) مع Core CPI المحسوب (2.87%): ذكرتُه دون حسم، فـPCE أكتوبر لم يصدر بعد.",
+   "البيانات الشهرية قديمة: INDPRO وRSAFS وHOUST وJOLTS وUMich وM2 لسبتمبر (71 يوماً)، وGDP للربع الثالث (133 يوماً)، وFEDFUNDS وUNRATE وPAYEMS لأكتوبر (41 يوماً)، ومؤشر الدولار الواسع بتاريخ 11-06 (5 أيام).",
+   "احتمال رفع ديسمبر (نحو 90%) تقدير سوقي من FedWatch منقول عبر وسيلة إعلامية، وليس رقماً رسمياً.",
+   "أرقام العقود والمؤشرات اليوم مأخوذة من مصادر إعلامية تتباين فيما بينها، حتى داخل الصفحة نفسها (S&P بين +0.9% و+1.6%). استخدمتُ النطاق لا رقماً واحداً.",
+   "سبب هبوط 11-05 وموعد اجتماع FOMC في ديسمبر لم أتحقق منهما بالبحث بعد استنفاد حد البحث. لم أنسب لهما أي سبب أو تاريخ محدد.",
+   "طرح Anthropic IPO مدرج في التقويم بتاريخ 11-10 (مبدئي). لم أتحقق من حدوثه، فاستبعدتُه من التحليل."
+  ],
+  "events": [
+   {
+    "title": "CPI أكتوبر: الرئيسي 0.4% والأساسي 0.3% شهرياً، أعلى من التوقعات",
+    "date": "2026-11-10",
+    "url": "https://www.cnbc.com/2026/11/10/cpi-inflation-report-october-2026.html"
+   },
+   {
+    "title": "Waller يطرح رفعاً بمقدار 50 bp في ديسمبر، وLogan تدعم رفعين على الأقل",
+    "date": "2026-11-10",
+    "url": "https://www.bloomberg.com/news/articles/2026-11-10/fed-s-waller-backs-december-rate-hike-says-open-to-larger-move"
+   },
+   {
+    "title": "قفزة العوائد: 10Y يقترب من 5% بعد CPI وتصريحات Waller",
+    "date": "2026-11-10",
+    "url": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html"
+   },
+   {
+    "title": "مزاد 10Y ضعيف: high yield 5.020% ونسبة تغطية 2.46",
+    "date": "2026-11-10",
+    "url": "https://cryptobriefing.com/us-10-year-treasury-auction-sees-reduced-foreign-demand-highest-yield-tail/"
+   },
+   {
+    "title": "إغلاق 11-10: 2Y +17 bp إلى 4.73%، و10Y إلى 4.98%، و2s10s عند 25 bp",
+    "date": "2026-11-10",
+    "url": "https://cappnotes.substack.com/p/closing-look-tuesday-november-10"
+   },
+   {
+    "title": "Veterans Day: الأسهم مفتوحة وسوق السندات مغلق، ويُعاد فتحه الخميس",
+    "date": "2026-11-11",
+    "url": "https://www.tradingview.com/news/seekingalpha:f10e6b314094b:0-are-markets-open-on-veterans-day/"
+   },
+   {
+    "title": "Nasdaq وأشباه الموصلات ترتفع بعد نتائج CoreWeave وتعافي Nvidia",
+    "date": "2026-11-11",
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-november-11-dow-sp-500-nasdaq-nvidia-treasurys-123445799.html"
+   },
+   {
+    "title": "احتمال رفع ديسمبر نحو 90% حسب FedWatch (تقدير)",
+    "date": "2026-11-11",
+    "url": "https://www.stocktitan.net/articles/stock-market-today-live-november-10-2026"
+   },
+   {
+    "title": "النفط يرتد من قاع شهرين مع هجمات الشحن في Hormuz وتعثر مسار السلام مع إيران",
+    "date": "2026-11-11",
+    "url": "https://www.oilandgas360.com/crude-prices-recover-as-shipping-attacks-complicate-iran-peace-efforts/"
+   },
+   {
+    "title": "EIA تتوقع بقاء Brent قرب 100$ حتى نهاية العام",
+    "date": "2026-11-11",
+    "url": "https://www.morningstar.com/news/pr-newswire/20261111ln94955/eia-sees-brent-near-100-for-the-rest-of-the-year-as-crude-futures-ease-again"
+   },
+   {
+    "title": "الرسوم الجمركية بعد الانتخابات النصفية: كندا تسعى لتخفيفها والصين تمدد التهدئة",
+    "date": "2026-11-10",
+    "url": "https://www.bloomberg.com/latest/trump-tariffs"
+   },
+   {
+    "title": "الديمقراطيون يستعدون لتشريع ضد رسوم Trump مع الكونغرس الجديد في يناير 2027",
+    "date": "2026-11-09",
+    "url": "https://www.asiae.co.kr/en/article/world-general/2026110908403718833"
+   }
+  ],
+  "one_liner": "الأسهم ارتفعت اليوم وسوق السندات مغلق؛ غداً يُفتح سوق السندات، فراقب 5% على 10Y ومزاد 30Y قبل أن تصدّق الارتداد.",
+  "sources": [
+   {
+    "url": "https://pro.thestreet.com/stock-market-today/2026-11-11#update-wp:29740",
+    "title": "Stock Market Today: November 11, 2026"
+   },
+   {
+    "url": "https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-nov-11-2026",
+    "title": "Stock Market Today (Nov. 11, 2026): Nasdaq, S&P 500 whipsaws higher as CoreWeave lifts AI trade - TheStreet"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-november-11-dow-sp-500-nasdaq-nvidia-treasurys-123445799.html",
+    "title": "Stock market today: Nasdaq, S&P 500, Dow rise as Nvidia stock recovers, chip stocks rally after CoreWeave earnings"
+   },
+   {
+    "url": "https://sg.finance.yahoo.com/news/live/stock-market-today-wednesday-november-11-dow-sp-500-nasdaq-nvidia-treasurys-veterans-day-140638547.html",
+    "title": "Stock market today: Nasdaq, S&P 500, Dow rise as Nvidia stock recovers, chip stocks rally after CoreWeave earnings"
+   },
+   {
+    "url": "https://investrade.com/mid-morning-look-november-11-2026/",
+    "title": "Mid-Morning Look: November 11, 2026 - Investrade"
+   },
+   {
+    "url": "https://www.stocktitan.net/articles/stock-market-today-live-november-10-2026",
+    "title": "The Stock Market Today, November 10, 2026, Closed Lower on the Day BLS Data Show Core Prices Rising Again"
+   },
+   {
+    "url": "https://www.stocktitan.net/articles/stock-market-today-live-november-11-2026",
+    "title": "Tech Stocks Rise in the Stock Market Today Live, November 11, 2026, With CoreWeave Up the Day After Its Results"
+   },
+   {
+    "url": "https://algotradealert.substack.com/p/stock-market-update-monday-november-448",
+    "title": "Daily Stock Market Update"
+   },
+   {
+    "url": "https://seekingalpha.com/news/3440130-carlos-ghosn-released-on-9m-bail",
+    "title": "Top Stocks for 2026 with Steven Cress–Register Now"
+   },
+   {
+    "url": "https://theweekendspread.substack.com/p/the-open-wednesday-november-11-2026",
+    "title": "The Open: Wednesday, November 11, 2026"
+   },
+   {
+    "url": "https://theblyesheet.substack.com/p/the-blye-sheet-before-the-bell-november-b53",
+    "title": "The Blye Sheet: Before the Bell — November 11, 2026"
+   },
+   {
+    "url": "https://kasmcapital.substack.com/p/morning-note-november-11-2026",
+    "title": "Morning Note — November 11, 2026 - KASM Capital"
+   },
+   {
+    "url": "https://beinsure.com/news/nasdaq-futures-forecast-ai-stocks-rebound/",
+    "title": "Nasdaq Futures forecast: AI stocks rebound as Goldman Sachs, JPMorgan and Morgan Stanley assess market outlook"
+   },
+   {
+    "url": "https://www.kucoin.com/news/flash/us-major-stock-index-futures-rise-nasdaq-futures-up-1-67",
+    "title": "U.S. major stock index futures rise, Nasdaq futures up 1.67%"
+   },
+   {
+    "url": "https://x.com/thedave2006/status/2120522547158532168",
+    "title": "Stock Talk Thedave2006 Canada and US 🇨🇦 on X: \"Pre-Market Wrap — Wednesday, November 11, 2026 (Veterans Day) Open: U.S. stocks and options (NYSE/Nasdaq normal hours 9:30 AM–4:00 PM ET), Canada (TSX), Europe (LSE, Xetra/DAX, CAC, STOXX), Japan, Hong Kong, Korea, Australia, and most futures (CME e… / X"
+   },
+   {
+    "url": "https://www.investing.com/indices/nq-100-futures-historical-data",
+    "title": "Nasdaq 100 Futures Historical Data"
+   },
+   {
+    "url": "https://nexo.com/blog/markets-today-november-11",
+    "title": "Markets Today - November 11, 2026"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Nasdaq",
+    "title": "Nasdaq"
+   },
+   {
+    "url": "https://investrade.com/morning-preview-november-11-2026/",
+    "title": "Morning Preview: November 11, 2026 - Investrade"
+   },
+   {
+    "url": "https://www.morningstar.com/economy/october-cpi-report-shows-inflation-04-monthly-rate-above-forecasts",
+    "title": "October CPI Report Shows Inflation at a 0.4% Monthly Rate, Above Forecasts"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/10/cpi-inflation-report-october-2026.html",
+    "title": "CPI inflation report: October 2026"
+   },
+   {
+    "url": "https://www.kiplinger.com/investing/economy/october-2026-cpi-report-what-to-expect&gsessionid=CyoGvMnaeQpe51pygYmMNq-2HDMl9NVXlsGBr25qMXgBqIgOJycZBA",
+    "title": "October CPI Report: What the Inflation Data Is Expected to Show"
+   },
+   {
+    "url": "https://finance.yahoo.com/economy/article/not-great-october-cpi-inflation-data-comes-in-hotter-than-expected-as-food-and-rent-costs-spike-142323507.html",
+    "title": "'Not great': October CPI inflation rises 0.4% as food and rent costs spike"
+   },
+   {
+    "url": "https://axios.com/2026/11/10/inflation-cpi-interest-rates",
+    "title": "Harsh new inflation reality"
+   },
+   {
+    "url": "https://cpichart.com/cpi-release-calendar/",
+    "title": "When Is the Next CPI Report? November 10, 2026, 8:30 a.m. ET — CPI Release Schedule"
+   },
+   {
+    "url": "https://www.stocktitan.net/articles/october-2026-cpi-inflation-report",
+    "title": "CPI Report Shows Core Prices Up 0.3% Again, Hitting Waller's Line for Weighing a Half Point Hike"
+   },
+   {
+    "url": "https://www.stocktitan.net/articles/october-2026-cpi-preview-no-yearly-rate",
+    "title": "Next CPI Report on November 10 Will Have No Yearly Inflation Rate for Overall Prices"
+   },
+   {
+    "url": "https://www.nerdwallet.com/article/finance/cpi-report-march-2023",
+    "title": "Inflation Cooled in November"
+   },
+   {
+    "url": "https://pro.thestreet.com/stock-market-today/2026-11-10",
+    "title": "Stock Market Today: November 10, 2026"
+   },
+   {
+    "url": "https://www.bloomberg.com/news/articles/2026-11-10/fed-s-waller-backs-december-rate-hike-says-open-to-larger-move",
+    "title": "Interest-Rate Hike Debate Sparked by Fed's Waller, Logan After Hot Inflation - Bloomberg"
+   },
+   {
+    "url": "https://www.washingtonpost.com/business/2026/11/10/trump-appointed-fed-member-signals-big-rate-hike-inflation-runs-hot/",
+    "title": "Trump-appointed Fed member signals big rate hike as inflation runs hot - The Washington Post"
+   },
+   {
+    "url": "https://axios.com/2026/11/10/federal-reserve-rate-hikes",
+    "title": "Get ready for rate hike(s)"
+   },
+   {
+    "url": "https://www.washingtontimes.com/news/2026/nov/11/higher-prices-seep-broader-economy-federal-reserve-officials-consider/",
+    "title": "As higher prices seep into broader economy, Fed officials consider faster hikes"
+   },
+   {
+    "url": "https://theenergynewsbeat.substack.com/p/the-fed-is-signaling-more-rate-hikes",
+    "title": "The Fed Is Signaling More Rate Hikes Into an Oil Shock. Two of the Last Three Times, Recession Followed."
+   },
+   {
+    "url": "https://cnbc.com/2026/11/11/goolsbee-october-inflation-fed-rates-disturbing-distressing.html",
+    "title": "Fed's Goolsbee calls inflation report 'borderline disturbing' as central bank weighs more hikes"
+   },
+   {
+    "url": "https://www.bnnbloomberg.ca/business/international/2026/11/11/as-higher-prices-seep-into-broader-economy-us-fed-officials-consider-faster-hikes/",
+    "title": "U.S. Fed officials consider faster hikes of key interest rate"
+   },
+   {
+    "url": "https://cnbc.com/2026/11/10/fed-governor-waller-sees-december-hike-likely.html",
+    "title": "Fed Governor Waller sees December hike likely, opens door to possible half-point increase"
+   },
+   {
+    "url": "https://cappnotes.substack.com/p/closing-look-tuesday-november-10",
+    "title": "Closing Look — Tuesday, November 10, 2026"
+   },
+   {
+    "url": "https://tradingeconomics.com/united-states/government-bond-yield",
+    "title": "US 10 Year Treasury Note Yield - Quote - Chart - Historical Data - News"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/10-year-note-auction-571",
+    "title": "United States 10-Year Note Auction"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html",
+    "title": "10-year Treasury yield races back to 5% as inflation data, Waller comments drive rate hike expectations"
+   },
+   {
+    "url": "https://cryptobriefing.com/us-10-year-treasury-auction-sees-reduced-foreign-demand-highest-yield-tail/",
+    "title": "US 10-year Treasury auction sees reduced foreign demand, highest yield tail since Feb"
+   },
+   {
+    "url": "https://helious.io/news/auc-91282CRX1-2026-11-10/10-year-note-auction-in-line",
+    "title": "10-Year Treasury Note Auction Results"
+   },
+   {
+    "url": "https://www.forbes.com/advisor/investing/treasury-rates/",
+    "title": "Treasury Rates Today: November 9, 2026"
+   },
+   {
+    "url": "https://stockmarketwatch.com/bonds/10-year-treasury-yield",
+    "title": "10-Year Treasury Yield Today — Live Rate & Chart"
+   },
+   {
+    "url": "https://www.bloomberg.com/latest/trump-tariffs",
+    "title": "Trump’s Tariffs: Trending News, Latest Updates, Analysis"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Learning_Resources,_Inc._v._Trump",
+    "title": "Learning Resources, Inc. v. Trump"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Busan_Summit",
+    "title": "Busan Summit"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/2026_United_States_elections",
+    "title": "2026 United States elections"
+   },
+   {
+    "url": "https://www.whitehouse.gov/releases/2026/11/president-trump-was-right-tariffs-and-tax-cuts-are-reshoring-manufacturing-creating-jobs/",
+    "title": "President Trump Was Right: Tariffs and Tax Cuts Are Reshoring Manufacturing, Creating Jobs"
+   },
+   {
+    "url": "https://www.asiae.co.kr/en/article/world-general/2026110908403718833",
+    "title": "U.S. Democrats Launch Push to Repeal Trump Tariffs, Targeting Canada First - The Asia Business Daily"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/10/trump-tariffs-midterms-gary-cohn-inflation.html",
+    "title": "White House vows to press ahead with tariffs despite midterm backlash over rising prices"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/08/trump-tariffs-democrats-congress-canada.html",
+    "title": "How Democrats will try to end Trump's tariffs"
+   },
+   {
+    "url": "https://ua.news/en/dovkolo-svitu/bilii-dim-ssha-prodovzhit-tarifnu-politiku-popri-reaktsiiu-vibortsiv-cnbc",
+    "title": "White House to continue Trump tariff policy despite voter reaction"
+   },
+   {
+    "url": "https://www.yahoo.com/news/us/articles/today-federal-holiday-whats-open-140330137.html",
+    "title": "Is today a federal holiday? What's open, closed on Veterans Day 2026?"
+   },
+   {
+    "url": "https://www.tradingview.com/news/seekingalpha:f10e6b314094b:0-are-markets-open-on-veterans-day/",
+    "title": "Are markets open on Veterans Day? — TradingView News"
+   },
+   {
+    "url": "https://finance.yahoo.com/personal-finance/investing/article/is-the-stock-market-open-on-veterans-day-153919156.html",
+    "title": "Is the stock market open on Veterans Day?"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-open-veterans-day-155702532.html",
+    "title": "Is the Stock Market Open on Veterans Day?"
+   },
+   {
+    "url": "https://www.today.com/life/holidays/open-veterans-day-2026-banks-post-office-what-closed-rcna607019",
+    "title": "What’s Open and Closed on Veterans Day 2026: Banks, USPS and More"
+   },
+   {
+    "url": "https://finance.yahoo.com/personal-finance/investing/article/is-the-stock-market-open-on-presidents-day-what-to-know-about-the-holiday-trading-schedule-in-2026-210239969.html",
+    "title": "is the stock market open on presidents day what to know about the holiday trading schedule in 2026 210239969"
+   },
+   {
+    "url": "https://benzinga.com/z/29662119",
+    "title": "Is The Stock Market Open On Veterans Day? 2 More Market Holidays Left In 2022"
+   },
+   {
+    "url": "https://www.benzinga.com/government/22/11/29662119/is-the-stock-market-open-on-veterans-day-2-more-market-holidays-left-in-2022",
+    "title": "Is The Stock Market Open On Veterans Day? 2 More Market Holidays Left In 2022"
+   },
+   {
+    "url": "https://www.axios.com/2022/11/11/veterans-day-open-closed-list-no-mail",
+    "title": "Veterans Day 2022: What's open and closed Friday"
+   },
+   {
+    "url": "https://www.oilandgas360.com/crude-prices-recover-as-shipping-attacks-complicate-iran-peace-efforts/",
+    "title": "Crude prices recover as shipping attacks complicate Iran peace efforts - Oil & Gas 360"
+   },
+   {
+    "url": "https://www.oilpriceapi.com/oil-prices-today",
+    "title": "Oil Prices Today: WTI & Brent Crude Benchmarks"
+   },
+   {
+    "url": "https://www.angelone.in/news/commodities/crude-oil-prices-hovers-near-11-week-lows-as-us-iran-tensions-ease-november-11-2026",
+    "title": "Crude Oil Prices Hovers Near 11-Week Lows as US-Iran Tensions Ease"
+   },
+   {
+    "url": "https://www.inkl.com/news/current-price-of-oil-as-of-nov-11-2026",
+    "title": "Current price of oil as of Nov. 11, 2026"
+   },
+   {
+    "url": "https://www.morningstar.com/news/pr-newswire/20261111ln94955/eia-sees-brent-near-100-for-the-rest-of-the-year-as-crude-futures-ease-again",
+    "title": "EIA Sees Brent Near $100 for the Rest of the Year as Crude Futures Ease Again"
+   },
+   {
+    "url": "https://invezz.com/sg/news/2026/11/11/oil-price-today-brent-rebounds-to-dollar93-despite-a-massive-opec-output-surge/",
+    "title": "Oil price today: Brent rebounds to $93 despite a massive OPEC+ output surge"
+   },
+   {
+    "url": "https://www.newswire.ca/news-releases/eia-sees-brent-near-100-for-the-rest-of-the-year-as-crude-futures-ease-again-852493973.html",
+    "title": "EIA Sees Brent Near $100 for the Rest of the Year as Crude Futures Ease Again"
+   },
+   {
+    "url": "https://www.litefinance.org/blog/analysts-opinions/oil-price-prediction-forecast/daily-and-weekly/",
+    "title": "Oil (USCrude) Price Forecast and Analysis for Today, Tomorrow, Next Week, and 30 Days"
+   },
+   {
+    "url": "https://www.everhint.com/commodities-futures-november-11-2026-midday-update-last-12-hours-pacific-time/",
+    "title": "Commodities & Futures — November 11, 2026 — Midday Update — Last 12 Hours (Pacific Time)"
+   },
+   {
+    "url": "https://www.newsonair.gov.in/oil-prices-climb-amid-opecs-limited-output-boost",
+    "title": "October 6, 2025 6:55 PM"
+   }
+  ],
+  "meta": {
+   "written_at": "2026-11-11T19:31:50Z",
+   "ny_date": "2026-11-11",
+   "model": "claude-opus-5-5",
+   "usage": {
+    "input_tokens": 14,
+    "output_tokens": 16117,
+    "cache_creation_input_tokens": 38351,
+    "cache_read_input_tokens": 142178
+   }
+  }
+ },
+ {
   "title": "CPI ساخن + مزاد 10Y ضعيف عند 5%: الفائدة تعود لقيادة NQ، والجلسة القادمة بلا سوق سندات نقدية",
   "summary": [
    "CPI أكتوبر: الرئيسي +0.4% شهرياً (التوقع 0.3%) والأساسي +0.3% (التوقع 0.2%) وSupercore +0.4%؛ والأساسي عند 0.3% للشهر الثالث على التوالي.",
