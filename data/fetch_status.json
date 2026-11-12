@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-12T19:51:10Z",
+ "fetched_utc": "2026-11-12T22:43:29Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -113,6 +113,6 @@
   }
  },
  "extra_warnings": [
-  "فشل كتابة تقرير Claude: {'type': 'error', 'error': {'details': None, 'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go "
+  "فشل كتابة تقرير Claude: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go"
  ]
 }
