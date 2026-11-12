@@ -226,7 +226,8 @@ def kpis(snap: pd.DataFrame) -> list[dict]:
             continue
         r = rows.loc[sid]
         out.append({"id": sid, "label": r["name_ar"], "value": _r(r["last"]), "unit": r["unit"],
-                    "change": _r(r["change"]), "good_up": r["good_up"], "as_of": r["as_of"].strftime("%Y-%m-%d")})
+                    "change": _r(r["change"]), "good_up": r["good_up"], "as_of": r["as_of"].strftime("%Y-%m-%d"),
+                    "unavailable": r.get("unavailable")})
     return out
 
 
@@ -247,19 +248,28 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
                                "issues": st.get("issues") or ["لا بيانات"]})
             warnings.append(f"{ind.name_ar} ({ind.id}): لا بيانات")
             continue
-        age = staleness_days(ind, s, now_ts)
-        if age > MAX_AGE_OVERRIDE.get(ind.id, MAX_AGE_DAYS[ind.freq]) and st["state"] == "ok":
+        # حالة الجلب وعمره من آخر قيمة نشرها المصدر؛ عمر القراءة المعروضة من تاريخها (as_of). يختلفان فقط حين
+        # تكون أحدث قراءة غير قابلة للحساب (unavailable)، فلا يُحسب غيابها خطأ جلب ولا يُخفى عمر ما يُعرض فعلاً.
+        source_age = staleness_days(ind, s, now_ts)
+        if source_age > MAX_AGE_OVERRIDE.get(ind.id, MAX_AGE_DAYS[ind.freq]) and st["state"] == "ok":
             st["state"] = "stale"
-            st["issues"] = st["issues"] + [f"آخر قيمة عمرها {age} يوماً"]
+            st["issues"] = st["issues"] + [f"آخر قيمة عمرها {source_age} يوماً"]
         if st["issues"]:
             warnings.append(f"{ind.name_ar} ({ind.id}): {'؛ '.join(st['issues'])}")
         r = snap_rows[ind.id]
+        age = int((now_ts.normalize() - r["as_of"].normalize()).days)
+        unavailable = r.get("unavailable")
+        if unavailable:
+            fetch = (f"الجلب سليم، وآخر قيمة من المصدر بتاريخ {r['source_as_of']:%Y-%m-%d}"
+                     if st["state"] == "ok" else "")
+            warnings.append(f"{ind.name_ar} ({ind.id}): {unavailable['reason']}" + (f". {fetch}" if fetch else ""))
         indicators.append({
             "id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
             "freq": ind.freq, "transform": ind.transform, "unit": ind.unit, "good_up": ind.good_up,
             "last": _r(r["last"]), "prev": _r(r["prev"]), "change": _r(r["change"]),
             "z5": _r(r["z5"], 2), "pct5": _r(r["pct5"], 1), "as_of": r["as_of"].strftime("%Y-%m-%d"),
             "age_days": age, "state": st["state"], "issues": st["issues"],
+            "source_as_of": r["source_as_of"].strftime("%Y-%m-%d"), "unavailable": unavailable,
             "points": chart_points(ind, s),
         })
     q = growth_inflation_quadrant(series)

@@ -13,11 +13,41 @@ HOT_CORE_PCE = 2.5  # أعلى من هدف الاحتياطي الفيدرالي
 ZSCORE_YEARS = 5
 
 
+# التغير السنوي للسلاسل الشهرية والفصلية يُحسب بالفترة التقويمية لا بترتيب الصفوف: كل قراءة تُقارن بآخر قراءة في
+# الفترة نفسها قبل سنة (الشهر أو الربع)، أياً كان يوم التاريخ داخل الفترة (أول الشهر، آخره، أو منتصفه).
+# الفترة التي لم ينشرها المصدر تبقى بلا قيمة ولا تُملأ. غياب أكتوبر 2025 من CPI جعل pct_change(12) الموضعي يحسب
+# نوفمبر 2025 حتى أكتوبر 2026 على 13 شهراً. اليومي والأسبوعي (252 و52 صفاً) بلا تغيير. التحويلات الأخرى بلا تغيير.
+YOY_PERIOD = {"M": "M", "Q": "Q"}
+PERIOD_AR = {"M": "شهر", "Q": "ربع"}
+MONTHS_AR = ("يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر",
+             "ديسمبر")
+
+
+def period_label(d: pd.Timestamp, freq: str) -> str:
+    if freq == "M":
+        return f"{MONTHS_AR[d.month - 1]} {d.year}"
+    if freq == "Q":
+        return f"الربع {(d.month - 1) // 3 + 1} {d.year}"
+    return d.strftime("%Y-%m-%d")
+
+
+def yoy(s: pd.Series, freq: str) -> pd.Series:
+    n = PERIODS_PER_YEAR[freq]
+    pfreq = YOY_PERIOD.get(freq)
+    if pfreq is None or s.empty:
+        return s.pct_change(n) * 100
+    periods = s.index.to_period(pfreq)
+    # آخر قراءة في كل فترة؛ الأساس هو الفترة نفسها قبل n فترات. لا pct_change: افتراضه في pandas 2.x يملأ الفجوات.
+    last_in_period = pd.Series(s.to_numpy(), index=periods).groupby(level=0).last()
+    base = last_in_period.reindex(periods.shift(-n)).to_numpy()
+    return pd.Series((s.to_numpy() / base - 1) * 100, index=s.index, name=s.name)
+
+
 def transform(s: pd.Series, kind: str, freq: str) -> pd.Series:
     if kind == "level":
         return s
     if kind == "yoy":
-        return s.pct_change(PERIODS_PER_YEAR[freq]) * 100
+        return yoy(s, freq)
     if kind == "diff":
         return s.diff()
     if kind == "diff_avg3":
@@ -44,6 +74,7 @@ def snapshot(series: dict[str, pd.Series], indicators=INDICATORS) -> pd.DataFram
         if t.empty:
             continue
         last_date = t.index[-1]
+        source_last = raw.dropna().index[-1]
         last = float(t.iloc[-1])
         prev = float(t.iloc[-2]) if len(t) > 1 else float("nan")
         window = t[t.index >= last_date - pd.DateOffset(years=ZSCORE_YEARS)]
@@ -54,9 +85,29 @@ def snapshot(series: dict[str, pd.Series], indicators=INDICATORS) -> pd.DataFram
             "id": ind.id, "category": ind.category, "name_ar": ind.name_ar, "name_en": ind.name_en,
             "unit": ind.unit, "freq": ind.freq, "good_up": ind.good_up,
             "as_of": last_date, "last": last, "prev": prev, "change": last - prev,
-            "z5": z, "pct5": pct,
+            "z5": z, "pct5": pct, "source_as_of": source_last,
+            "unavailable": yoy_unavailable(ind, raw, last_date),
         })
     return pd.DataFrame(rows)
+
+
+def yoy_unavailable(ind: Indicator, raw: pd.Series, last_date: pd.Timestamp) -> dict | None:
+    """قراءة نشرها المصدر ولا يمكن حساب تغيرها السنوي (فترة المقارنة غائبة): تُعلَن غير متاحة بدل حسابها خطأً.
+    هذا منفصل عن حالة الجلب: الجلب قد يكون سليماً والتغير السنوي لآخر قراءة غير متاح."""
+    if ind.transform != "yoy" or ind.freq not in YOY_PERIOD:
+        return None
+    raw = raw.dropna()
+    newest = raw.index[-1]
+    if newest <= last_date:
+        return None
+    base = newest - pd.DateOffset(years=1)
+    pfreq = YOY_PERIOD[ind.freq]
+    base_published = newest.to_period(pfreq) - PERIODS_PER_YEAR[ind.freq] in set(raw.index.to_period(pfreq))
+    label, base_label, period = period_label(newest, ind.freq), period_label(base, ind.freq), PERIOD_AR[ind.freq]
+    why = (f"تعذر الحساب مقابل {base_label}" if base_published
+           else f"{period} المقارنة ({base_label}) غير منشور في المصدر")
+    return {"date": newest.strftime("%Y-%m-%d"), "label": label, "base": base.strftime("%Y-%m-%d"),
+            "base_label": base_label, "reason": f"التغير السنوي لقراءة {label} غير متاح: {why}"}
 
 
 def sahm_rule(unrate: pd.Series) -> pd.Series:

@@ -120,6 +120,7 @@ tbody tr{cursor:pointer}
 tbody tr:hover{background:var(--surface-2)}
 tbody tr[aria-selected="true"]{background:var(--acc-soft)}
 td .en{display:block;color:var(--muted);font-size:12px}
+td .yoy-na{white-space:normal;min-width:14em}  /* سبب غياب التغير السنوي طويل: يلتف بدل توسيع الجدول */
 .num{direction:ltr;unicode-bidi:isolate}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:6px;background:var(--ok)}
 .dot.stale{background:var(--warn)} .dot.error{background:var(--bad)}
@@ -388,7 +389,7 @@ function renderHeader(data) {
   $("#kpis").innerHTML = data.kpis.map(k => {
     const tone = chgTone(k.change, k.good_up);
     return `<div class="kpi"><span>${esc(k.label)}</span><b class="num">${esc(fmt(k.value, k.unit))}</b>
-      <small class="num tone-${tone}">${arrow(k.change)} ${esc(fmt(Math.abs(k.change ?? 0)))}</small> <small>· ${esc(k.as_of)}</small></div>`;
+      <small class="num tone-${tone}">${arrow(k.change)} ${esc(fmt(Math.abs(k.change ?? 0)))}</small> <small>· ${esc(k.as_of)}</small>${k.unavailable ? ` <small class="tone-warn yoy-na" title="${esc(k.unavailable.reason)}">· ${esc(k.unavailable.label)}: غير متاح</small>` : ""}</div>`;
   }).join("");
 }
 
@@ -437,7 +438,7 @@ function renderCategories(data) {
       <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>المؤشر</th><th>آخر قيمة</th><th>التغير</th><th>Z (5y)</th><th>المئوي (5y)</th><th>التاريخ</th></tr></thead>
       <tbody>${inds.map(i => i.points ? `<tr data-id="${esc(i.id)}" aria-selected="false">
         <td><span class="dot ${esc(i.state)}" title="${esc((i.issues || []).join("؛ ") || "سليم")}"></span>${esc(i.name_ar)}<span class="en">${esc(i.name_en)} · ${esc(i.id)}</span></td>
-        <td class="num">${esc(fmt(i.last, i.unit))}</td>
+        <td class="num">${esc(fmt(i.last, i.unit))}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl" title="${esc(i.unavailable.reason)}">${esc(i.unavailable.label)}: غير متاح</span>` : ""}</td>
         <td class="num tone-${chgTone(i.change, i.good_up)}">${arrow(i.change)} ${esc(fmt(Math.abs(i.change ?? 0)))}</td>
         <td class="num">${i.z5 === null ? "—" : (i.z5 > 0 ? "+" : "") + i.z5.toFixed(1) + "σ"}</td>
         <td><span class="bar"><i style="width:${Math.max(0, Math.min(100, i.pct5 ?? 0))}%"></i></span> <span class="num">${i.pct5 === null ? "—" : Math.round(i.pct5)}</span></td>
@@ -513,7 +514,7 @@ function renderMethod(data) {
     <div class="tbl-wrap"><table><thead><tr><th>المؤشر</th><th>FRED</th><th>التكرار</th><th>آخر قيمة بتاريخ</th><th>العمر (يوم)</th><th>الحالة</th></tr></thead><tbody>
     ${data.indicators.map(i => `<tr><td>${esc(i.name_ar)}</td><td class="num">${esc(i.id)}</td><td>${esc(FREQ[i.freq] || "")}</td>
       <td class="num">${esc(i.as_of || "—")}</td><td class="num">${esc(i.age_days ?? "—")}</td>
-      <td><span class="dot ${esc(i.state)}"></span>${i.state === "ok" ? "سليم" : i.state === "stale" ? "متأخر" : "خطأ"}${(i.issues || []).length ? `<span class="en">${esc(i.issues.join("؛ "))}</span>` : ""}</td></tr>`).join("")}
+      <td><span class="dot ${esc(i.state)}"></span>${i.state === "ok" ? "سليم" : i.state === "stale" ? "متأخر" : "خطأ"}${(i.issues || []).length ? `<span class="en">${esc(i.issues.join("؛ "))}</span>` : ""}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl">آخر قيمة من المصدر <bdi>${esc(i.source_as_of)}</bdi>؛ ${esc(i.unavailable.reason)}</span>` : ""}</td></tr>`).join("")}
     </tbody></table></div>`;
 }
 
