@@ -1,0 +1,62 @@
+name: فحص مؤقت لمصادر الأخبار والتقويم (طلب دمج فقط، يُحذف قبل الدمج)
+
+# مؤقت: يختبر من خوادم GitHub نفسها أي المصادر المجانية بلا مفتاح تقبل طلباً صريح الهوية (بلا انتحال متصفح).
+# للقراءة فقط: بلا أسرار ولا نشر ولا كتابة.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: فحص المصادر
+        run: |
+          python3 - <<'PY'
+          import json, re, urllib.request, xml.etree.ElementTree as ET
+          UA = "macro-platform/1.0 (+https://abduswaidan-glitch.github.io/macro-platform/)"
+          SRC = {
+            "fed_press": "https://www.federalreserve.gov/feeds/press_all.xml",
+            "fed_speeches": "https://www.federalreserve.gov/feeds/speeches.xml",
+            "bls_latest": "https://www.bls.gov/feed/bls_latest.rss",
+            "bea": "https://apps.bea.gov/rss/rss.xml",
+            "treasury": "https://home.treasury.gov/system/files/126/press-releases-rss.xml",
+            "cnbc_top": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114",
+            "cnbc_economy": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
+            "cnbc_markets": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069",
+            "mw_top": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
+            "mw_realtime": "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines",
+            "yahoo": "https://finance.yahoo.com/news/rssindex",
+            "ff_thisweek": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
+            "ff_nextweek": "https://nfs.faireconomy.media/ff_calendar_nextweek.json",
+          }
+          for name, url in SRC.items():
+              try:
+                  req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+                  with urllib.request.urlopen(req, timeout=25) as r:
+                      body, ctype, code = r.read(), r.headers.get("Content-Type", ""), r.status
+              except urllib.error.HTTPError as e:
+                  print(f"{name:13} HTTP {e.code}"); continue
+              except Exception as e:
+                  print(f"{name:13} ERR {type(e).__name__}: {str(e)[:80]}"); continue
+              info = ""
+              try:
+                  if url.endswith(".json"):
+                      rows = json.loads(body)
+                      usd = [x for x in rows if x.get("country") == "USD"]
+                      info = (f"rows={len(rows)} usd={len(usd)} keys={sorted(rows[0]) if rows else []} "
+                              f"usd_high_med={sum(1 for x in usd if x.get('impact') in ('High','Medium'))} "
+                              f"with_actual={sum(1 for x in usd if x.get('actual'))} first={rows[0].get('date') if rows else None} "
+                              f"last={rows[-1].get('date') if rows else None}")
+                  else:
+                      root = ET.fromstring(body)
+                      items = root.findall(".//item") or root.findall(".//{http://www.w3.org/2005/Atom}entry")
+                      dates = [((i.findtext("pubDate") or i.findtext("{http://www.w3.org/2005/Atom}updated") or "")[:32]) for i in items[:3]]
+                      info = f"items={len(items)} newest={dates[:2]} has_link={bool(items and (items[0].findtext('link') or items[0].find('{http://www.w3.org/2005/Atom}link') is not None))}"
+              except Exception as e:
+                  info = f"parse ERR {type(e).__name__}: {str(e)[:60]} head={body[:60]!r}"
+              print(f"{name:13} HTTP {code} {ctype[:30]:30} {len(body):7}B {info}")
+          PY
