@@ -66,3 +66,24 @@ def test_report_probabilities_are_labelled_uncalibrated(ui):
     text = page.locator("#p-ai").inner_text()
     assert "الثقة 55% · تقدير ذاتي من النموذج، غير معاير" in text
     assert "الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة." in text
+
+
+def overview_empty_calendar(ui, files):
+    page = ui.open(cpi_ui._payload(), files)
+    page.click('button.tab[data-k="overview"]')
+    page.wait_for_selector("#calBox .fj-gap, #calBox .empty")
+    return page
+
+
+def test_empty_calendar_during_an_outage_says_why_it_is_empty(ui):
+    # 13 نوفمبر: بعد محو التقويم كان الصندوق يقول «يمتلئ مع الدورات القادمة» والمصدر متوقف
+    page = overview_empty_calendar(ui, {"news.json": {**news_json(None), "last_success_utc": {"items": None, "calendar": None},
+                                       "calendar": []}})
+    gap = page.locator("#calBox .fj-gap").inner_text()
+    assert "التقويم فارغ" in gap and "لا لأنه لا أحداث" in gap
+
+
+def test_empty_calendar_with_a_current_feed_keeps_the_plain_message(ui):
+    page = overview_empty_calendar(ui, {"news.json": {**news_json(ago(minutes=3)), "calendar": []}})
+    assert page.locator("#calBox .fj-gap").count() == 0
+    assert "لا أحداث بعد" in page.locator("#calBox").inner_text()

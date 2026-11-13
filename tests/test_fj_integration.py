@@ -105,7 +105,7 @@ def age_min(s):
 
 
 # ---------------------------------------------------------------- 1. outage: the report is still written, with the gap stated
-@pytest.mark.parametrize("live", [outage_live(), {}], ids=["provider-401", "news-json-unreadable"])
+@pytest.mark.parametrize("live", [outage_live(), {}, None], ids=["provider-401", "news-json-empty", "news-json-unreadable"])
 def test_outage_report_is_written_and_states_the_coverage_gap(monkeypatch, tmp_path, live):
     seen, rep = run_report(monkeypatch, tmp_path, live)
     assert rep["title"] == "t"                                      # التقرير يُكتب رغم توقف المزود
