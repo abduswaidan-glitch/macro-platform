@@ -42,8 +42,6 @@ DEFAULT_SOURCES = [
      "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114"},
     {"name": "CNBC", "kind": "media", "filter": "market", "stale_days": 2,
      "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258"},
-    {"name": "CNBC", "kind": "media", "filter": "market", "stale_days": 2,
-     "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069"},
     {"name": "MarketWatch", "kind": "media", "filter": "market", "stale_days": 2,
      "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories"},
 ]
@@ -61,12 +59,17 @@ MARKET = re.compile(
     r"Treasur(?:y|ies)|yields?|bonds?|debt ceiling|shutdown|deficit|tariffs?|trade (?:war|deal|talks)|export controls?|"
     r"sanctions|Trump|White House|Bessent|Lutnick|Supreme Court|Congress|"
     r"stocks?|stock market|S&P 500|S&P|Nasdaq|Dow|Wall Street|futures|sell-?off|rally|correction|VIX|volatility|"
-    r"Nvidia|Apple|Microsoft|Alphabet|Google|Amazon|Meta|Tesla|Broadcom|AMD|semiconductors?|chipmakers?|AI|earnings|"
+    r"Nvidia|Apple|Microsoft|Alphabet|Google|Amazon|Meta|Tesla|Broadcom|AMD|semiconductors?|chipmakers?|earnings|"
     r"oil|crude|OPEC|dollar|gold|bitcoin|China|Iran|Russia|Ukraine|Israel|Taiwan|war|missiles?)\b", re.I)
 NOISE = re.compile(
     r"\b(Cramer|Investing Club|CNBC Select|Make It|personal finance|credit cards?|savings accounts?|mortgage rates? today|"
     r"how to|tips|retire(?:ment|es)?|401\(k\)|Social Security|celebrit\w*|recipes?|vacation|wedding|student loans?|"
-    r"podcast|quiz|sponsored|newsletter|horoscope)\b", re.I)
+    r"podcast|quiz|sponsored|newsletter|horoscope|"
+    # أعمدة اختيار الأسهم والتوصيات (فحص 13 نوفمبر: أغلب خلاصة CNBC للأسواق من هذا النوع)
+    r"stocks? to buy|these \d+ [\w ]{0,25}stocks|best stock|analyst calls|says (?:it's )?a buy|keep buying|"
+    r"upgrades this|downgrades this|dividend stocks|we want to make|still looks attractive|why we still see|"
+    r"how to trade|charts to watch|levels to (?:know|watch)|dip buyers|screaming bargain|financial advisors are doing)\b",
+    re.I)
 FED_NOISE = re.compile(
     r"(enforcement action|termination of|approval of (?:the )?(?:application|proposal)|application by|"
     r"announces approval|civil money penalt|prohibition|Community Reinvestment|minority depository|reporting form|"
@@ -83,12 +86,20 @@ FILTERS = {
 }
 # الأشد أثراً: يظهر في «الأكثر تأثيراً» (level 3)
 TIER1 = re.compile(
-    r"\b(FOMC|Powell|rate (?:cut|hike|decision)s?|(?:holds?|keeps?|raises?|lowers?|cuts?) (?:interest )?rates|CPI|"
-    r"inflation|payrolls|nonfarm|jobs report|PCE|GDP|recession|tariffs?|shutdown|Treasury yields|10-year|default|"
+    r"\b(FOMC|Powell|Warsh|Fed (?:chair|governor)|rate (?:cut|hike|decision)s?|"
+    r"(?:holds?|keeps?|raises?|lowers?|cuts?) (?:interest )?rates|CPI|PPI|inflation|(?:consumer|producer|wholesale) prices|"
+    r"payrolls|nonfarm|jobs report|unemployment rate|jobless claims|retail sales|PCE|GDP|recession|tariffs?|shutdown|"
+    r"Treasury yields?|10-year|default|"
     r"downgrade|sell-?off|plunges?|tumbles?|crash\w*|soars?|surges?|war|missiles?|invasion|sanctions|emergency)\b", re.I)
-US_WORDS = re.compile(r"\b(US|U\.S\.|American|Fed|FOMC|Powell|Treasur\w*|Trump|White House|Nasdaq|S&P|Dow|tariffs?|"
-                      r"Bessent|payrolls?|NFP|CPI|PCE|PPI|ISM|jobless|Wall Street|Congress|Senate|Stocks?|stock market|"
+# أمريكي صراحة؛ أو بيان اقتصادي بلا ذكر بلد آخر (العنوان الأمريكي لا يقول «U.S.» عادة: «Wholesale prices rose 0.3%»)
+US_WORDS = re.compile(r"\bU\.S\.|\b(US|American|Fed|FOMC|Powell|Warsh|Treasur\w*|Trump|White House|Nasdaq|S&P|Dow|"
+                      r"Bessent|Lutnick|Wall Street|Congress|Senate|"
                       r"Nvidia|Apple|Microsoft|Alphabet|Google|Amazon|Meta|Tesla|Broadcom)\b")
+US_DATA = re.compile(r"\b(inflation|CPI|PCE|PPI|(?:consumer|producer|wholesale) prices|jobs|payrolls?|NFP|unemployment|"
+                     r"jobless|labor market|GDP|retail sales|ISM|tariffs?|stocks?|stock market)\b", re.I)
+FOREIGN = re.compile(r"\b(China|Chinese|Beijing|Japan|Japanese|BOJ|Euro ?zone|Europe|European|ECB|UK|Britain|British|"
+                     r"Bank of England|Germany|German|France|French|Canada|Canadian|Australia|India|Korea|Russia|Russian|"
+                     r"Mexico|Brazil|Swiss|Turkey)\b", re.I)
 
 
 class NewsError(RuntimeError):
@@ -183,7 +194,9 @@ def _rss_time(s) -> datetime | None:
 
 
 def is_us(item: dict) -> bool:
-    return "official" in (item.get("labels") or []) or bool(US_WORDS.search(item.get("title_en") or ""))
+    t = item.get("title_en") or ""
+    return ("official" in (item.get("labels") or []) or bool(US_WORDS.search(t))
+            or bool(US_DATA.search(t) and not FOREIGN.search(t)))
 
 
 def to_item(src: dict, r: dict, t: datetime) -> dict:

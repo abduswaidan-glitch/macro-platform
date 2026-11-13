@@ -96,7 +96,7 @@ def test_all_sources_down_keeps_everything_and_last_success(monkeypatch, tmp_pat
     assert [i["id"] for i in out["items"]] == [i["id"] for i in first["items"]]
     assert [e["id"] for e in out["calendar"]] == [e["id"] for e in first["calendar"]]
     assert out["last_success_utc"] == {"items": first["last_success_utc"]["items"], "calendar": first["last_success_utc"]["calendar"]}
-    assert "التقويم: ForexFactory this week: HTTP 503" in out["errors"] and len(out["errors"]) == 8
+    assert "التقويم: ForexFactory this week: HTTP 503" in out["errors"] and len(out["errors"]) == len(news.DEFAULT_SOURCES) + 1
     assert net.count(FF_THIS) == 1
     again, net = run_news(monkeypatch, tmp_path, out, down)            # الدورة التالية تعيد المحاولة، لا تنتظر ساعة
     assert net.count(FF_THIS) == 1

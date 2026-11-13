@@ -8,7 +8,7 @@ from xml.sax.saxutils import escape
 from macro_platform import news
 
 URL = {s["url"]: s for s in news.DEFAULT_SOURCES}
-FED_PRESS, FED_SPEECH, BEA, CNBC_TOP, CNBC_ECON, CNBC_MKT, MW = (s["url"] for s in news.DEFAULT_SOURCES)
+FED_PRESS, FED_SPEECH, BEA, CNBC_TOP, CNBC_ECON, MW = (s["url"] for s in news.DEFAULT_SOURCES)
 FF_THIS, FF_NEXT = (f["url"] for f in news.DEFAULT_CALENDAR)
 
 
@@ -53,8 +53,9 @@ def default_routes(t=None):
         CNBC_TOP: rss(("Stocks fall as Treasury yields jump after hot inflation data", "https://www.cnbc.com/2026/11/13/stock-market-today.html", t - timedelta(minutes=40)),
                       ("Cramer's lightning round: I like this stock", "https://www.cnbc.com/2026/11/13/cramer-lightning-round.html", t - timedelta(minutes=50)),
                       ("5 tips to pay off credit cards faster", "https://www.cnbc.com/select/pay-off-credit-cards.html", t - timedelta(hours=2))),
-        CNBC_ECON: rss(("Stocks fall as Treasury yields jump after hot inflation data", "https://www.cnbc.com/2026/11/13/stock-market-today.html", t - timedelta(minutes=40))),
-        CNBC_MKT: rss(("Nvidia shares rise ahead of earnings", "https://www.cnbc.com/2026/11/13/nvidia-shares.html", t - timedelta(hours=3))),
+        CNBC_ECON: rss(("Stocks fall as Treasury yields jump after hot inflation data", "https://www.cnbc.com/2026/11/13/stock-market-today.html", t - timedelta(minutes=40)),
+                       ("Nvidia shares rise ahead of earnings", "https://www.cnbc.com/2026/11/13/nvidia-shares.html", t - timedelta(hours=3)),
+                       ("Two chip stocks to buy on the dip, says analyst", "https://www.cnbc.com/2026/11/13/pro-picks.html", t - timedelta(hours=3))),
         MW: rss(("European shares edge higher", "https://www.marketwatch.com/story/europe-1", t - timedelta(hours=1)),
                 ("A celebrity chef opens a new restaurant", "https://www.marketwatch.com/story/chef-2", t - timedelta(hours=1))),
         FF_THIS: ff(ff_row("Core CPI m/m", t - timedelta(hours=20)),

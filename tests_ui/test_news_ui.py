@@ -105,7 +105,8 @@ def test_calendar_shows_past_and_upcoming_and_says_actuals_are_not_in_the_source
 
 def test_week_over_calendar_still_shows_the_week(ui):
     """السبت: كل أحداث الأسبوع مضت والأسبوع القادم لم يُنشر بعد. التقويم يعرض الأسبوع ويقول لماذا لا قادم."""
-    page = overview(ui, news_json(calendar=[event(10, "Core CPI m/m", ago(hours=70)), event(12, "Retail Sales m/m", ago(hours=30))]))
+    page = overview(ui, news_json(calendar=[event(12, "Retail Sales m/m", ago(hours=30)), event(10, "Core CPI m/m", ago(hours=70)),
+                                          event(13, "bad time", "soon")]))
     cal = page.locator("#calBox")
     assert "لا أحداث قادمة معروفة بعد" in cal.locator(".cal-next").inner_text()
     rows = cal.locator("table", has_text="مضى موعدها").locator("tbody tr")

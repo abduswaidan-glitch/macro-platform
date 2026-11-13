@@ -39,6 +39,19 @@ def test_bea_keeps_national_releases_only():
     ("5 tips to pay off credit cards faster", False, None, None),
     ("China retaliates with new tariffs on U.S. farm goods", True, 3, True),
     ("Oil prices climb as OPEC weighs cuts", True, 1, False),
+    # أنماط من فحص المصادر الحقيقية من خوادم GitHub (13 نوفمبر)، بصياغة الاختبار
+    ("Wholesale prices rose 0.4% in October, the most in a year", True, 3, True),     # PPI بلا «U.S.»
+    ("China producer inflation hits a four-year high", True, 3, False),
+    ("Euro zone inflation climbs to 3%", True, 3, False),
+    ("Three reasons the October jobs report beat forecasts", True, 3, True),
+    ("Fed's Warsh signals patience on further moves", True, 3, True),
+    ("A startup launches AI agents that shop for you", False, None, None),             # «AI» وحدها ليست خبر سوق
+    ("Two chip stocks to buy on the dip, says analyst", False, None, None),
+    ("This software stock is down 20% this month. A broker says it's a buy", False, None, None),
+    ("Here are Friday's biggest analyst calls: Nvidia, Apple and more", False, None, None),
+    ("How cheap does Nvidia need to get before it's a screaming bargain?", False, None, None),
+    ("Watch these levels to know if the Nasdaq-100 breaks out", False, None, None),
+    ("Nvidia stock extends its longest losing streak in years", True, 1, True),
 ])
 def test_media_filter_keeps_market_moving_headlines(title, kept, level, us):
     routes = {CNBC_TOP: rss((title, "https://www.cnbc.com/x.html", NOW - timedelta(minutes=30)))}
@@ -54,7 +67,7 @@ def test_same_story_in_two_feeds_has_one_id():
     assert a[0]["id"] == b[0]["id"]
     store = {}
     news.merge(store, a + b)
-    assert len(store) == 1
+    assert len(store) == len(a) + len(b) - 1                          # القصة المشتركة مرة واحدة
 
 
 def test_items_outside_the_window_and_unsafe_links_are_dropped():
@@ -95,7 +108,7 @@ def test_one_failing_source_does_not_stop_the_others():
     routes[CNBC_TOP] = news.NewsError("HTTP 403")
     items, status, errors = news.fetch_headlines(news.DEFAULT_SOURCES, NOW, SINCE, get=Net(routes))
     assert errors == ["CNBC: HTTP 403"]
-    assert [s["ok"] for s in status] == [True, True, True, False, True, True, True]
+    assert [s["ok"] for s in status] == [True, True, True, False, True, True]
     assert {i["labels"][0] for i in items} == {"Fed", "BEA", "CNBC"}
 
 

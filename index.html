@@ -187,7 +187,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
 .news a.t{color:inherit;text-decoration:none}
 .news a.t:hover,.news a.t:focus-visible{text-decoration:underline}
 .news-note{font-size:12px;color:var(--muted);margin:8px 14px;line-height:1.6}
-.cal .na{color:var(--muted);font-size:12px;font-weight:400}
+.cal .na{color:var(--muted);font-size:12px;font-weight:400;white-space:normal;display:inline-block;min-width:4.5em}
 .news li.new{animation:flash 2.5s ease-out}
 .cal tbody tr{cursor:default}
 .cal .brk,.cal .lb{display:inline-block;font-size:11px;border-radius:5px;padding:0 6px;margin-inline-end:4px}
@@ -574,7 +574,7 @@ function renderNews() {
   box.innerHTML = `<div class="news"><div class="news-top">
       <div class="chips" role="group" aria-label="تصفية الأخبار">${chips.map(([k, l]) => `<button class="chip-btn" type="button" data-f="${k}" aria-pressed="${NEWS.filter === k}">${l}</button>`).join("")}</div>
       <div class="news-meta">${esc(d.source || "")} · تحديث كل ${esc(d.delay_minutes)} دقائق · آخر جلب ناجح: ${agoTxt(ma)}${d.translator ? " · الترجمة: " + esc(d.translator) : ""} · التوقيت: نيويورك</div></div>
-    ${(d.errors || []).length ? `<div class="warn-box" style="margin:10px 14px">تعذّر بعضها في آخر دورة:<br>${d.errors.map(esc).join("<br>")}</div>` : ""}
+    ${(d.errors || []).length ? `<div class="warn-box" style="margin:10px 14px">تعذّر جلب بعض المصادر في آخر دورة:<br>${d.errors.map(esc).join("<br>")}</div>` : ""}
     ${isStale(ma, "items") ? `<div class="warn-box feed-gap" style="margin:10px 14px">${ma === null ? "وقت آخر جلب ناجح للعناوين غير معروف: قد لا تكون العناوين أدناه حديثة." : `آخر جلب ناجح للعناوين ${agoTxt(ma)}: ما حدث بعده غير مغطى هنا، والعناوين أدناه ليست جديدة.`}</div>` : ""}
     <p class="news-note">عناوين الأسبوع تبقى حتى افتتاح الأسبوع التالي (الأحد 18:00 نيويورك)${since ? `، والمعروض منذ <bdi>${esc(since)}</bdi>` : ""}. «رسمي» إعلان من Fed أو BEA، وغيره خبر إعلامي لم يُتحقق منه.</p>
     ${items.length ? `<ol>${items.map(i => {
@@ -595,7 +595,8 @@ function renderNews() {
 function renderCalendar() {
   const box = $("#calBox"); if (!box) return;
   const d = NEWS.data;
-  const all = ((d && d.calendar) || []).filter(e => e.us && (e.impact === 1 || e.impact === 2));
+  const all = ((d && d.calendar) || []).filter(e => e.us && (e.impact === 1 || e.impact === 2) && !isNaN(Date.parse(e.timeUtc)))
+    .sort((a, b) => Date.parse(a.timeUtc) - Date.parse(b.timeUtc));
   const mc = feedAge(d, "calendar");
   const stale = isStale(mc, "calendar");
   if (!all.length) {   // فارغ والمصدر لا يُقرأ: الفراغ من الانقطاع، لا من غياب الأحداث
