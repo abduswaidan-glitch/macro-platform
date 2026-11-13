@@ -71,7 +71,8 @@ def context(payload: dict, tail: int = 8, headlines: list[dict] | None = None,
             inds.append({"id": i["id"], "name": i["name_en"], "state": "missing"})
             continue
         inds.append({k: i.get(k) for k in ("id", "name_en", "category", "freq", "transform", "unit", "last", "prev",
-                                           "change", "z5", "pct5", "as_of", "age_days", "state", "issues")}
+                                           "change", "z5", "pct5", "as_of", "age_days", "state", "issues",
+                                           "source_as_of", "unavailable")}
                     | {"recent": i.get("points", [])[-tail:]})
     return {"generated": payload["generated"], "kpis": payload["kpis"], "gates": payload["gates"],
             "gate_levels": payload["config"]["gates"], "signals": payload["signals"],

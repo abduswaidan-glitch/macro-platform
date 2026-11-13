@@ -1,0 +1,91 @@
+name: اختبارات طلبات الدمج (بلا نشر)
+
+# يعمل على pull_request فقط: صلاحية قراءة، بلا أسرار ولا نشر ولا كتابة، ولا يشارك في بناء الموقع.
+# tests: صفان، إصدارات CI الحالية والحد الأدنى المعلن في requirements.txt.
+# ui: index.html الحقيقي في Chromium؛ كل طلب خارجي من المتصفح يُلغى ويُسجَّل (tests_ui/conftest.py).
+# يفشل عند أي FAIL أو ERROR أو SKIP أو XFAIL.
+# الـActions مثبتة بالـSHA الكامل لإصدارات تعلن node24 (الوسم في التعليق للقراءة فقط).
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: tests (${{ matrix.row }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - row: ci
+            pins: "pandas==3.1.1 numpy==2.5.4 pytest==9.2.0"
+          - row: min
+            pins: "pandas==2.2.0 numpy==1.26.0 pytest==8.0.0"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12.16"
+
+      - name: تثبيت الإصدارات المثبتة
+        run: pip install ${{ matrix.pins }}
+
+      - name: الإصدارات الفعلية
+        run: python -c "import sys, pandas, numpy, pytest; print(sys.version, pandas.__version__, numpy.__version__, pytest.__version__)"
+
+      - name: اختبارات المنصة
+        run: python -m pytest -q -p no:cacheprovider tests --junitxml=junit.xml
+
+      - name: لا SKIP ولا XFAIL
+        run: |
+          python - <<'PY'
+          import sys, xml.etree.ElementTree as ET
+          cases = list(ET.parse("junit.xml").getroot().iter("testcase"))
+          bad = [f"{t}: {c.get('classname')}::{c.get('name')}" for c in cases
+                 for t in ("skipped", "failure", "error") if c.find(t) is not None]
+          print(f"testcases={len(cases)} bad={len(bad)}", *bad, sep="\n")
+          sys.exit(1 if bad or not cases else 0)
+          PY
+
+  ui:
+    name: ui (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12.16"
+
+      - name: تثبيت المكتبات والمتصفح
+        run: |
+          pip install pandas==3.1.1 numpy==2.5.4 pytest==9.2.0 playwright==1.63.0
+          python -m playwright install --with-deps chromium
+
+      - name: اختبارات الواجهة
+        run: python -m pytest -q -p no:cacheprovider tests_ui --junitxml=junit.xml
+
+      - name: لا SKIP ولا XFAIL
+        run: |
+          python - <<'PY'
+          import sys, xml.etree.ElementTree as ET
+          cases = list(ET.parse("junit.xml").getroot().iter("testcase"))
+          bad = [f"{t}: {c.get('classname')}::{c.get('name')}" for c in cases
+                 for t in ("skipped", "failure", "error") if c.find(t) is not None]
+          print(f"testcases={len(cases)} bad={len(bad)}", *bad, sep="\n")
+          sys.exit(1 if bad or not cases else 0)
+          PY

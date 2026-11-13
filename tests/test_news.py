@@ -147,8 +147,10 @@ def test_key_with_quotes_and_newline_is_cleaned(tmp_path, monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.setattr(fetch_news, "load_live", lambda url: {})
     monkeypatch.setattr(news, "fetch", lambda key, since: seen.setdefault("key", key) and [])
+    # كان التقويم يُطلب فعلاً من stream.financialjuice.com بمفتاح وهمي في كل تشغيل للاختبارات (ومنها خطوة deploy.yml)
+    monkeypatch.setattr(news, "fetch_calendar", lambda key, now: seen.setdefault("cal_key", key) and [])
     fetch_news.main(["--site", str(tmp_path / "s")])
-    assert seen["key"] == "fj_abc123"
+    assert seen["key"] == "fj_abc123" and seen["cal_key"] == "fj_abc123"
 
 
 def test_calendar_keeps_fj_field_names_for_the_gold_platform():
