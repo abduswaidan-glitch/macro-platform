@@ -43,6 +43,22 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: طلب تقرير اليوم عند الحاجة (update.yml)
+        # جدولة GitHub الصباحية لم تُنفَّذ مرة (0 من 48 بين 4 و13 نوفمبر)، وهذه الحلقة تدور كل 10 دقائق.
+        # مستقلة عن FinancialJuice وعن بقية الدورة؛ القرار كله في ai_report.dispatch_decision.
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow update.yml --limit 30 \
+            --json status,event,createdAt > "$RUNNER_TEMP/runs.json" || true
+          gh api "repos/$GITHUB_REPOSITORY/contents/data/state.json?ref=main" --jq .content \
+            | base64 -d > "$RUNNER_TEMP/state.json" || true
+          d=$(python report_trigger.py --runs "$RUNNER_TEMP/runs.json" --state "$RUNNER_TEMP/state.json")
+          echo "$d"
+          case "$d" in dispatch*) gh workflow run update.yml --repo "$GITHUB_REPOSITORY" --ref main ;; esac
+
       - name: تثبيت المكتبات
         run: pip install -r requirements.txt anthropic
 

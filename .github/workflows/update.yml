@@ -73,3 +73,17 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages-update-${{ github.run_id }}
+
+      - name: توقيت التقرير (بدء، اكتمال، نشر)
+        run: |
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json, os
+          from datetime import datetime, timezone
+          h = json.load(open("data/ai_history.json", encoding="utf-8")) if os.path.exists("data/ai_history.json") else []
+          m = h[0]["meta"] if h else {}
+          if m.get("run_id") == os.environ["GITHUB_RUN_ID"]:
+              print(f"report {m['ny_date']}: started {m.get('started_at')}, completed {m.get('completed_at')}, "
+                    f"published {datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ} (trigger {m.get('trigger')})")
+          else:
+              print("no report written in this run")
+          PY

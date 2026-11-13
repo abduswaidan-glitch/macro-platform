@@ -68,7 +68,7 @@ def test_status_table_separates_fetch_state_from_missing_yoy(ui):
 def test_overview_warning_and_kpi_card(ui):
     page = ui.open(_payload())
     page.click('button.tab[data-k="overview"]')
-    warn = page.locator(".warn-box").inner_text()
+    warn = page.locator("#p-overview .warn-box").inner_text()
     assert REASON in warn and "الجلب سليم، وآخر قيمة من المصدر بتاريخ 2026-10-01" in warn
     kpi = page.locator("#kpis .kpi", has_text="PCE").inner_text()
     assert "2026-09-01" in kpi and "أكتوبر 2026: غير متاح" in kpi

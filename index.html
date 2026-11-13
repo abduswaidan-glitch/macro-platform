@@ -461,20 +461,38 @@ function renderCategories(data) {
 }
 
 /* ---------- AI ---------- */
-function renderAI(hist) {
+/* عمر التقرير: وقت اكتماله بتوقيت نيويورك وموقعه من افتتاح 9:30، وتحذير صريح إن فشل أو تأخر تقرير اليوم */
+const nyMins = iso => { const [h, m] = nyTime(iso).split(":").map(Number); return h * 60 + m; };
+function reportTimeLabel(r) {
+  const t = (r.meta && (r.meta.completed_at || r.meta.written_at)) || ""; if (!t) return "";
+  const mins = nyMins(t), open = 9 * 60 + 30;
+  const rel = nyDay(t) !== (r.meta && r.meta.ny_date) ? "" : mins < open ? " · قبل الافتتاح" : ` · بعد الافتتاح بـ${mins - open} د`;
+  return `كُتب ${esc(nyDay(t))} ${esc(nyTime(t))} بتوقيت نيويورك${rel}`;
+}
+function reportWarnings(hist, data) {
+  const out = ((data && data.status && data.status.warnings) || []).filter(w => String(w).includes("تقرير Claude"));
+  const now = new Date().toISOString(), today = nyDay(now);
+  const wd = new Date().toLocaleDateString("en-US", {timeZone: "America/New_York", weekday: "short"});
+  const hol = (data && data.config && data.config.ai_schedule && data.config.ai_schedule.market_holidays) || [];
+  const last = hist && hist.length && hist[0].meta ? hist[0].meta.ny_date : null;
+  if (wd !== "Sat" && wd !== "Sun" && !hol.includes(today) && nyMins(now) >= 9 * 60 + 30 && last !== today)
+    out.push(`لا تقرير لليوم (${today}) حتى الآن بعد افتتاح نيويورك. آخر تقرير: ${last || "لا يوجد"}.`);
+  return out.length ? `<div class="warn-box ai-late">${out.map(esc).join("<br>")}</div>` : "";
+}
+function renderAI(hist, data) {
   const p = $("#p-ai");
   const intro = `<div class="sec-head"><h2>التقرير الذكي</h2><p>قراءة يومية يكتبها Claude قبل افتتاح نيويورك من بيانات المنصة وأخبار اليوم: ملخص، وانحياز لـNQ، وثلاثة سيناريوهات باحتمالاتها، ومصادر كل حدث.</p></div>
     <details class="about"><summary>متى يُكتب وما قواعده؟</summary><div class="body">
-    <p>مرة واحدة كل يوم عمل بعد 8:30 بتوقيت نيويورك (بعد صدور بيانات 8:30 مباشرة). الأرقام من بيانات المنصة نفسها، والنموذج ممنوع من اختراع الأرقام أو إعطاء توصيات شراء وبيع. تعليماته الدائمة في <code>prompts/analyst.md</code> وتُعدَّل من GitHub. نحتفظ بآخر 14 تقريراً.</p></div></details>`;
+    <p>مرة واحدة كل يوم تداول: يُطلب بعد 8:40 بتوقيت نيويورك (بعد وصول بيانات 8:30)، والهدف قبل افتتاح 9:30 دون ضمان، ويظهر وقت كتابته فوق التقرير. الأرقام من بيانات المنصة نفسها، والنموذج ممنوع من اختراع الأرقام أو إعطاء توصيات شراء وبيع. تعليماته الدائمة في <code>prompts/analyst.md</code> وتُعدَّل من GitHub. نحتفظ بآخر 14 تقريراً.</p></div></details>`;
   if (!hist || !hist.length) {
-    p.innerHTML = intro + `<p class="empty">لا يوجد تقرير بعد. يُكتب أول تقرير بعد إضافة السر <code>ANTHROPIC_API_KEY</code> في إعدادات المستودع، أو بتشغيل الـworkflow يدوياً مع <code>ai_force=true</code>.</p>`;
+    p.innerHTML = intro + reportWarnings(hist, data) + `<p class="empty">لا يوجد تقرير بعد. يُكتب أول تقرير بعد إضافة السر <code>ANTHROPIC_API_KEY</code> في إعدادات المستودع، أو بتشغيل الـworkflow يدوياً مع <code>ai_force=true</code>.</p>`;
     return;
   }
   const view = idx => {
     const r = hist[idx], b = BIAS[r.bias?.direction] || ["—", "neutral"];
     const list = (title, arr) => arr && arr.length ? `<div class="box"><h4>${title}</h4><ul>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
-    p.innerHTML = intro + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
-        <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}</div></div>
+    p.innerHTML = intro + reportWarnings(hist, data) + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
+        <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div></div>
         ${hist.length > 1 ? `<label class="picker">تقارير سابقة: <select id="aiPick">${hist.map((h, k) =>
           `<option value="${k}"${k === idx ? " selected" : ""}>${esc(h.meta?.ny_date)}</option>`).join("")}</select></label>` : ""}</div>
       <div class="ai-grid">
@@ -609,7 +627,7 @@ async function getJSON(f) {
     let hist = [];
     if (data.ai_available) { try { hist = await getJSON("data/ai_history.json"); } catch (e) { hist = []; } }
     renderHeader(data);
-    renderAI(hist);
+    renderAI(hist, data);
     renderOverview(data);
     loadNews();
     renderCategories(data);

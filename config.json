@@ -12,6 +12,9 @@
     "effort": "high",
     "ny_hour": 8,
     "ny_minute": 30,
-    "keep": 14
+    "keep": 14,
+    "trigger_window": ["08:40", "11:30"],
+    "max_dispatches": 3,
+    "market_holidays": ["2026-11-26", "2026-12-25"]
   }
 }
