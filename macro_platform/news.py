@@ -170,12 +170,14 @@ def translate_missing(store: dict[str, dict], translator=haiku_translate, field:
 
 
 def payload(store: dict[str, dict], now: datetime, translator: str | None, errors: list[str],
-            calendar: dict[str, dict] | None = None) -> dict:
+            calendar: dict[str, dict] | None = None, last_success: dict | None = None) -> dict:
     items = sorted(store.values(), key=lambda i: i.get("utc") or "", reverse=True)
     out = {"updated": _iso(now), "source": "FinancialJuice", "delay_minutes": 10, "translator": translator,
            "errors": errors, "items": items}
     if calendar is not None:
         out["calendar"] = sorted(calendar.values(), key=lambda e: e.get("timeUtc") or "")
+    if last_success is not None:  # مفتاح إضافي: updated وقت البناء، وهذا وقت آخر جلب ناجح لكل مسار
+        out["last_success_utc"] = last_success
     return out
 
 
@@ -204,8 +206,10 @@ def fetch_calendar(key: str, now: datetime, get=http_get_json, max_pages: int = 
     return out
 
 
-def merge_calendar(store: dict[str, dict], fresh: list[dict]) -> int:
-    """كل الأحداث الأمريكية، ومن غيرها المرتفع والمتوسط التأثير فقط. الترجمة تبقى ما لم يتغير العنوان."""
+def merge_calendar(store: dict[str, dict], fresh: list[dict], now: datetime | None = None) -> int:
+    """كل الأحداث الأمريكية، ومن غيرها المرتفع والمتوسط التأثير فقط. الترجمة تبقى ما لم يتغير العنوان.
+    checked_utc: آخر جلب ناجح أعاد هذا الحدث. الجلب يغطي 23 ساعة للخلف فقط، فبعد انقطاع أطول لا يُعاد فحص
+    الأحداث الأقدم، ووقت النجاح العام وحده يوحي خطأً بأنها فُحصت."""
     changed = 0
     for d in fresh:
         country = str(d.get("country") or "").upper()
@@ -219,8 +223,10 @@ def merge_calendar(store: dict[str, dict], fresh: list[dict]) -> int:
         old = store.get(str(d["id"]))
         if old and old.get("title") == item["title"] and old.get("title_ar"):
             item["title_ar"] = old["title_ar"]
-        if old != item:
+        if {k: v for k, v in (old or {}).items() if k != "checked_utc"} != item:
             changed += 1
+        if now is not None:
+            item["checked_utc"] = _iso(now)
         store[str(d["id"])] = item
     return changed
 
@@ -237,3 +243,74 @@ def since_for(store: dict[str, dict], now: datetime) -> datetime:
     ts = [t for t in (_parse_t(i.get("utc")) for i in store.values()) if t]
     floor = now - timedelta(hours=KEEP_HOURS)
     return max(floor, max(ts) - timedelta(minutes=15)) if ts else floor
+
+
+# ---------------------------------------------------------------- feed health and the report's input
+STREAMS = ("items", "calendar")
+CURRENT_FOR = timedelta(minutes=30)     # ثلاث دورات من news.yml؛ يغيّر الوصف فقط، والطابع الزمني يُرسل كما هو
+RELEASE_GRACE = timedelta(minutes=20)   # تأخير الخطة المجانية 10 د + دورة الجلب 10 د
+
+
+def _past(s, now: datetime) -> datetime | None:
+    """طابع زمني صالح لا يقع في المستقبل؛ غير ذلك None، أي «غير معروف»، لا «سليم»."""
+    t = _parse_t(s)
+    return t if t is not None and t <= now + timedelta(minutes=5) else None
+
+
+def last_success(prev: dict, now: datetime, ok: dict[str, bool]) -> dict[str, str | None]:
+    """آخر جلب ناجح لكل مسار: الآن إن نجح في هذه الدورة، وإلا القيمة المنشورة سابقاً كما هي. لا نجاح مفترض."""
+    old = prev.get("last_success_utc") if isinstance(prev, dict) else None
+    old = old if isinstance(old, dict) else {}
+    out = {}
+    for k in STREAMS:
+        t = now if ok.get(k) else _past(old.get(k), now)
+        out[k] = _iso(t) if t else None
+    return out
+
+
+def event_status(e: dict, now: datetime) -> str:
+    """حالة الحدث كما يحملها المزود، لا حالة الإصدار الرسمي. لا توجد حالة «لم يصدر»: غياب القيمة لا يعني ذلك.
+    reported: المزود يحمل قيمة (يذكرها المزود، لا تحقق رسمي) · upcoming: لم يحن وقته ·
+    not_checked_since_release: لم يُعِد جلبٌ ناجح هذا الحدث بعد وقته بالمهلة، فنتيجته مجهولة هنا ·
+    no_value_in_feed: أعاده جلب ناجح بعد المهلة بلا قيمة (الخطابات لا قيمة لها أصلاً، وقد يتأخر المزود أو يؤجَّل الحدث)."""
+    t = _parse_t(e.get("timeUtc"))
+    if t is None:
+        return "unknown_time"
+    a = e.get("actual")
+    if a is not None and str(a).strip():
+        return "reported"
+    if now < t:
+        return "upcoming"
+    seen = _past(e.get("checked_utc"), now)
+    return "no_value_in_feed" if seen and seen >= t + RELEASE_GRACE else "not_checked_since_release"
+
+
+FJ_NOTE = ("Third-party wire, not official data and not verified. Headlines are reports, timed by publication (UTC). "
+           "Calendar status: reported = the provider carries this figure (check the official release before stating it "
+           "as fact); upcoming; not_checked_since_release = the provider has not been read successfully since the event "
+           "time plus 20 minutes, so the outcome is unknown here; no_value_in_feed = read after that with no figure "
+           "(speeches never have one; it may also be late or moved). A missing figure never means the release did not "
+           "happen. *_current=false means nothing after *_last_success_utc is covered (null = unknown): treat older "
+           "items as old, search official sources for the gap, and state the gap in data_audit.")
+
+
+def report_feed(live: dict, now: datetime, limit: int = 60) -> dict:
+    """مدخل FinancialJuice لتقرير Claude: أخبار وقيم يذكرها المزود، مع حالة التغطية لكل مسار.
+    يُبنى دائماً، ولو تعذرت قراءة news.json، حتى يعرف النموذج أن التغطية ناقصة بدل أن يغيب المصدر بصمت."""
+    live = live if isinstance(live, dict) else {}
+    ls = live.get("last_success_utc")
+    ls = ls if isinstance(ls, dict) else {}
+    out: dict = {"source": "FinancialJuice (third-party wire, about 10 minutes delayed)"}
+    for k, name in (("items", "headlines"), ("calendar", "calendar")):
+        t = _past(ls.get(k), now)
+        out[f"{name}_last_success_utc"] = _iso(t) if t else None
+        out[f"{name}_current"] = bool(t and now - t <= CURRENT_FOR)
+    out["headlines"] = [{"utc": i.get("utc"), "title": i.get("title_en"), "breaking": bool(i.get("breaking"))}
+                        for i in live.get("items") or [] if isinstance(i, dict) and (i.get("us") or i.get("breaking"))
+                        ][:limit]
+    out["calendar"] = [{k: e.get(k) for k in ("timeUtc", "title", "impact", "actual", "forecast", "previous", "revision")}
+                       | {"status": event_status(e, now)}
+                       for e in live.get("calendar") or [] if isinstance(e, dict) and e.get("us")
+                       and e.get("impact") in (1, 2)][:limit]
+    out["note"] = FJ_NOTE
+    return out

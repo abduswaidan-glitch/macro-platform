@@ -39,11 +39,14 @@ class UI:
             self.external.append(request.url)
             route.abort()
 
-    def open(self, payload: dict):
+    def open(self, payload: dict, files: dict | None = None):
         site = self.tmp_path / f"site{len(self._open)}"
         site.mkdir()
         shutil.copy(ROOT / "index.html", site / "index.html")
         write_json(site / "data.json", payload)
+        for name, obj in (files or {}).items():   # news.json وdata/ai_history.json عند الحاجة
+            (site / name).parent.mkdir(parents=True, exist_ok=True)
+            write_json(site / name, obj)
         srv = ThreadingHTTPServer(("127.0.0.1", 0), partial(_Quiet, directory=str(site)))
         threading.Thread(target=srv.serve_forever, daemon=True).start()
         ctx = self.browser.new_context()

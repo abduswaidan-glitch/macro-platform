@@ -20,6 +20,9 @@ Data rules:
 - The JSON in the user message is the platform's own data (source: FRED). It is the only source for numbers about indicators. Never invent a number. If you cite a market estimate you found on the web (consensus, FedWatch, nowcasts), label it as an estimate and link it.
 - Every indicator carries "as_of" and "age_days". Monthly data lags; say how old a number is when it matters.
 - Use web search for today's events: the US data calendar, Fed speakers and decisions, Treasury auctions, trade/tariff and political headlines, geopolitics. Cite a URL for each event.
+- Keep five kinds of statement apart: platform data (the JSON); official releases you checked, with the official URL; reported news and provider-reported figures (the "financialjuice" block, wire stories), which you call reported; your hypotheses; and qualitative implications for NQ. Never state reported news as an official fact.
+- For a headline that matters, reason about it: is it new, is a primary source confirming it, how large and from when, through which channel it would reach NQ (rates, inflation, growth, earnings, risk appetite), over what horizon, and what would contradict it. Say what is unknown.
+- Scenario probabilities and confidence are your subjective weights, not calibrated estimates, and no single headline sets them. Give no other numeric probability unless it comes from the platform data or a cited market source, labelled as such.
 - No buy/sell recommendations.
 
 Write everything in Modern Standard Arabic (فصحى), keeping technical terms in English (NQ, CPI, PCE, VIX, bp, Fed, FOMC, yield, ...).
@@ -62,8 +65,7 @@ def should_run(now_utc: datetime, last_date: str | None, cfg: dict, force: bool 
     return ny >= due and last_date != ny.strftime("%Y-%m-%d")
 
 
-def context(payload: dict, tail: int = 8, headlines: list[dict] | None = None,
-            calendar: list[dict] | None = None) -> dict:
+def context(payload: dict, tail: int = 8, fj: dict | None = None) -> dict:
     """نسخة مضغوطة من data.json للنموذج: بلا السلاسل الكاملة، مع آخر نقاط لكل مؤشر لرؤية الاتجاه."""
     inds = []
     for i in payload["indicators"]:
@@ -78,11 +80,7 @@ def context(payload: dict, tail: int = 8, headlines: list[dict] | None = None,
             "gate_levels": payload["config"]["gates"], "signals": payload["signals"],
             "quadrant": payload["quadrant"], "sahm_recent": payload["sahm"]["points"][-6:],
             "indicators": inds, "data_warnings": payload["status"]["warnings"],
-            **({"headlines_24h": headlines, "headlines_note": "FinancialJuice wire, UTC, ~10 min delay; English originals"}
-               if headlines else {}),
-            **({"us_calendar": calendar, "us_calendar_note": ("FinancialJuice economic calendar, UTC; actual is null until "
-                "released (about 10 min delay). Use these released figures instead of searching for them")}
-               if calendar else {})}
+            **({"financialjuice": fj} if fj else {})}   # أخبار مُبلَّغ عنها، منفصلة عن بيانات المنصة
 
 
 def parse_report(text: str) -> dict:
@@ -164,20 +162,32 @@ def call_claude(user_text: str, system: str, model: str, effort: str) -> tuple[s
     return "".join(texts), [{"url": u, "title": t} for u, t in sources.items()], usage, served
 
 
+def fj_meta(fj: dict | None) -> dict | None:
+    """أعداد وحالة مدخل FinancialJuice في سجل التقرير، بلا نص العناوين (ai_history.json في المستودع العام)."""
+    if not fj:
+        return None
+    st: dict[str, int] = {}
+    for e in fj.get("calendar", []):
+        st[e.get("status")] = st.get(e.get("status"), 0) + 1
+    return {"headlines": len(fj.get("headlines", [])), "calendar": st,
+            **{k: fj.get(k) for k in ("headlines_current", "calendar_current",
+                                      "headlines_last_success_utc", "calendar_last_success_utc")}}
+
+
 def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, caller=call_claude,
-                 headlines: list[dict] | None = None, calendar: list[dict] | None = None) -> dict:
+                 fj: dict | None = None) -> dict:
     now_utc = now_utc or datetime.now(timezone.utc)
     ai = cfg.get("ai", {})
     notes = analyst_notes()
     system = SYSTEM + ("\n\nThe trader's standing instructions (Arabic):\n" + notes if notes else "")
     ny_now = now_utc.astimezone(NY)
     user = (f"Today is {ny_now:%A %Y-%m-%d}, {ny_now:%H:%M} New York time. Platform data:\n"
-            + json.dumps(context(payload, headlines=headlines, calendar=calendar), ensure_ascii=False))
+            + json.dumps(context(payload, fj=fj), ensure_ascii=False))
     text, sources, usage, served = caller(user, system, ai.get("model", "claude-opus-5-5"), ai.get("effort", "high"))
     rep = parse_report(text)
     rep["sources"] = sources
     rep["meta"] = {"written_at": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"), "ny_date": ny_now.strftime("%Y-%m-%d"),
-                   "model": served, "usage": usage}
+                   "model": served, "usage": usage, "fj_input": fj_meta(fj)}
     return rep
 
 

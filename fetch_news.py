@@ -64,6 +64,7 @@ def main(argv=None) -> int:
     store = {str(i["id"]): i for i in prev.get("items", []) if isinstance(i, dict) and "id" in i}
     cal = {str(e["id"]): e for e in prev.get("calendar", []) if isinstance(e, dict) and "id" in e}
     errors: list[str] = []
+    ok = {"items": False, "calendar": False}   # نجاح الجلب في هذه الدورة فقط؛ الفشل يُبقي آخر نجاح منشور
     translator = prev.get("translator")
     raw_key = os.environ.get("FJ_API_KEY", "")
     key = raw_key.strip().strip("\"'").strip()  # يتسامح مع اقتباس أو مسافة أو سطر جديد لُصق مع المفتاح
@@ -80,13 +81,15 @@ def main(argv=None) -> int:
             try:
                 fresh = news.fetch(key, news.since_for(store, now))
                 changed = news.merge(store, fresh)
+                ok["items"] = True
                 log(f"fetched {len(fresh)}, changed {changed}")
             except Exception as e:
                 errors.append(str(e)[:160])
                 log("fetch failed:", str(e)[:160])
             try:
                 fresh_cal = news.fetch_calendar(key, now)
-                log(f"calendar: fetched {len(fresh_cal)}, changed {news.merge_calendar(cal, fresh_cal)}")
+                log(f"calendar: fetched {len(fresh_cal)}, changed {news.merge_calendar(cal, fresh_cal, now)}")
+                ok["calendar"] = True
             except Exception as e:
                 errors.append("التقويم: " + str(e)[:140])
                 log("calendar fetch failed:", str(e)[:160])
@@ -107,7 +110,8 @@ def main(argv=None) -> int:
             log(f"translated {done} with {news.TRANSLATOR}" if done else "nothing to translate")
         else:
             log("no ANTHROPIC_API_KEY: headlines shown in English")
-        out = news.payload(store, now, translator, errors, calendar=cal)
+        out = news.payload(store, now, translator, errors, calendar=cal,
+                           last_success=news.last_success(prev, now, ok))
     else:
         out = prev or news.payload({}, now, None, ["لم تُجلب الأخبار بعد"])
 
