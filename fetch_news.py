@@ -13,6 +13,7 @@ import json
 import os
 import shutil
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,15 +29,27 @@ def log(*a):
     print("[news]", *a, flush=True)
 
 
-def load_live(url: str) -> dict:
-    try:
-        req = urllib.request.Request(url + "?t=" + str(int(datetime.now().timestamp())),
-                                     headers={"User-Agent": "macro-platform/1.0"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            return json.loads(r.read().decode("utf-8"))
-    except Exception as e:
-        log("no live news.json yet:", type(e).__name__)
-        return {}
+def load_live(url: str, tries: int = 3, wait: float = 5.0) -> dict | None:
+    """news.json المنشور الآن، أو None إن تعذّرت قراءته بعد tries محاولات.
+
+    الملف المنشور هو المخزن الوحيد لتراكم التقويم والعناوين، فالفشل لا يُعامل كملف فارغ: في 13 نوفمبر 15:11Z أعادت
+    قراءة عابرة HTTPError، فبُني news.json من لا شيء ونُشر فوق الأصل (107 أحداث ← 0) وقرأت كل دورة بعدها الفارغ."""
+    err = ""
+    for k in range(1, tries + 1):
+        try:
+            req = urllib.request.Request(url + "?t=" + str(int(datetime.now().timestamp())),
+                                         headers={"User-Agent": "macro-platform/1.0"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                d = json.loads(r.read().decode("utf-8"))
+            if isinstance(d, dict):
+                return d
+            err = "not a JSON object"
+        except Exception as e:
+            err = f"{type(e).__name__} {getattr(e, 'code', '') or ''}".strip()
+        log(f"live news.json read failed ({k}/{tries}): {err}")
+        if k < tries:
+            time.sleep(wait * k)
+    return None
 
 
 def build_site(site: Path) -> None:
@@ -53,14 +66,18 @@ def build_site(site: Path) -> None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--site", default="_site")
-    ap.add_argument("--seed-url", default=LIVE)
+    ap.add_argument("--seed-url", default=LIVE, help="'' = لا news.json منشور بعد (أول نشر فقط)")
     ap.add_argument("--no-fetch", action="store_true")
     args = ap.parse_args(argv)
     site = Path(args.site)
     build_site(site)
 
     now = datetime.now(timezone.utc)
-    prev = load_live(args.seed_url)
+    prev = load_live(args.seed_url) if args.seed_url else {}
+    if prev is None:
+        log("NOT publishing: the live news.json could not be read, and rebuilding it from nothing would erase the "
+            "accumulated calendar. The live site stays as it is; the next run tries again.")
+        return 1
     store = {str(i["id"]): i for i in prev.get("items", []) if isinstance(i, dict) and "id" in i}
     cal = {str(e["id"]): e for e in prev.get("calendar", []) if isinstance(e, dict) and "id" in e}
     errors: list[str] = []
