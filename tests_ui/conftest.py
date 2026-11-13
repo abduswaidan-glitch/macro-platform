@@ -39,7 +39,7 @@ class UI:
             self.external.append(request.url)
             route.abort()
 
-    def open(self, payload: dict, files: dict | None = None):
+    def open(self, payload: dict, files: dict | None = None, now=None):
         site = self.tmp_path / f"site{len(self._open)}"
         site.mkdir()
         shutil.copy(ROOT / "index.html", site / "index.html")
@@ -52,6 +52,8 @@ class UI:
         ctx = self.browser.new_context()
         ctx.route("**/*", self._route)
         page = ctx.new_page()
+        if now is not None:   # ساعة المتصفح مثبّتة (Date.now) لاختبارات تعتمد على الوقت
+            page.clock.set_fixed_time(now)
         page.goto(f"http://127.0.0.1:{srv.server_address[1]}/index.html", wait_until="networkidle")
         page.wait_for_selector("#kpis .kpi")
         self._open.append((srv, ctx))

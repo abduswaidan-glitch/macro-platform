@@ -55,11 +55,55 @@ def analyst_notes(path: str | Path = "prompts/analyst.md") -> str:
     return re.sub(r"<!--.*?-->", "", p.read_text(encoding="utf-8"), flags=re.S).strip()
 
 
+TRIGGER_WINDOW = ("08:40", "11:30")   # بتوقيت نيويورك: بعد وصول بيانات 08:30، والمحاولات تتوقف قبل منتصف الجلسة
+ACTIVE_RUN = {"queued", "in_progress", "waiting", "requested", "pending"}
+
+
+def is_trading_day(ny_day: datetime, cfg: dict) -> bool:
+    """يوم عمل غير مدرج في ai.market_holidays (قائمة يدوية في config.json)."""
+    return ny_day.weekday() < 5 and ny_day.strftime("%Y-%m-%d") not in set(cfg.get("market_holidays", []))
+
+
+def _minutes(hhmm: str) -> int:
+    h, m = str(hhmm).split(":")
+    return int(h) * 60 + int(m)
+
+
+def _ny_date(iso: str | None) -> str | None:
+    try:
+        return datetime.fromisoformat(str(iso).replace("Z", "+00:00")).astimezone(NY).strftime("%Y-%m-%d")
+    except Exception:
+        return None
+
+
+def dispatch_decision(now_utc: datetime, last_date: str | None, runs: list[dict], cfg: dict) -> tuple[bool, str]:
+    """هل تطلب دورة الأخبار تشغيل update.yml الآن لتقرير اليوم؟
+
+    نعم فقط إذا: يوم تداول، والوقت داخل ai.trigger_window بتوقيت نيويورك، ولا تقرير لليوم في state.json،
+    ولا تشغيل لـupdate.yml قيد الانتظار أو التنفيذ (فلا تتراكم الطلبات)، ولم تُستنفد ai.max_dispatches اليوم.
+    runs: مخرج `gh run list --json status,event,createdAt`."""
+    ny = now_utc.astimezone(NY)
+    today = ny.strftime("%Y-%m-%d")
+    if not is_trading_day(ny, cfg):
+        return False, f"not a trading day ({today})"
+    start, end = cfg.get("trigger_window", TRIGGER_WINDOW)
+    if not _minutes(start) <= ny.hour * 60 + ny.minute < _minutes(end):
+        return False, f"outside {start}-{end} New York ({ny:%H:%M})"
+    if last_date == today:
+        return False, f"report already written for {today}"
+    if any(r.get("status") in ACTIVE_RUN for r in runs):
+        return False, "an update run is already queued or running"
+    sent = sum(1 for r in runs if r.get("event") == "workflow_dispatch" and _ny_date(r.get("createdAt")) == today)
+    if sent >= cfg.get("max_dispatches", 3):
+        return False, f"dispatch limit reached ({sent} today)"
+    return True, f"attempt {sent + 1} today at {ny:%H:%M} New York"
+
+
 def should_run(now_utc: datetime, last_date: str | None, cfg: dict, force: bool = False) -> bool:
     if force:
         return True
     ny = now_utc.astimezone(NY)
-    if ny.weekday() >= 5:
+    if not is_trading_day(ny, cfg):
         return False
     due = ny.replace(hour=cfg.get("ny_hour", 8), minute=cfg.get("ny_minute", 30), second=0, microsecond=0)
     return ny >= due and last_date != ny.strftime("%Y-%m-%d")
@@ -177,6 +221,7 @@ def fj_meta(fj: dict | None) -> dict | None:
 def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, caller=call_claude,
                  fj: dict | None = None) -> dict:
     now_utc = now_utc or datetime.now(timezone.utc)
+    started = datetime.now(timezone.utc)
     ai = cfg.get("ai", {})
     notes = analyst_notes()
     system = SYSTEM + ("\n\nThe trader's standing instructions (Arabic):\n" + notes if notes else "")
@@ -186,8 +231,12 @@ def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, call
     text, sources, usage, served = caller(user, system, ai.get("model", "claude-opus-5-5"), ai.get("effort", "high"))
     rep = parse_report(text)
     rep["sources"] = sources
-    rep["meta"] = {"written_at": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"), "ny_date": ny_now.strftime("%Y-%m-%d"),
-                   "model": served, "usage": usage, "fj_input": fj_meta(fj)}
+    iso = "%Y-%m-%dT%H:%M:%SZ"
+    rep["meta"] = {"written_at": now_utc.strftime(iso), "ny_date": ny_now.strftime("%Y-%m-%d"),
+                   "model": served, "usage": usage, "fj_input": fj_meta(fj),
+                   # بدء طلب النموذج واكتمال التقرير؛ وقت النشر يسجّله update.yml بعد نشر الصفحة (ملخص التشغيل)
+                   "started_at": started.strftime(iso), "completed_at": datetime.now(timezone.utc).strftime(iso),
+                   "trigger": os.environ.get("GITHUB_EVENT_NAME") or "local", "run_id": os.environ.get("GITHUB_RUN_ID")}
     return rep
 
 
