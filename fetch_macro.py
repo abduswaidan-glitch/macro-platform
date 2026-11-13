@@ -91,12 +91,10 @@ def main(argv=None) -> int:
     elif ai_report.should_run(now, state.get("ai_last_date"), cfg.get("ai", {}), force):
         try:
             from fetch_news import load_live
-            live = load_live("https://abduswaidan-glitch.github.io/macro-platform/news.json")
-            heads = [{"utc": i.get("utc"), "title": i.get("title_en"), "breaking": i.get("breaking")}
-                     for i in live.get("items", []) if i.get("us") or i.get("breaking")][:60]
-            cal = [{k: e.get(k) for k in ("timeUtc", "title", "impact", "actual", "forecast", "previous", "revision")}
-                   for e in live.get("calendar", []) if e.get("us") and e.get("impact") in (1, 2)][:60]
-            rep = ai_report.write_report(payload, cfg, now_utc=now, headlines=heads or None, calendar=cal or None)
+            from macro_platform import news
+            # يُرسل دائماً مع حالة التغطية، ولو كان المصدر متوقفاً: الغياب الصامت يوحي بأن لا أخبار
+            fj = news.report_feed(load_live("https://abduswaidan-glitch.github.io/macro-platform/news.json"), now)
+            rep = ai_report.write_report(payload, cfg, now_utc=now, fj=fj)
             ai_report.update_history(hist_p, rep, keep=cfg.get("ai", {}).get("keep", 14))
             state["ai_last_date"] = rep["meta"]["ny_date"]
             state_p.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")

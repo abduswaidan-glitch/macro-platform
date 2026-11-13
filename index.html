@@ -481,9 +481,10 @@ function renderAI(hist) {
         <div class="box"><h4>الملخص</h4><ul>${(r.summary || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
         <div class="box"><h4>انحياز NQ للجلسة القادمة</h4><div class="bias tone-${b[1]}">${b[0]}</div>
           <div class="conf"><i style="width:${Math.max(0, Math.min(100, +r.bias?.confidence || 0))}%"></i></div>
-          <div class="muted">الثقة ${esc(r.bias?.confidence)}%</div><p>${esc(r.bias?.reason)}</p></div>
+          <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p></div>
       </div>
       <h3>السيناريوهات A وB وC</h3>
+      <p class="muted uncal">الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة.</p>
       ${(r.scenarios || []).map(s => `<div class="sc"><div class="sc-top"><span>${esc(s.label)}. ${esc(s.name)}</span><span class="num">${esc(s.prob)}%</span></div>
         <div class="conf"><i style="width:${Math.max(0, Math.min(100, +s.prob || 0))}%"></i></div>
         <p><b>المُحفِّز:</b> ${esc(s.trigger)}</p><p class="muted">${esc(s.reason)}</p></div>`).join("")}
@@ -522,6 +523,10 @@ function renderMethod(data) {
 const NEWS = {data: null, filter: store.get("macro-news-filter") || "us", seen: new Set(), first: true};
 const nyTime = iso => { try { return new Date(iso).toLocaleTimeString("en-GB", {timeZone: "America/New_York", hour: "2-digit", minute: "2-digit"}); } catch (e) { return ""; } };
 const nyDay = iso => { try { return new Date(iso).toLocaleDateString("en-CA", {timeZone: "America/New_York"}); } catch (e) { return ""; } };
+/* عمر آخر جلب ناجح لكل مسار بالدقائق (last_success_utc)؛ updated وقت بناء الملف فقط، ويتقدم حتى أثناء الانقطاع */
+const fjAge = (d, k) => { const t = Date.parse(((d && d.last_success_utc) || {})[k] || ""); return isNaN(t) ? null : Math.max(0, Math.round((Date.now() - t) / 6e4)); };
+const agoTxt = m => m === null ? "غير معروف" : m < 1 ? "منذ أقل من دقيقة" : m < 120 ? `منذ ${m} د` : m < 2880 ? `منذ ${Math.round(m / 60)} س` : `منذ ${Math.round(m / 1440)} يوم`;
+const fjStale = m => m === null || m > 30;
 /* نسخ نص الخبر الأصلي بالإنجليزية كما نشرته FinancialJuice (الترجمة آلية، فلا تُنسخ) */
 function copyText(text, btn) {
   const done = ok => { btn.textContent = ok ? '✓' : '✕'; setTimeout(() => btn.textContent = '⧉', 1400); };
@@ -536,13 +541,14 @@ function renderNews() {
   if (!d) { box.innerHTML = '<p class="empty">لا توجد أخبار منشورة بعد. تبدأ بعد أول تشغيل لـ«الأخبار اللحظية» في تبويب Actions.</p>'; return; }
   const all = d.items || [];
   const items = all.filter(i => NEWS.filter === "all" || (NEWS.filter === "us" ? i.us : i.breaking || i.level >= 3)).slice(0, 120);
-  const mins = Math.round((Date.now() - Date.parse(d.updated)) / 6e4);
+  const ma = fjAge(d, "items");
   const today = nyDay(new Date().toISOString());
   const chips = [["us", "أمريكا"], ["hot", "عاجل ومؤثر"], ["all", "الكل"]];
   box.innerHTML = `<div class="news"><div class="news-top">
       <div class="chips" role="group" aria-label="تصفية الأخبار">${chips.map(([k, l]) => `<button class="chip-btn" type="button" data-f="${k}" aria-pressed="${NEWS.filter === k}">${l}</button>`).join("")}</div>
-      <div class="news-meta">FinancialJuice · بتأخير ${esc(d.delay_minutes)} دقائق · آخر جلب منذ ${mins < 1 ? "أقل من دقيقة" : mins + " د"}${d.translator ? " · الترجمة: " + esc(d.translator) : ""} · التوقيت: نيويورك</div></div>
+      <div class="news-meta">FinancialJuice · بتأخير ${esc(d.delay_minutes)} دقائق · آخر جلب ناجح: ${agoTxt(ma)}${d.translator ? " · الترجمة: " + esc(d.translator) : ""} · التوقيت: نيويورك</div></div>
     ${(d.errors || []).length ? `<div class="warn-box" style="margin:10px 14px">${d.errors.map(esc).join("<br>")}</div>` : ""}
+    ${fjStale(ma) ? `<div class="warn-box fj-gap" style="margin:10px 14px">${ma === null ? "وقت آخر جلب ناجح من FinancialJuice غير معروف: قد لا تكون العناوين أدناه حديثة." : `آخر جلب ناجح من FinancialJuice ${agoTxt(ma)}: ما حدث بعده غير مغطى هنا، والعناوين أدناه ليست جديدة.`}</div>` : ""}
     ${items.length ? `<ol>${items.map(i => {
       const ar = i.title_ar && i.title_ar !== i.title_en ? i.title_ar : null;
       const fresh = !NEWS.first && !NEWS.seen.has(i.id);
@@ -574,7 +580,9 @@ function renderCalendar() {
   const table = (title, rows) => rows.length ? `<div class="tbl-wrap cal" style="margin-top:10px"><table><thead><tr>
       <th>${title} · نيويورك</th><th>الحدث</th><th>الفعلي</th><th>التوقع</th><th>السابق</th></tr></thead>
       <tbody>${rows.map(row).join("")}</tbody></table></div>` : "";
-  box.innerHTML = `<div class="news-meta">FinancialJuice · الأحداث الأمريكية مرتفعة ومتوسطة التأثير · الفعلي يظهر بعد نحو 10 دقائق من صدوره</div>
+  const mc = fjAge(NEWS.data, "calendar");
+  box.innerHTML = `<div class="news-meta">FinancialJuice · الأحداث الأمريكية مرتفعة ومتوسطة التأثير · الفعلي يظهر بعد نحو 10 دقائق من صدوره · آخر جلب ناجح: ${agoTxt(mc)}</div>
+    ${fjStale(mc) ? `<div class="warn-box fj-gap" style="margin-top:8px">التقويم غير محدّث (آخر جلب ناجح: ${agoTxt(mc)}). الأحداث التي وقعت بعد آخر جلب ناجح لا تظهر قيمها هنا، وغياب القيمة لا يعني أن الرقم لم يصدر.</div>` : ""}
     ${table("صدرت (آخر 3 أيام)", done)}${table("القادمة (7 أيام)", soon)}`;
 }
 async function loadNews() {
