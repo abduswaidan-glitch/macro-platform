@@ -93,8 +93,8 @@ def main(argv=None) -> int:
             from fetch_news import load_live
             from macro_platform import news
             # يُرسل دائماً مع حالة التغطية، ولو كان المصدر متوقفاً: الغياب الصامت يوحي بأن لا أخبار
-            fj = news.report_feed(load_live("https://abduswaidan-glitch.github.io/macro-platform/news.json"), now)
-            rep = ai_report.write_report(payload, cfg, now_utc=now, fj=fj)
+            feed = news.report_feed(load_live("https://abduswaidan-glitch.github.io/macro-platform/news.json"), now)
+            rep = ai_report.write_report(payload, cfg, now_utc=now, feed=feed)
             ai_report.update_history(hist_p, rep, keep=cfg.get("ai", {}).get("keep", 14))
             state["ai_last_date"] = rep["meta"]["ny_date"]
             state_p.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")

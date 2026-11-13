@@ -1,6 +1,6 @@
 name: فحص مؤقت لمصادر الأخبار والتقويم (طلب دمج فقط، يُحذف قبل الدمج)
 
-# مؤقت: يختبر من خوادم GitHub نفسها أي المصادر المجانية بلا مفتاح تقبل طلباً صريح الهوية (بلا انتحال متصفح).
+# مؤقت: يشغّل كود الجلب الجديد نفسه على المصادر الحقيقية من خوادم GitHub، ويطبع ما يُبقيه المرشّح وما يُسقطه.
 # للقراءة فقط: بلا أسرار ولا نشر ولا كتابة.
 on:
   pull_request:
@@ -13,50 +13,54 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: فحص المصادر
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: المصادر الحقيقية عبر macro_platform.news
         run: |
           python3 - <<'PY'
-          import json, re, urllib.request, xml.etree.ElementTree as ET
-          UA = "macro-platform/1.0 (+https://abduswaidan-glitch.github.io/macro-platform/)"
-          SRC = {
-            "fed_press": "https://www.federalreserve.gov/feeds/press_all.xml",
-            "fed_speeches": "https://www.federalreserve.gov/feeds/speeches.xml",
-            "bls_latest": "https://www.bls.gov/feed/bls_latest.rss",
-            "bea": "https://apps.bea.gov/rss/rss.xml",
-            "treasury": "https://home.treasury.gov/system/files/126/press-releases-rss.xml",
-            "cnbc_top": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114",
-            "cnbc_economy": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
-            "cnbc_markets": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069",
-            "mw_top": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
-            "mw_realtime": "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines",
-            "yahoo": "https://finance.yahoo.com/news/rssindex",
-            "ff_thisweek": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
-            "ff_nextweek": "https://nfs.faireconomy.media/ff_calendar_nextweek.json",
-          }
-          for name, url in SRC.items():
+          from datetime import datetime, timezone
+          from macro_platform import news
+          now = datetime.now(timezone.utc)
+          since = news.keep_since(now)
+          print("now", news._iso(now), "keep_since", news._iso(since))
+          for src in news.DEFAULT_SOURCES:
               try:
-                  req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
-                  with urllib.request.urlopen(req, timeout=25) as r:
-                      body, ctype, code = r.read(), r.headers.get("Content-Type", ""), r.status
-              except urllib.error.HTTPError as e:
-                  print(f"{name:13} HTTP {e.code}"); continue
+                  raw = news.http_get(src["url"])
+                  rows = news.parse_rss(raw)
+                  items, st = news.fetch_source(src, now, since, get=lambda u, raw=raw: raw)
+                  kept = {i["title_en"]: i for i in items}
+                  print(f"== {src['name']} {src['url'][-45:]} seen={st['seen']} kept={st['kept']}")
+                  for r in rows:
+                      t = news._rss_time(r["pub"])
+                      i = kept.get(r["title"])
+                      mark = f"KEEP L{i['level']} {'US' if i['us'] else '--'}" if i else ("old        " if t and t < since else "drop       ")
+                      print(f"  {mark} {news._iso(t) if t else '?':20} {r['title'][:120]}")
               except Exception as e:
-                  print(f"{name:13} ERR {type(e).__name__}: {str(e)[:80]}"); continue
-              info = ""
-              try:
-                  if url.endswith(".json"):
-                      rows = json.loads(body)
-                      usd = [x for x in rows if x.get("country") == "USD"]
-                      info = (f"rows={len(rows)} usd={len(usd)} keys={sorted(rows[0]) if rows else []} "
-                              f"usd_high_med={sum(1 for x in usd if x.get('impact') in ('High','Medium'))} "
-                              f"with_actual={sum(1 for x in usd if x.get('actual'))} first={rows[0].get('date') if rows else None} "
-                              f"last={rows[-1].get('date') if rows else None}")
-                  else:
-                      root = ET.fromstring(body)
-                      items = root.findall(".//item") or root.findall(".//{http://www.w3.org/2005/Atom}entry")
-                      dates = [((i.findtext("pubDate") or i.findtext("{http://www.w3.org/2005/Atom}updated") or "")[:32]) for i in items[:3]]
-                      info = f"items={len(items)} newest={dates[:2]} has_link={bool(items and (items[0].findtext('link') or items[0].find('{http://www.w3.org/2005/Atom}link') is not None))}"
-              except Exception as e:
-                  info = f"parse ERR {type(e).__name__}: {str(e)[:60]} head={body[:60]!r}"
-              print(f"{name:13} HTTP {code} {ctype[:30]:30} {len(body):7}B {info}")
+                  print(f"== {src['name']} {src['url'][-45:]} FAILED {type(e).__name__}: {e}")
+          try:
+              events, window, status = news.fetch_calendar(news.DEFAULT_CALENDAR)
+              print("== calendar", [(s["name"], s["ok"], s.get("error"), s.get("seen"), s.get("kept")) for s in status])
+              print("   window", [news._iso(w) for w in window] if window else None)
+              for e in sorted(events, key=lambda e: e["timeUtc"]):
+                  print(f"  {e['timeUtc']} impact={e['impact']} {news.event_status(e, now):24} {e['title']} | f={e['forecast']} p={e['previous']} a={e['actual']}")
+          except Exception as e:
+              print("== calendar FAILED", type(e).__name__, e)
+          PY
+      - name: دورة أخبار كاملة (fetch_news.py) بلا news.json سابق وبلا مفاتيح
+        run: |
+          pip install -q -r requirements.txt
+          python fetch_news.py --site _probe --seed-url ''
+          python3 - <<'PY'
+          import json
+          d = json.load(open("_probe/news.json", encoding="utf-8"))
+          print("source:", d["source"])
+          print("errors:", d["errors"])
+          print("last_success_utc:", d["last_success_utc"], "keep_since_utc:", d["keep_since_utc"])
+          print("items:", len(d["items"]), "us:", sum(i["us"] for i in d["items"]), "level3:", sum(i["level"] >= 3 for i in d["items"]))
+          print("calendar:", len(d["calendar"]))
+          for f in d["feeds"]:
+              print("  feed", f["name"], f["ok"], f.get("error"), f.get("seen"), f.get("kept"))
+          print("bytes:", len(json.dumps(d, ensure_ascii=False)))
           PY

@@ -1,4 +1,4 @@
-"""يبني مجلد الموقع للنشر: ملفات الصفحة من المستودع + news.json المحدّث من FinancialJuice.
+"""يبني مجلد الموقع للنشر: ملفات الصفحة من المستودع + news.json المحدّث (عناوين RSS عامة وتقويم ForexFactory).
 
     python fetch_news.py --site _site                 # جلب وترجمة ثم بناء الموقع
     python fetch_news.py --site _site --no-fetch      # بناء الموقع فقط مع آخر news.json منشور
@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from macro_platform import news
+from macro_platform.build import load_config
 
 ROOT = Path(__file__).resolve().parent
 LIVE = "https://abduswaidan-glitch.github.io/macro-platform/news.json"
@@ -80,36 +81,39 @@ def main(argv=None) -> int:
         return 1
     store = {str(i["id"]): i for i in prev.get("items", []) if isinstance(i, dict) and "id" in i}
     cal = {str(e["id"]): e for e in prev.get("calendar", []) if isinstance(e, dict) and "id" in e}
+    cfg = news.load_config(load_config(ROOT / "config.json"))
     errors: list[str] = []
     ok = {"items": False, "calendar": False}   # نجاح الجلب في هذه الدورة فقط؛ الفشل يُبقي آخر نجاح منشور
     translator = prev.get("translator")
-    raw_key = os.environ.get("FJ_API_KEY", "")
-    key = raw_key.strip().strip("\"'").strip()  # يتسامح مع اقتباس أو مسافة أو سطر جديد لُصق مع المفتاح
-    if raw_key:
-        # وصف شكل المفتاح فقط (لا المفتاح): يكشف أخطاء اللصق دون تسريب
-        log(f"key shape: length {len(key)}, starts with fj_: {key.startswith('fj_')}, "
-            f"trimmed {len(raw_key) - len(key)} chars, inner spaces: {any(c.isspace() for c in key)}")
 
     if not args.no_fetch:
-        if not key:
-            errors.append("لا يوجد السر FJ_API_KEY")
-            log("no FJ_API_KEY")
-        else:
+        status: list[dict] = []
+        try:
+            fresh, status, errs = news.fetch_headlines(cfg["sources"], now, news.keep_since(now))
+            errors += errs
+            changed = news.merge(store, fresh)
+            ok["items"] = any(s["ok"] for s in status)       # مصدر واحد سليم يكفي؛ أخطاء البقية تُعرض
+            log(f"headlines: {len(fresh)} kept from {sum(s['ok'] for s in status)}/{len(status)} feeds, changed {changed}")
+        except Exception as e:
+            errors.append(f"العناوين: {type(e).__name__}: {str(e)[:120]}")
+            log("headlines failed:", type(e).__name__, str(e)[:160])
+        attempt = news._past(prev.get("calendar_attempt_utc"), now)
+        carry: tuple = tuple(f["url"] for f in cfg["calendar"])
+        if news.calendar_due(prev, now):
+            attempt, carry = now, ()
             try:
-                fresh = news.fetch(key, news.since_for(store, now))
-                changed = news.merge(store, fresh)
-                ok["items"] = True
-                log(f"fetched {len(fresh)}, changed {changed}")
-            except Exception as e:
-                errors.append(str(e)[:160])
-                log("fetch failed:", str(e)[:160])
-            try:
-                fresh_cal = news.fetch_calendar(key, now)
-                log(f"calendar: fetched {len(fresh_cal)}, changed {news.merge_calendar(cal, fresh_cal, now)}")
+                fresh_cal, window, cst = news.fetch_calendar(cfg["calendar"])
+                status += cst
+                log(f"calendar: {len(fresh_cal)} US events, changed {news.merge_calendar(cal, fresh_cal, window)}; "
+                    + ", ".join(f"{c['name']} {'ok' if c['ok'] else c['error']}" for c in cst))
                 ok["calendar"] = True
             except Exception as e:
-                errors.append("التقويم: " + str(e)[:140])
-                log("calendar fetch failed:", str(e)[:160])
+                msg = str(e)[:140] if isinstance(e, news.NewsError) else type(e).__name__
+                errors.append("التقويم: " + msg)
+                status += [{"name": f["name"], "url": f["url"], "ok": False, "error": msg} for f in cfg["calendar"]]
+                log("calendar failed:", msg)
+        else:
+            log("calendar: fetched less than an hour ago, kept")
         store = news.prune(store, now)
         cal = news.prune_calendar(cal, now)
         akey = os.environ.get("ANTHROPIC_API_KEY", "")
@@ -118,7 +122,6 @@ def main(argv=None) -> int:
             os.environ["ANTHROPIC_API_KEY"] = clean
             # وصف شكل المفتاح فقط: sk-ant-api = مفتاح API صحيح الشكل؛ sk-ant-oat = رمز اشتراك لا يعمل هنا
             log(f"anthropic key shape: length {len(clean)}, prefix {clean[:10]!r}, trimmed {len(akey) - len(clean)} chars")
-        if clean:
             done, terr = news.translate_missing(store)
             cdone, cerr = news.translate_missing(cal, field="title")
             errors += terr + cerr
@@ -128,7 +131,8 @@ def main(argv=None) -> int:
         else:
             log("no ANTHROPIC_API_KEY: headlines shown in English")
         out = news.payload(store, now, translator, errors, calendar=cal,
-                           last_success=news.last_success(prev, now, ok))
+                           last_success=news.last_success(prev, now, ok), source=" · ".join(news.source_names(cfg)),
+                           feeds=news.feed_status(prev, now, status, carry), calendar_attempt=attempt)
     else:
         out = prev or news.payload({}, now, None, ["لم تُجلب الأخبار بعد"])
 

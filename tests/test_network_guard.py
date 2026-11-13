@@ -37,14 +37,14 @@ def test_sees_an_attempt_the_code_swallows():
     """مثل fetch_news: الطلب يفشل، والكود يلتقط الاستثناء ويكمل؛ الحارس يحتفظ بالمحاولة."""
     with network_guard() as attempts:
         try:
-            urllib.request.urlopen("https://stream.financialjuice.com/FJService.asmx", timeout=1)
+            urllib.request.urlopen("https://www.federalreserve.gov/feeds/press_all.xml", timeout=1)
         except Exception:
             pass
         try:
             socket.create_connection(("192.0.2.1", 443), timeout=1)
         except Exception:
             pass
-    assert any("stream.financialjuice.com" in a for a in attempts) and any("192.0.2.1" in a for a in attempts)
+    assert any("www.federalreserve.gov" in a for a in attempts) and any("192.0.2.1" in a for a in attempts)
 
 
 def test_a_local_proxy_is_not_a_way_around_it():

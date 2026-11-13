@@ -183,6 +183,11 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
 .news .lb{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--rule);border-radius:5px;padding:0 5px;margin-inline-start:4px;direction:ltr}
 .news .brk{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--bad);border-radius:5px;padding:0 6px;margin-inline-end:6px}
 .news li.hi .h{font-weight:600}
+.news .off{display:inline-block;font-size:11px;font-weight:700;color:var(--acc);border:1px solid var(--acc);border-radius:5px;padding:0 5px;margin-inline-end:6px}
+.news a.t{color:inherit;text-decoration:none}
+.news a.t:hover,.news a.t:focus-visible{text-decoration:underline}
+.news-note{font-size:12px;color:var(--muted);margin:8px 14px;line-height:1.6}
+.cal .na{color:var(--muted);font-size:12px;font-weight:400}
 .news li.new{animation:flash 2.5s ease-out}
 .cal tbody tr{cursor:default}
 .cal .brk,.cal .lb{display:inline-block;font-size:11px;border-radius:5px;padding:0 6px;margin-inline-end:4px}
@@ -405,7 +410,7 @@ function renderOverview(data) {
   const w = data.status.warnings;
   p.innerHTML = `<div class="sec-head"><h2>نظرة عامة</h2><p>بوابات NQ الكلية وإشارات الدورة الاقتصادية في صفحة واحدة. كل رقم بتاريخه؛ البيانات الشهرية تصدر متأخرة.</p></div>
     ${w.length ? `<div class="warn-box"><b>تنبيهات البيانات (${w.length})</b><ul>${w.slice(0, 8).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
-    <h3>الأخبار اللحظية</h3>
+    <h3>الأخبار المؤثرة</h3>
     <div id="newsBox"><p class="empty">جارٍ تحميل الأخبار…</p></div>
     <h3>تقويم البيانات الأمريكية</h3>
     <div id="calBox"><p class="empty">جارٍ تحميل التقويم…</p></div>
@@ -537,15 +542,18 @@ function renderMethod(data) {
     </tbody></table></div>`;
 }
 
-/* ---------- live news ---------- */
+/* ---------- news and calendar (news.json: public RSS feeds + ForexFactory export) ---------- */
 const NEWS = {data: null, filter: store.get("macro-news-filter") || "us", seen: new Set(), first: true};
 const nyTime = iso => { try { return new Date(iso).toLocaleTimeString("en-GB", {timeZone: "America/New_York", hour: "2-digit", minute: "2-digit"}); } catch (e) { return ""; } };
 const nyDay = iso => { try { return new Date(iso).toLocaleDateString("en-CA", {timeZone: "America/New_York"}); } catch (e) { return ""; } };
 /* عمر آخر جلب ناجح لكل مسار بالدقائق (last_success_utc)؛ updated وقت بناء الملف فقط، ويتقدم حتى أثناء الانقطاع */
-const fjAge = (d, k) => { const t = Date.parse(((d && d.last_success_utc) || {})[k] || ""); return isNaN(t) ? null : Math.max(0, Math.round((Date.now() - t) / 6e4)); };
+const feedAge = (d, k) => { const t = Date.parse(((d && d.last_success_utc) || {})[k] || ""); return isNaN(t) ? null : Math.max(0, Math.round((Date.now() - t) / 6e4)); };
 const agoTxt = m => m === null ? "غير معروف" : m < 1 ? "منذ أقل من دقيقة" : m < 120 ? `منذ ${m} د` : m < 2880 ? `منذ ${Math.round(m / 60)} س` : `منذ ${Math.round(m / 1440)} يوم`;
-const fjStale = m => m === null || m > 30;
-/* نسخ نص الخبر الأصلي بالإنجليزية كما نشرته FinancialJuice (الترجمة آلية، فلا تُنسخ) */
+const STALE_MIN = {items: 30, calendar: 130};   // العناوين تُجلب كل 10 دقائق، والتقويم كل ساعة
+const isStale = (m, k) => m === null || m > STALE_MIN[k];
+const srcOf = i => String((i.labels || [])[0] || "");
+const isOfficial = i => (i.labels || []).includes("official");
+/* نسخ نص الخبر الأصلي بالإنجليزية كما نشره مصدره (الترجمة آلية، فلا تُنسخ) */
 function copyText(text, btn) {
   const done = ok => { btn.textContent = ok ? '✓' : '✕'; setTimeout(() => btn.textContent = '⧉', 1400); };
   if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(() => done(true), () => done(false)); return; }
@@ -556,26 +564,29 @@ function copyText(text, btn) {
 function renderNews() {
   const box = $("#newsBox"); if (!box) return;
   const d = NEWS.data;
-  if (!d) { box.innerHTML = '<p class="empty">لا توجد أخبار منشورة بعد. تبدأ بعد أول تشغيل لـ«الأخبار اللحظية» في تبويب Actions.</p>'; return; }
+  if (!d) { box.innerHTML = '<p class="empty">لا توجد أخبار منشورة بعد. تبدأ بعد أول تشغيل لـ«الأخبار والتقويم» في تبويب Actions.</p>'; return; }
   const all = d.items || [];
-  const items = all.filter(i => NEWS.filter === "all" || (NEWS.filter === "us" ? i.us : i.breaking || i.level >= 3)).slice(0, 120);
-  const ma = fjAge(d, "items");
+  const items = all.filter(i => NEWS.filter === "all" || (NEWS.filter === "us" ? i.us : i.breaking || i.level >= 3)).slice(0, 200);
+  const ma = feedAge(d, "items");
   const today = nyDay(new Date().toISOString());
-  const chips = [["us", "أمريكا"], ["hot", "عاجل ومؤثر"], ["all", "الكل"]];
+  const since = d.keep_since_utc ? `${nyDay(d.keep_since_utc)} ${nyTime(d.keep_since_utc)}` : "";
+  const chips = [["us", "أمريكا"], ["hot", "الأكثر تأثيرًا"], ["all", "الكل"]];
   box.innerHTML = `<div class="news"><div class="news-top">
       <div class="chips" role="group" aria-label="تصفية الأخبار">${chips.map(([k, l]) => `<button class="chip-btn" type="button" data-f="${k}" aria-pressed="${NEWS.filter === k}">${l}</button>`).join("")}</div>
-      <div class="news-meta">FinancialJuice · بتأخير ${esc(d.delay_minutes)} دقائق · آخر جلب ناجح: ${agoTxt(ma)}${d.translator ? " · الترجمة: " + esc(d.translator) : ""} · التوقيت: نيويورك</div></div>
-    ${(d.errors || []).length ? `<div class="warn-box" style="margin:10px 14px">${d.errors.map(esc).join("<br>")}</div>` : ""}
-    ${fjStale(ma) ? `<div class="warn-box fj-gap" style="margin:10px 14px">${ma === null ? "وقت آخر جلب ناجح من FinancialJuice غير معروف: قد لا تكون العناوين أدناه حديثة." : `آخر جلب ناجح من FinancialJuice ${agoTxt(ma)}: ما حدث بعده غير مغطى هنا، والعناوين أدناه ليست جديدة.`}</div>` : ""}
+      <div class="news-meta">${esc(d.source || "")} · تحديث كل ${esc(d.delay_minutes)} دقائق · آخر جلب ناجح: ${agoTxt(ma)}${d.translator ? " · الترجمة: " + esc(d.translator) : ""} · التوقيت: نيويورك</div></div>
+    ${(d.errors || []).length ? `<div class="warn-box" style="margin:10px 14px">تعذّر بعضها في آخر دورة:<br>${d.errors.map(esc).join("<br>")}</div>` : ""}
+    ${isStale(ma, "items") ? `<div class="warn-box feed-gap" style="margin:10px 14px">${ma === null ? "وقت آخر جلب ناجح للعناوين غير معروف: قد لا تكون العناوين أدناه حديثة." : `آخر جلب ناجح للعناوين ${agoTxt(ma)}: ما حدث بعده غير مغطى هنا، والعناوين أدناه ليست جديدة.`}</div>` : ""}
+    <p class="news-note">عناوين الأسبوع تبقى حتى افتتاح الأسبوع التالي (الأحد 18:00 نيويورك)${since ? `، والمعروض منذ <bdi>${esc(since)}</bdi>` : ""}. «رسمي» إعلان من Fed أو BEA، وغيره خبر إعلامي لم يُتحقق منه.</p>
     ${items.length ? `<ol>${items.map(i => {
       const ar = i.title_ar && i.title_ar !== i.title_en ? i.title_ar : null;
       const fresh = !NEWS.first && !NEWS.seen.has(i.id);
       const day = nyDay(i.utc);
+      const title = esc(ar || i.title_en);
       return `<li class="${i.breaking || i.level >= 3 ? "hi" : ""}${fresh ? " new" : ""}"><time datetime="${esc(i.utc)}">${esc(nyTime(i.utc))}${day !== today ? `<br>${esc(day.slice(5))}` : ""}</time>
-        <div class="h">${i.breaking ? '<span class="brk">عاجل</span>' : ""}<span class="t">${esc(ar || i.title_en)}</span>
-        ${ar ? `<span class="en">${esc(i.title_en)}</span>` : ""}${(i.labels || []).slice(0, 3).map(l => `<span class="lb">${esc(l)}</span>`).join("")}
-        <button class="cp" type="button" data-cp="${esc(`${i.title_en}\n${nyDay(i.utc)} ${nyTime(i.utc)} (نيويورك) · FinancialJuice`)}" aria-label="نسخ عنوان الخبر الأصلي" title="نسخ عنوان الخبر الأصلي">⧉</button></div></li>`;
-    }).join("")}</ol>` : '<p class="empty" style="padding:12px 14px">لا عناوين في هذا التصنيف خلال آخر 24 ساعة.</p>'}</div>`;
+        <div class="h">${i.breaking ? '<span class="brk">عاجل</span>' : ""}${isOfficial(i) ? '<span class="off">رسمي</span>' : ""}${i.link ? `<a class="t" href="${safeUrl(i.link)}" target="_blank" rel="noopener noreferrer">${title}</a>` : `<span class="t">${title}</span>`}
+        ${ar ? `<span class="en">${esc(i.title_en)}</span>` : ""}${srcOf(i) ? `<span class="lb">${esc(srcOf(i))}</span>` : ""}
+        <button class="cp" type="button" data-cp="${esc(`${i.title_en}\n${nyDay(i.utc)} ${nyTime(i.utc)} (نيويورك) · ${srcOf(i)}${i.link ? "\n" + i.link : ""}`)}" aria-label="نسخ عنوان الخبر الأصلي" title="نسخ عنوان الخبر الأصلي">⧉</button></div></li>`;
+    }).join("")}</ol>` : '<p class="empty" style="padding:12px 14px">لا عناوين في هذا التصنيف هذا الأسبوع.</p>'}</div>`;
   all.forEach(i => NEWS.seen.add(i.id));
   NEWS.first = false;
   box.querySelectorAll(".chip-btn").forEach(b => b.onclick = () => { NEWS.filter = b.dataset.f; store.set("macro-news-filter", NEWS.filter); renderNews(); });
@@ -583,29 +594,34 @@ function renderNews() {
 }
 function renderCalendar() {
   const box = $("#calBox"); if (!box) return;
-  const all = ((NEWS.data && NEWS.data.calendar) || []).filter(e => e.us && (e.impact === 1 || e.impact === 2));
-  const mc = fjAge(NEWS.data, "calendar");
+  const d = NEWS.data;
+  const all = ((d && d.calendar) || []).filter(e => e.us && (e.impact === 1 || e.impact === 2));
+  const mc = feedAge(d, "calendar");
+  const stale = isStale(mc, "calendar");
   if (!all.length) {   // فارغ والمصدر لا يُقرأ: الفراغ من الانقطاع، لا من غياب الأحداث
-    box.innerHTML = NEWS.data && fjStale(mc) ? `<div class="warn-box fj-gap">التقويم فارغ، وآخر جلب ناجح له: ${agoTxt(mc)}. لا أحداث معروضة لأن المصدر لا يُقرأ، لا لأنه لا أحداث.</div>`
-      : '<p class="empty">لا أحداث بعد. يمتلئ التقويم مع دورات الأخبار القادمة.</p>';
+    box.innerHTML = d && stale ? `<div class="warn-box feed-gap">التقويم فارغ، وآخر جلب ناجح له: ${agoTxt(mc)}. لا أحداث معروضة لأن المصدر لا يُقرأ، لا لأنه لا أحداث.</div>`
+      : d ? '<p class="empty">لا أحداث أمريكية مرتفعة أو متوسطة التأثير في المصدر لهذا الأسبوع.</p>' : '<p class="empty">لا تقويم منشور بعد.</p>';
     return;
   }
-  const out = e => e.actual !== null && e.actual !== undefined && e.actual !== "";
-  const done = all.filter(out).slice(-12).reverse();
-  const soon = all.filter(e => !out(e) && Date.parse(e.timeUtc) >= Date.now() - 36e5).slice(0, 15);
-  const row = e => {
+  const now = Date.now();
+  const has = v => v !== null && v !== undefined && String(v).trim() !== "";
+  const past = all.filter(e => Date.parse(e.timeUtc) < now).reverse();
+  const soon = all.filter(e => Date.parse(e.timeUtc) >= now);
+  const row = (e, gone) => {
     const ar = e.title_ar && e.title_ar !== e.title ? e.title_ar : null;
     return `<tr><td class="num">${esc(nyDay(e.timeUtc).slice(5))} ${esc(nyTime(e.timeUtc))}</td>
       <td>${e.impact === 1 ? '<span class="brk">مرتفع</span>' : '<span class="lb">متوسط</span>'} ${esc(ar || e.title)}${ar ? `<span class="en">${esc(e.title)}</span>` : ""}</td>
-      <td class="num"><b>${esc(out(e) ? e.actual : "—")}</b></td><td class="num">${esc(e.forecast ?? "—")}</td>
+      <td class="num">${has(e.actual) ? `<b>${esc(e.actual)}</b>` : gone ? '<span class="na">لا يحمله المصدر</span>' : "—"}</td><td class="num">${esc(e.forecast ?? "—")}</td>
       <td class="num">${esc(e.revision ? e.revision + " (معدّل)" : e.previous ?? "—")}</td></tr>`;
   };
-  const table = (title, rows) => rows.length ? `<div class="tbl-wrap cal" style="margin-top:10px"><table><thead><tr>
+  const table = (title, rows, gone) => `<div class="tbl-wrap cal" style="margin-top:10px"><table><thead><tr>
       <th>${title} · نيويورك</th><th>الحدث</th><th>الفعلي</th><th>التوقع</th><th>السابق</th></tr></thead>
-      <tbody>${rows.map(row).join("")}</tbody></table></div>` : "";
-  box.innerHTML = `<div class="news-meta">FinancialJuice · الأحداث الأمريكية مرتفعة ومتوسطة التأثير · الفعلي يظهر بعد نحو 10 دقائق من صدوره · آخر جلب ناجح: ${agoTxt(mc)}</div>
-    ${fjStale(mc) ? `<div class="warn-box fj-gap" style="margin-top:8px">التقويم غير محدّث (آخر جلب ناجح: ${agoTxt(mc)}). الأحداث التي وقعت بعد آخر جلب ناجح لا تظهر قيمها هنا، وغياب القيمة لا يعني أن الرقم لم يصدر.</div>` : ""}
-    ${table("صدرت (آخر 3 أيام)", done)}${table("القادمة (7 أيام)", soon)}`;
+      <tbody>${rows.map(e => row(e, gone)).join("")}</tbody></table></div>`;
+  box.innerHTML = `<div class="news-meta">ForexFactory (تصدير عام) · الأحداث الأمريكية مرتفعة ومتوسطة التأثير · يُحدَّث كل ساعة · آخر جلب ناجح: ${agoTxt(mc)}</div>
+    ${stale ? `<div class="warn-box feed-gap" style="margin-top:8px">التقويم غير محدّث (آخر جلب ناجح: ${agoTxt(mc)}): المواعيد والتوقعات أدناه قد تكون تغيّرت.</div>` : ""}
+    ${soon.length ? table("القادمة", soon, false) : '<p class="empty cal-next">لا أحداث قادمة معروفة بعد: يظهر جدول الأسبوع التالي حين ينشره المصدر.</p>'}
+    ${past.length ? table("مضى موعدها هذا الأسبوع", past, true) : ""}
+    <p class="news-note" style="margin:8px 0 0">المصدر لا يحمل القيم الفعلية: الأرقام الصادرة في تبويبات البيانات أو في الإصدار الرسمي، وغياب القيمة هنا لا يعني أن الرقم صدر أو لم يصدر. تبقى أحداث الأسبوع حتى افتتاح الأسبوع التالي.</p>`;
 }
 async function loadNews() {
   try { NEWS.data = await getJSON("news.json"); } catch (e) { if (!NEWS.data) NEWS.data = null; }
