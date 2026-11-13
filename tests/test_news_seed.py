@@ -1,6 +1,6 @@
 """news.json المنشور هو المخزن الوحيد لتراكم التقويم والعناوين، فقراءة فاشلة لا تُعامل كملف فارغ.
 
-الحادثة: 13 نوفمبر 2026، دورة 15:11Z: «no live news.json yet: HTTPError» مع 401 من المزود، فبُني الملف من لا شيء
+الحادثة: 13 نوفمبر 2026، دورة 15:11Z: «no live news.json yet: HTTPError» مع 401 من المزود السابق، فبُني الملف من لا شيء
 ونُشر فوق الأصل (107 أحداث ← 0)، وقرأت كل دورة بعدها الملف الفارغ. المسار نفسه في deploy.yml وupdate.yml (--no-fetch).
 """
 import io
@@ -26,8 +26,8 @@ NOW = datetime.now(timezone.utc)
 EVENT = {"id": 77, "title": "US PPI MoM", "country": "US", "timeUtc": _iso(NOW + timedelta(days=2)), "impact": 1,
          "type": 2, "actual": None, "forecast": "0.4%", "previous": "1.3%", "revision": None, "unit": "%",
          "breaking": False, "us": True}
-PREV = {"updated": _iso(NOW - timedelta(minutes=10)), "source": "FinancialJuice", "delay_minutes": 10,
-        "translator": None, "errors": ["FinancialJuice HTTP 401 invalid_key"], "items": [], "calendar": [EVENT]}
+PREV = {"updated": _iso(NOW - timedelta(minutes=10)), "source": "Fed · BEA · CNBC · MarketWatch · ForexFactory",
+        "delay_minutes": 10, "translator": None, "errors": ["CNBC: HTTP 503"], "items": [], "calendar": [EVENT]}
 HTTP_503 = urllib.error.HTTPError("https://example.invalid/news.json", 503, "Service Unavailable", None, None)
 
 
@@ -56,13 +56,12 @@ def serve(monkeypatch, outcomes):
 
 
 def provider_down(monkeypatch):
+    """كل المصادر (RSS وتقويم ForexFactory) لا تُقرأ."""
     def fail(*a, **k):
-        raise news.NewsError("FinancialJuice HTTP 401 invalid_key")
+        raise news.NewsError("HTTP 503")
 
-    monkeypatch.setenv("FJ_API_KEY", "fj_test")
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    monkeypatch.setattr(news, "fetch", fail)
-    monkeypatch.setattr(news, "fetch_calendar", fail)
+    monkeypatch.setattr(news, "http_get", fail)
 
 
 def site_root(tmp_path, monkeypatch):

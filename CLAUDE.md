@@ -12,7 +12,11 @@
   `data/raw` and `data/fetch_status.json`, so code changes are live within a minute of a push.
 - Pages source is GitHub Actions; `news.json` is likewise deployed only, never committed. Demo data must never be committed.
 - Page text is Arabic; every string from data or Claude goes through `esc()`, links through `safeUrl()`.
-- `news.json` is read by `gold-dashboard` (`macro_wire()` in `fetch_gold.py`, and its news tab). Keep `items[]`
-  (`id`, `utc`, `title_en`, `title_ar`, `labels`, `breaking`, `link`) and `calendar[]` with FinancialJuice's own
-  calendar field names (`id`, `title`, `country`, `timeUtc`, `impact`, `actual`, `forecast`, `previous`, `revision`)
-  unchanged; gold feeds `calendar` straight into `fj_calendar_apply`.
+- News and calendar come from public sources with no keys and an honest User-Agent (no browser impersonation):
+  RSS feeds of the Fed, BEA, CNBC and MarketWatch (filtered for market impact in `macro_platform/news.py`), and the
+  ForexFactory calendar export (no actual figures; fetched hourly). Items and events stay until the next trading week
+  opens (Sunday 18:00 New York), never less than the last 72 hours.
+- `news.json` is read by `gold-dashboard` (`macro_wire()` in `fetch_gold.py`, and its news tab in the browser). Keep
+  `items[]` (`id`, `utc`, `title_en`, `title_ar`, `labels`, `breaking`, `link`; `labels[0]` is the source name) and
+  `calendar[]` with the field names gold's `fj_calendar_apply` expects (`id`, `title`, `country`, `timeUtc`, `impact`,
+  `actual`, `forecast`, `previous`, `revision`) unchanged.

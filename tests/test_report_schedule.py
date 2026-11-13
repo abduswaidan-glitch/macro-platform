@@ -126,10 +126,10 @@ def _step(wf, name):
     return m.group(1)
 
 
-def test_news_tick_requests_the_report_independently_of_financialjuice():
+def test_news_tick_requests_the_report_independently_of_the_news_fetch():
     step = _step(NEWS, "طلب تقرير اليوم عند الحاجة (update.yml)")
     assert "if: ${{ !cancelled() }}" in step and "continue-on-error: true" in step
-    assert "FJ_API_KEY" not in step and "ANTHROPIC_API_KEY" not in step
+    assert "secrets." not in step and "ANTHROPIC_API_KEY" not in step
     assert "python report_trigger.py" in step and "gh workflow run update.yml" in step and "--ref main" in step
     assert 'case "$d" in dispatch*)' in step                  # يطلب فقط عند قرار dispatch
     assert NEWS.index("طلب تقرير اليوم") < NEWS.index("جلب الأخبار وترجمتها")   # قبل الجلب، فلا يتأثر بفشله
