@@ -1,5 +1,444 @@
 [
  {
+  "title": "PPI يصدر والعائد 10Y فوق 5% والفيدرالي يتجه للرفع: انحياز سلبي حذر لـNQ مع هدوء VIX والائتمان",
+  "summary": [
+   "يرتفع العائد بسبب الشق الحقيقي. في بيانات المنصة بتاريخ 2026-11-10 كان 10Y عند 4.98% والعائد الحقيقي عند 2.78%، وهو في الشريحة المئوية 98.8 على مدى خمس سنوات. وانخفض الـBreakeven من 2.30% إلى 2.20% خلال الأسبوع. ويُظهر سعر السوق صباح اليوم 10Y قرب 5.13% (CNBC، وهو ليس من المنصة).",
+   "جاء CPI أكتوبر أعلى من التوقعات: 0.4% m/m مقابل 0.3% للرئيسي، و0.3% مقابل 0.2% للأساسي. وتقديرات FedWatch تسعّر رفعاً في 9 ديسمبر باحتمال 100% تقريباً، منها نحو 13% لرفع 50 bp.",
+   "PPI أكتوبر يصدر الساعة 08:30 ET. التوقع 0.4% m/m للرئيسي و0.3% للأساسي، والسنوي المتوقع 6.6%. هذه القراءة هي المحفز الأول للجلسة.",
+   "سوق العمل لا يعطي الفيدرالي سبباً للتوقف. طلبات الإعانة 200k (أسبوع 2026-11-07)، والبطالة 4.1% (أكتوبر)، ومتوسط التوظيف لثلاثة أشهر 137k. وقاعدة Sahm غير مفعّلة.",
+   "ثلاث بوابات سلبية: 10Y فوق 4.50% بـ+48 bp على أقل تقدير، والعائد الحقيقي فوق 2%، وقيادة NQ/ES عند −4.03% على 20 يوماً. في المقابل VIX عند 17.5 وHY OAS عند 3.30%، أي أن الضغط ضغط تقييمات لا ضغط ائتمان.",
+   "أخبار الشركات تزيد خطر الذيل في NQ تحديداً: خروج Jensen Huang من رئاسة Nvidia، وتعطّل في خدمات Microsoft يضغط سهمها قبل الافتتاح. وعقود NQ صباحاً بين −0.1% و+0.2% حسب المصدر."
+  ],
+  "bias": {
+   "direction": "bearish",
+   "confidence": 55,
+   "reason": "يقوم الانحياز على الأرقام. العائد الحقيقي 2.78% في الشريحة المئوية 98.8، وارتفع 13 bp في أسبوع بينما انخفض الـBreakeven 10 bp. أي أن السوق يسعّر تشديداً حقيقياً، وهذا أسوأ مزيج لمضاعفات النمو. يضاف إلى ذلك أن 2Y−FF عند +85 bp، وأن ثلاثة مزادات (3Y و10Y و30Y) جاءت كلها بـtail للمرة الأولى منذ مايو، وأن قيادة NQ مقابل ES سلبية. أبقيت الثقة متوسطة لثلاثة أسباب. أولاً، VIX عند 17.5 والائتمان هادئ، فلا ضغط نظامي. ثانياً، الرفع في ديسمبر مسعَّر بالكامل تقريباً، فالمفاجأة المتبقية في حجمه فقط. ثالثاً، توقع PPI الشهري (0.4%) أدنى بوضوح من القراءة السابقة (1.3%)، وهذا يفتح الباب لارتياح إن جاءت المكونات المؤثرة في PCE معتدلة."
+  },
+  "scenarios": [
+   {
+    "label": "A",
+    "name": "موجة عوائد جديدة: ضغط على NQ",
+    "prob": 45,
+    "trigger": "يأتي Core PPI عند 0.4% m/m أو أعلى، أو تكون مكونات PCE في PPI ساخنة. يبقى 10Y فوق نحو 5.10% ويرتفع 2Y. وتؤيد Bowman (10:50 ET) أو Daly (12:00 ET) رفعاً بـ50 bp، فترتفع احتمالات الـ50 bp في FedWatch فوق 13%.",
+    "reason": "Waller ربط رفع 50 bp بقراءات أساسية عند 0.3% أو أعلى، وCore CPI أكتوبر جاء عند 0.3%. هذا يجعل الشرط قريب التحقق. وأي صعود جديد في العائد الحقيقي يضرب مضاعفات NQ أكثر من ES، وقيادة NQ ضعيفة أصلاً."
+   },
+   {
+    "label": "B",
+    "name": "قراءة مطابقة وتداول عرضي",
+    "prob": 35,
+    "trigger": "يأتي PPI قريباً من التوقع (0.4% رئيسي و0.3% أساسي). يتحرك 10Y في نطاق ضيق حول 5.05–5.15%، ويبقى VIX دون 20، ولا يأتي خطاب الفيدرالي بجديد يتجاوز فكرة الرفع التدريجي.",
+    "reason": "الرفع في ديسمبر مسعَّر بالكامل تقريباً، والائتمان هادئ. فحركة NQ في هذا السيناريو تحددها أخبار Nvidia وMicrosoft أكثر من الماكرو، وهي غالباً بلا اتجاه واضح في جلسة يوم الجمعة."
+   },
+   {
+    "label": "C",
+    "name": "ارتياح في السندات وارتداد NQ",
+    "prob": 20,
+    "trigger": "يأتي Core PPI عند 0.2% أو أدنى ومكونات PCE معتدلة. يعود 10Y تحت 5.05% ثم يقترب من 5.00%، وتتراجع احتمالات الـ50 bp في FedWatch، وينخفض VIX تحت 17.",
+    "reason": "التموضع مكتظ في جهة التشديد بعد CPI ومزادات ضعيفة، فأي مفاجأة هبوطية في التضخم قد تدفع إلى تغطية مراكز قصيرة في السندات. لكن احتماله أدنى لأن سلسلة PPI السنوية مرتفعة (6.3% سابقاً) ولأن الفيدرالي يتحدث بلهجة متشددة بالإجماع."
+   }
+  ],
+  "sections": [
+   {
+    "heading": "النمو: تسخين اقتصادي مع إسكان ضعيف",
+    "body": "المنصة تصنّف المرحلة «تسخين اقتصادي (Reflation)». الإنتاج الصناعي +2.25% y/y (سبتمبر، عمره 73 يوماً)، ومبيعات التجزئة الاسمية +6.29% y/y (سبتمبر)، والناتج الحقيقي +2.07% y/y (قراءة الربع الثالث بتاريخ 2026-07-01، عمرها 135 يوماً). استنتاجي أن مبيعات التجزئة الحقيقية تقارب +2.5% بعد طرح CPI البالغ 3.7%، وهو تقدير تقريبي. هناك تعارضان. الأول بين الإنفاق والمعنويات: مؤشر UMich عند 48.1 في سبتمبر، أي في الشريحة المئوية 3.3. والثاني في الإسكان: البدء بالبناء 1,221 ألفاً في الشريحة 3.3، والرهن 30Y عند 7.11%. القطاعات الحساسة للفائدة تتباطأ، بينما يبقى الاقتصاد الكلي قوياً بما يكفي ليواصل الفيدرالي الرفع. M2 ينمو +5.7% y/y، فالسيولة الاسمية ليست شحيحة."
+   },
+   {
+    "heading": "العمل: سوق متماسك يبرر التشديد",
+    "body": "طلبات الإعانة الأولية 200k لأسبوع 2026-11-07، في الشريحة المئوية 8.4 على خمس سنوات. البطالة 4.1% في أكتوبر (عمرها 43 يوماً)، ومتوسط التوظيف لثلاثة أشهر 137k. وتشير التقارير إلى أن رواتب أكتوبر ارتفعت 165k متجاوزة التوقعات (مصدر إعلامي، وليس من المنصة). وظائف JOLTS الشاغرة 7.52 مليون في سبتمبر. لا تعارض هنا: البطالة المنخفضة والطلبات المنخفضة تقولان الشيء نفسه، وقاعدة Sahm عند صفر تقريباً. النتيجة أن الفيدرالي لا يجد في بيانات العمل عائقاً أمام الرفع."
+   },
+   {
+    "heading": "التضخم: CPI ساخن، وانعكاس غير مألوف بين CPI وPCE",
+    "body": "CPI أكتوبر بالأرقام الشهرية جاء أعلى من التوقعات: 0.4% m/m للرئيسي (التوقع 0.3%) و0.3% للأساسي (التوقع 0.2%). أما السنوي لأكتوبر فغير متاح في المنصة، لأن قراءة أكتوبر 2025 الأساسية غير منشورة. آخر قراءات سنوية من المنصة لشهر سبتمبر (عمرها 73 يوماً): CPI 3.72%، وCore CPI 2.57%، وCore PCE 3.12%. اللافت أن Core PCE يزيد على Core CPI بنحو 55 bp، والمعتاد تاريخياً هو العكس. لا أملك تفسيراً مثبتاً لذلك، وقد يكون أثر قاعدة ناتجاً عن فجوة بيانات 2025. لهذا لا أعتمد على Core CPI السنوي وحده. الفارق بين CPI الرئيسي والأساسي يدل على أثر الطاقة: WTI كان قرب 100$ في 2 نوفمبر، و89.62$ في المنصة. ويقول Daly إن الاستثمار في بنية الـAI يساهم في الضغوط السعرية. PPI اليوم مهم لسببين: سلسلته السنوية مرتفعة (6.3% سابقاً)، وبعض مكوناته تدخل مباشرة في حساب PCE."
+   },
+   {
+    "heading": "الفائدة والفيدرالي: الرفع مسعَّر والسؤال عن حجمه",
+    "body": "FEDFUNDS بلغ 3.88% كمتوسط لشهر أكتوبر، ارتفاعاً من 3.63% في الصيف. استنتاجي أن ذلك يعادل رفعة واحدة بـ25 bp إلى نطاق 3.75–4.00%. عائد 2Y عند 4.73% يزيد على FF بـ+85 bp، وهو أكثر مما تبرره رفعة واحدة. تقديرات FedWatch صباح اليوم: احتمال الرفع في 9 ديسمبر 100% تقريباً، نحو 87% منه لـ25 bp ونحو 13% لـ50 bp. خطاب الفيدرالي متشدد بالإجماع تقريباً. Waller قال إنه قد يؤيد 50 bp إذا بقي التضخم الأساسي عند 0.3% أو أعلى. وLogan تريد رفعتين إضافيتين على الأقل، وPaulson تؤيد تشديداً تدريجياً. Williams وصف التضخم بأنه مرتفع جداً، لكنه دعا إلى التدرّج. وDaly ترى أن مزيداً من التشديد سيكون مطلوباً. في سوق السندات، جاءت مزادات 3Y و10Y و30Y هذا الأسبوع كلها بـtail للمرة الأولى منذ مايو، مع ضعف طلب المشترين الأجانب (Indirect). مزاد 30Y أغلق عند 5.441% بنسبة تغطية 2.36، وكوبونه هو الأعلى منذ 2001. منحنى 10Y-2Y عند +0.24%، وقد ضاق من +0.38% في 5 نوفمبر، أي أن الحركة تقودها السندات القصيرة بسبب التشديد."
+   },
+   {
+    "heading": "المخاطر والأسواق: هدوء ظاهري بعد صدمة أسبوعية",
+    "body": "NDX أغلق عند 28,289 في 2026-11-12، بتراجع 0.30% في اليوم. وقد ارتد نحو 6.2% من قاع 5 نوفمبر (26,630)، وكان قد هبط ذلك اليوم 6.4% مع قفزة VIX إلى 28.18. لم أتحقق من سبب ذلك الهبوط، فهو غير مثبت في بحثي. VIX انخفض إلى 17.49 (2026-11-11)، وHY OAS عند 3.30%، فلا ضغط ائتماني. لكن الأسبوع شهد صدمات خاصة بالأسهم الكبيرة: خروج Jensen Huang من رئاسة Nvidia، ثم ارتداد السهم نحو 2–3% قبل افتتاح اليوم. وتعطّل في برمجيات Microsoft يضغط سهمها بنحو 2%. وفي السياسة التجارية، هدد Trump بمضاعفة الرسوم على المكسيك فوراً. وهذه الأسهم ثقيلة الوزن في NQ أكثر من ES، فتزيد التذبذب الخاص بـNQ. وعلى المدى المتوسط، أعلن الديمقراطيون أن إلغاء الرسوم الجمركية أولوية في الكونغرس الجديد مطلع 2027."
+   }
+  ],
+  "gates_read": "بوابة 10Y سلبية. قراءة المنصة 4.98% (2026-11-10) تزيد على الحد 4.50% بـ+48 bp. والسعر الحي صباح اليوم قرب 5.13% حسب CNBC، أي نحو +63 bp فوق الحد، وهذا سعر سوق لا رقم منصة. المستوى النفسي 5.00% هو ما سأراقبه بعد PPI. بوابة VIX إيجابية: 17.49 تحت حد الهدوء 20، لكنها قراءة 11-11 وقد وصلت إلى 28 قبل ثمانية أيام فقط. هذا الهدوء هش، والعودة إلى المتوسط أرجح ما دام VIX دون 20. العائد الحقيقي 2.78% فوق الحد المقيِّد 2.00% بـ78 bp، وفي الشريحة المئوية 98.8، وصعوده كان على حساب الـBreakeven، أي تشديد حقيقي صافٍ. وهذه البوابة هي الأثقل على تقييمات NQ. قيادة NQ مقابل ES عند −4.03% على 20 يوماً: S&P يقود، والسوق يدور بعيداً عن النمو. الخلاصة: ثلاث بوابات سلبية واثنتان إيجابيتان (VIX والائتمان). البيئة تضغط على التقييمات من غير أن تكون أزمة. والارتدادات ممكنة، لكنها تحتاج إلى أن ينكسر 10Y تحت 5.00% وأن يتراجع العائد الحقيقي، حتى تتحول إلى أكثر من حركة تكتيكية.",
+  "watch": [
+   "08:30 ET اليوم (2026-11-13): PPI أكتوبر. التوقع 0.4% m/m للرئيسي و0.3% للأساسي، و6.6% y/y للرئيسي و5.0% للأساسي. ركّز على مكونات PCE مثل إدارة المحافظ وتذاكر الطيران والرعاية الصحية.",
+   "09:10 ET: تحدّث للفيدرالي. تقويم المنصة يذكر Williams، وTheStreet يذكر Collins. التعارض مذكور في data_audit.",
+   "09:30 ET: افتتاح نيويورك. راقب رد فعل 10Y حول 5.00% و5.13%، وحركة NVDA وMSFT في أول 30 دقيقة.",
+   "10:50 ET: Bowman، وهي نائبة الرئيس للرقابة.",
+   "12:00 ET: Daly، وهي عضو مصوّت في 2027 وقالت إن مزيداً من التشديد سيكون مطلوباً.",
+   "19:00 ET: Jefferson، نائب الرئيس، بعد الإغلاق.",
+   "2026-11-17 الساعة 08:30 ET: أسعار الاستيراد والتصدير.",
+   "2026-11-19: مزاد 10Y TIPS (Reopening)، وهو اختبار مباشر للطلب على العائد الحقيقي.",
+   "2026-12-09: قرار FOMC. تقديرات FedWatch تسعّر الرفع بالكامل تقريباً، والسؤال عن 25 أو 50 bp."
+  ],
+  "risks": [
+   "مفاجأة PPI صعودية تدفع 10Y نحو مستويات أكتوبر، حين بلغ العائد أعلى مستوى في 24 عاماً، وترفع احتمال الـ50 bp. ضرر ذلك على NQ أكبر من ES.",
+   "ضعف الطلب الأجنبي في المزادات قد يستمر، فيرتفع Term premium بمعزل عن بيانات التضخم.",
+   "مخاطر تخص الأسهم الكبيرة: تبعات تغيير قيادة Nvidia، وتعطّل Microsoft. وزن هذه الأسهم في NQ يجعل المؤشر يتحرك لأسباب غير ماكرو.",
+   "عناوين الرسوم الجمركية، ومنها تهديد Trump بمضاعفة رسوم المكسيك. قد تأتي في أي وقت خلال الجلسة وتنعكس على التضخم المستورد.",
+   "VIX انتقل من 16.6 إلى 28.2 في يوم واحد (4–5 نوفمبر). القراءة الهادئة الحالية لا تحمي من قفزة مماثلة.",
+   "النفط قرب 88–90$ بعد أن قارب 100$. أي عودة للصعود تعيد الضغط على CPI الرئيسي وعلى الـBreakeven."
+  ],
+  "data_audit": [
+   "DGS10 وDFII10 وDGS2 في المنصة بتاريخ 2026-11-10، أي أن عمرها 3 أيام. يوم 11-11 كان عطلة Veterans Day لسوق السندات، وقراءة 11-12 لم تُضف بعد. أما T10Y2Y وT10YIE فمحدّثان حتى 11-12. للسعر الحي استخدمت رقم CNBC (10Y قرب 5.127% صباح اليوم) وعاملته كسعر سوق لا كرقم منصة. يوجد التباس في رواية CNBC حول اليوم الذي قفز فيه العائد 13 bp، الثلاثاء أم الخميس، فلم أعتمد على تفاصيلها.",
+   "استنتاج غير رسمي: إذا كان 10Y قرب 5.10% يوم 11-12 مع T10Y2Y عند 0.24%، فإن 2Y يقارب 4.86%. هذا تقدير تقريبي، وليس رقماً من المنصة.",
+   "VIX بتاريخ 11-11 (عمره يومان)، ولا قراءة لـ11-12. SP500 أيضاً بتاريخ 11-11، بينما NASDAQ100 بتاريخ 11-12، فبوابة القيادة محسوبة حتى 11-11.",
+   "WTI في المنصة (89.62$) متطابق في 11-10 و11-11، ويُرجَّح أن السبب تعبئة يوم العطلة بالقيمة السابقة. عقود WTI صباح اليوم قرب 88.18$ حسب TipRanks، وهو سعر سوق.",
+   "مؤشر الدولار الواسع بتاريخ 2026-11-06، أي عمره 7 أيام، لذلك لم أبنِ عليه أي استنتاج.",
+   "CPI أكتوبر السنوي، الرئيسي والأساسي، غير متاح في المنصة لغياب قاعدة أكتوبر 2025. استخدمت الأرقام الشهرية من تقويم المنصة (0.4% و0.3%) والقراءات السنوية لسبتمبر.",
+   "Core PCE (3.12%) أعلى من Core CPI (2.57%)، وهذا انعكاس غير معتاد. التفسير غير مثبت، فلم أعتمد على أي منهما وحده في الحكم على اتجاه التضخم.",
+   "FEDFUNDS متوسط شهري لأكتوبر، وعمره 43 يوماً. نطاق 3.75–4.00% أخذته من مصدر إعلامي (24/7 Wall St). وقولي إن الصعود من 3.63% يعادل رفعة واحدة استنتاج مني، ولم أتحقق من قرار FOMC في أكتوبر.",
+   "طلبات الإعانة: تقويم المنصة يذكر 189k قراءةً سابقة، بينما سلسلة FRED تذكر 191k، ويبدو أن الفرق مراجعة. اعتمدت رقم المنصة 200k لأسبوع 11-07.",
+   "احتمالات FedWatch تقديرات متغيرة. في 11-10 كانت 84.7% أو 91% لرفع 25 bp حسب المصدر، وفي 11-13 نحو 87% لـ25 bp و13% لـ50 bp. ذكرتها على أنها تقديرات سوق.",
+   "تعارض في جدول المتحدثين عند 09:10 ET: تقويم المنصة يذكر Williams، وTheStreet يذكر Collins. ذكرت الاحتمالين.",
+   "عقود NQ قبل الافتتاح: TipRanks سجّل −0.13% في 05:42 ET، وYahoo وInvesting سجّلا بين +0.1% و+0.2% لاحقاً. اعتبرتها شبه ثابتة.",
+   "GDP بتاريخ 2026-07-01، أي قراءة الربع الثالث، وعمرها 135 يوماً. UMich ومبيعات التجزئة والإسكان وJOLTS كلها لشهر سبتمبر وعمرها 73 يوماً. هذه القراءات وصف للاتجاه، وليست حالة اليوم.",
+   "سبب هبوط NDX بنسبة 6.4% في 2026-11-05 غير موثّق في بحثي، فلم أبنِ عليه أي استدلال. كذلك لم أتحقق من موعد صدور نسخة نوفمبر الأولية من UMich، ولا من تفاصيل خروج Jensen Huang، لأن حصة البحث نفدت.",
+   "حجم العيّنة: لم أستخدم أي إحصاء تاريخي عن رد فعل NQ على PPI. أي علاقة من هذا النوع تبقى غير مثبتة هنا."
+  ],
+  "events": [
+   {
+    "title": "PPI أكتوبر، الساعة 08:30 ET",
+    "date": "2026-11-13",
+    "url": "https://fedratecalc.com/ppi-release-date/"
+   },
+   {
+    "title": "متحدثو الفيدرالي اليوم: Collins وBowman وDaly وJefferson. وWilliams وDaly يريان رفعاً إضافياً «مع الوقت»",
+    "date": "2026-11-13",
+    "url": "https://pro.thestreet.com/stock-market-today"
+   },
+   {
+    "title": "FedWatch يسعّر رفعاً في 9 ديسمبر باحتمال 100% تقريباً، و10Y قرب 5.13%",
+    "date": "2026-11-13",
+    "url": "https://www.cnbc.com/2026/11/13/treasury-yields-fed-rates.html"
+   },
+   {
+    "title": "العقود الآجلة ترتفع قبل PPI، وتداعيات خروج Huang من Nvidia وتعطّل Microsoft",
+    "date": "2026-11-13",
+    "url": "https://www.bloomberg.com/news/articles/2026-11-12/stock-market-today-dow-s-p-live-updates"
+   },
+   {
+    "title": "العقود الآجلة شبه ثابتة وسط اضطراب Nvidia",
+    "date": "2026-11-13",
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-november-13-dow-sp-500-nasdaq-nvidia-110151154.html"
+   },
+   {
+    "title": "Williams: التضخم مرتفع جداً. وDaly: تشديد إضافي مرجّح، والـAI يضيف إلى الضغوط السعرية",
+    "date": "2026-11-12",
+    "url": "https://www.kucoin.com/news/flash/u-s-stock-futures-rise-ahead-of-ppi-data-cerebras-surges-on-earnings"
+   },
+   {
+    "title": "مزاد 30Y بـtail عند 5.441% ونسبة تغطية 2.36، وثلاثة مزادات بـtail للمرة الأولى منذ مايو",
+    "date": "2026-11-12",
+    "url": "https://pro.thestreet.com/stock-market-today/2026-11-12"
+   },
+   {
+    "title": "Trump يهدد بمضاعفة الرسوم على المكسيك فوراً",
+    "date": "2026-11-12",
+    "url": "https://www.bloomberg.com/news/articles/2026-11-12/trump-threatens-to-double-tariffs-on-mexican-goods-over-migrants"
+   },
+   {
+    "title": "CPI أكتوبر أعلى من التوقعات، وWaller يلمّح إلى 50 bp، وLogan تريد رفعتين على الأقل",
+    "date": "2026-11-10",
+    "url": "https://www.cnn.com/2026/11/10/investing/bond-yields-inflation-fed"
+   },
+   {
+    "title": "10Y يعود إلى 5%، ومزاد 10Y ضعيف",
+    "date": "2026-11-10",
+    "url": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html"
+   },
+   {
+    "title": "الرسوم الجمركية تحت ضغط الكونغرس الجديد بعد الانتخابات",
+    "date": "2026-11-13",
+    "url": "https://www.cnn.com/2026/11/13/economy/trumps-tariffs-new-threat"
+   },
+   {
+    "title": "رواتب أكتوبر +165k، واحتمال رفع ديسمبر يقفز إلى 77%",
+    "date": "2026-11-06",
+    "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"
+   },
+   {
+    "title": "مزاد 10Y TIPS (Reopening)، يوم 19 نوفمبر",
+    "date": "2026-11-19",
+    "url": "https://fedratecalc.com/treasury-auction-schedule/"
+   }
+  ],
+  "one_liner": "الرفع في ديسمبر مسعَّر، والمفاجأة الممكنة في حجمه فقط. راقب العائد الحقيقي و10Y عند 5.00% قبل أي حكم على NQ.",
+  "sources": [
+   {
+    "url": "https://www.investing.com/news/economy-news/fed-rate-hike-odds-in-december-at-88-after-hot-cpi-cme-fedwatch-5017585",
+    "title": "Fed rate hike odds in December at 88% after hot CPI- CME Fedwatch By Investing.com"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/13/treasury-yields-fed-rates.html",
+    "title": "Treasury yields rise as traders strengthen Fed rate hike bets"
+   },
+   {
+    "url": "https://www.cnn.com/2026/11/10/investing/bond-yields-inflation-fed",
+    "title": "Bond yields surge most in 19 months as traders brace for Fed rate hikes"
+   },
+   {
+    "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/",
+    "title": "Odds of a December Rate Hike Jump to 77% After a Blowout Jobs Report - 24/7 Wall St."
+   },
+   {
+    "url": "https://en.bloomingbit.io/feed/news/124114",
+    "title": "Odds of Fed 50-Basis-Point December Hike Jump to 11% From 1.1% Before CPI"
+   },
+   {
+    "url": "https://www.chaincatcher.com/en/article/2304134",
+    "title": "Data: The market believes the probability of ..."
+   },
+   {
+    "url": "https://stocktwits.com/news-articles/markets/equity/markets-are-bracing-for-another-fed-rate-hike-in-december-but-could-it-be-twice-as-big-as-expected/cNGDebvR9JS",
+    "title": "Markets Are Bracing For Another Fed Rate Hike In December"
+   },
+   {
+    "url": "https://pomegra.io/news/fed-rate-hike-odds-near-90-for-december-after-hot-cpi",
+    "title": "Fed Rate Hike Odds Near 90% for December After Hot CPI"
+   },
+   {
+    "url": "https://windailysports.com/fed-rate-decision-odds-december-2026/",
+    "title": "Fed Rate Decision Odds December 2026: Markets Price a 73% Chance of a Hike"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/ITU_Plenipotentiary_Conference",
+    "title": "ITU Plenipotentiary Conference"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/united-states-producer-price-index-(ppi)-mom-238",
+    "title": "United States Producer Price Index (PPI) MoM"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/ppi-734",
+    "title": "United States Producer Price Index (PPI) YoY"
+   },
+   {
+    "url": "https://fedratecalc.com/ppi-release-date/",
+    "title": "Next PPI Report: Nov 13, 2026 at 8:30 AM ET (Release Dates)"
+   },
+   {
+    "url": "https://jmmresearch.com/events/producer-price-index-2026-11-13-f5111d/",
+    "title": "Nov 13, 2026 PPI report: exact release time"
+   },
+   {
+    "url": "https://www.financecalendar.com/event/us-producer-price-index-november-2026/",
+    "title": "US Producer Price Index: 2026-10 — Friday, 13 November 2026"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/releases/calendar?rid=46&ve=2022-12-31&view=year&vs=2022-01-01",
+    "title": "Economic Release Calendar - Producer Price Index"
+   },
+   {
+    "url": "https://fxbacktest.app/calendar/ppi/",
+    "title": "PPI Release Date: Next US PPI Report, Time & Countdown"
+   },
+   {
+    "url": "https://fxnx.com/en/blog/ppi-13-november-2026-release-time-link-cpi",
+    "title": "PPI 13 November 2026: Release Time and Its CPI Link"
+   },
+   {
+    "url": "https://home.treasury.gov/news/press-releases/sb0678",
+    "title": "Quarterly Refunding Statement of Assistant Secretary for Financial Markets Hunter McMaster"
+   },
+   {
+    "url": "https://pro.thestreet.com/stock-market-today/2026-11-12",
+    "title": "Stock Market Today: November 12, 2026"
+   },
+   {
+    "url": "https://home.treasury.gov/system/files/221/Tentative-Auction-Schedule.pdf",
+    "title": "Tentative Auction Schedule of U.S. Treasury Securities Security Type"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/30-year-bond-auction-572",
+    "title": "United States 30-Year Bond Auction"
+   },
+   {
+    "url": "https://helious.io/news/auc-912810UY2-2026-11-12/30-year-bond-auction-in-line",
+    "title": "30-Year Treasury Bond Auction Results"
+   },
+   {
+    "url": "https://helious.io/auctions",
+    "title": "Treasury Auction Results, Schedule & History"
+   },
+   {
+    "url": "https://bondbyisin.com/auctions",
+    "title": "United States: Treasuries auctions"
+   },
+   {
+    "url": "https://fedratecalc.com/treasury-auction-schedule/",
+    "title": "Treasury Auction Schedule: Bills, Notes, Bonds, TIPS, FRNs"
+   },
+   {
+    "url": "https://gokhshtein.com/news/2026-11-12-30-year-treasury-auction-yields-5441-weakest-demand-since",
+    "title": "30-Year Treasury Yields 5.441%, Weakest Demand Since June"
+   },
+   {
+    "url": "https://www.bloomberg.com/latest/trump-tariffs",
+    "title": "Trump’s Tariffs: Trending News, Latest Updates, Analysis"
+   },
+   {
+    "url": "https://www.cnn.com/2026/11/13/economy/trumps-tariffs-new-threat",
+    "title": "Trump’s tariffs face a new threat: Republicans"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Learning_Resources,_Inc._v._Trump",
+    "title": "Learning Resources, Inc. v. Trump"
+   },
+   {
+    "url": "https://www.bloomberg.com/news/articles/2026-11-12/trump-threatens-to-double-tariffs-on-mexican-goods-over-migrants",
+    "title": "Mexico Faces Tariff Threat as Trump Demands Action on Migrants - Bloomberg"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Busan_Summit",
+    "title": "Busan Summit"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/2026_United_States_elections",
+    "title": "2026 United States elections"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/08/trump-tariffs-democrats-congress-canada.html",
+    "title": "How Democrats will try to end Trump's tariffs"
+   },
+   {
+    "url": "https://www.dailykos.com/stories/2026/11/12/800127480/news/trumps-new-tariff-threat-shows-he-wont-change-course-after-midterms/",
+    "title": "Trump’s new tariff threat shows he won’t change course after midterms - Daily Kos"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/10/trump-tariffs-midterms-gary-cohn-inflation.html",
+    "title": "White House vows to press ahead with tariffs despite midterm backlash over rising prices"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/11/canada-ambassador-trump-tariffs-investments.html",
+    "title": "Canada’s ambassador warns Trump tariffs are driving up costs, threatening U.S. investment"
+   },
+   {
+    "url": "https://robinhood.com/us/en/prediction-markets/financial/events/10-year-us-treasury-yield-15-min-507290-target-nov-12-2026/",
+    "title": "November 12, 2026: 10-Year U.S. Treasury 15 min · 10:00–10:15 AM EST Prediction Market"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/series/DFII10",
+    "title": "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed (DFII10)"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/series/dgs10",
+    "title": "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis (DGS10)"
+   },
+   {
+    "url": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html",
+    "title": "10-year Treasury yield races back to 5% as inflation data, Waller comments drive rate hike expectations"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/series/t10y3m",
+    "title": "10-Year Treasury Constant Maturity Minus 3-Month Treasury Constant Maturity (T10Y3M)"
+   },
+   {
+    "url": "https://fred.stlouisfed.org/series/T10Y2Y",
+    "title": "10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity (T10Y2Y)"
+   },
+   {
+    "url": "https://www.investing.com/rates-bonds/u.s.-10-year-bond-yield-historical-data",
+    "title": "United States 10-Year Bond Historical Data - Investing.com"
+   },
+   {
+    "url": "https://finance.yahoo.com/quote/%5ETNX/history/",
+    "title": "CBOE Interest Rate 10 Year T Note (^TNX) Historical Data - Yahoo Finance"
+   },
+   {
+    "url": "https://www.forbes.com/advisor/investing/treasury-rates/",
+    "title": "Treasury Rates Today: November 10, 2026"
+   },
+   {
+    "url": "https://pro.thestreet.com/stock-market-today",
+    "title": "Stock Market Today"
+   },
+   {
+    "url": "https://www.investing.com/economic-calendar/fomc-member-bowman-speaks-1835",
+    "title": "U.S. Federal Reserve (Fed) Member Michelle W. Bowman Speaks"
+   },
+   {
+    "url": "https://investinglive.com/central-banks/economic-and-event-calendar-in-asia-friday-november-13-2026-ny-fed-s-williams-on-the-agenda/",
+    "title": "Economic and event calendar in Asia Friday, November 13, 2026 - NY Fed's Williams on the agenda"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/John_C._Williams_(economist)",
+    "title": "John C. Williams (economist)"
+   },
+   {
+    "url": "https://www.kucoin.com/news/flash/u-s-stock-futures-rise-ahead-of-ppi-data-cerebras-surges-on-earnings",
+    "title": "U.S. stock futures rise ahead of PPI data; Cerebras surges on earnings"
+   },
+   {
+    "url": "https://bloomberg.com/news/articles/2026-11-13/fed-s-williams-says-inflation-far-too-high-still-work-to-do",
+    "title": "Fed’s Williams Says Inflation ‘Far Too High,’ Still Work to Do - Bloomberg"
+   },
+   {
+    "url": "https://www.kiplinger.com/investing/economy/this-weeks-economic-calendar",
+    "title": "What to Look Out for in Economic Data This Week (Nov. 9-13)"
+   },
+   {
+    "url": "https://fxstreet.com/news/feds-williams-inflation-remains-too-elevated-202611130020",
+    "title": "Fed's Williams: Inflation remains too elevated"
+   },
+   {
+    "url": "https://www.forexfactory.com/calendar/518-us-fomc-member-williams-speaks",
+    "title": "US FOMC Member Williams Speaks"
+   },
+   {
+    "url": "https://www.bloomberg.com/news/articles/2026-11-12/stock-market-today-dow-s-p-live-updates",
+    "title": "Stock Market Today: Dow, S&P Live Updates for November 13 - Bloomberg"
+   },
+   {
+    "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-november-13-dow-sp-500-nasdaq-nvidia-110151154.html",
+    "title": "Stock market today: Dow, S&P 500, Nasdaq futures edge higher as Nvidia tumult deepens"
+   },
+   {
+    "url": "https://www.tipranks.com/news/stock-market-today-nov-13-u-s-stocks-wobble-ahead-of-ppi-data",
+    "title": "Stock Market Today, Nov. 13: U.S. Stocks Wobble Ahead of PPI Data - TipRanks.com"
+   },
+   {
+    "url": "https://www.aol.com/articles/stock-market-today-dow-p-110151000.html",
+    "title": "Stock market today: Dow, S&P 500, Nasdaq futures hold steady as Nvidia tumult deepens - AOL"
+   },
+   {
+    "url": "https://www.investing.com/news/stock-market-news/us-stock-futures-rise-after-nvidia-ceo-exit-spooks-wall-st-5023780",
+    "title": "U.S. stock futures climb amid upcoming inflation data, Nvidia fallout By Investing.com"
+   },
+   {
+    "url": "https://www.marketscreener.com/news/nasdaq-futures-dip-as-nvidia-tumult-keeps-investors-on-edge-ce785ed9dc8ff726",
+    "title": "Nasdaq futures dip as Nvidia tumult keeps investors on edge"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Nasdaq",
+    "title": "Nasdaq"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Closing_milestones_of_the_Nasdaq_Composite",
+    "title": "Closing milestones of the Nasdaq Composite"
+   },
+   {
+    "url": "https://investrade.com/morning-preview-november-13-2026/",
+    "title": "Morning Preview: November 13, 2026 - Investrade"
+   },
+   {
+    "url": "https://journalarta.com/en/2026/11/13/stock-market-today-dow-sp-500-futures-edge-higher-as-nasdaq-100-is-flat-and-10-year-yield-holds/",
+    "title": "Stock Market Today: Dow, S&P 500 Futures Before the Bell — JournalArta Global"
+   }
+  ],
+  "meta": {
+   "written_at": "2026-11-13T12:28:17Z",
+   "ny_date": "2026-11-13",
+   "model": "claude-opus-5-5",
+   "usage": {
+    "input_tokens": 14,
+    "output_tokens": 17813,
+    "cache_creation_input_tokens": 42118,
+    "cache_read_input_tokens": 140498
+   }
+  }
+ },
+ {
   "title": "ارتداد NQ اليوم قاده الذكاء الاصطناعي والسندات مغلقة؛ غداً تعود الفائدة للتسعير عند 10Y قرب 5% ومزاد 30Y ورفعٍ شبه مؤكد في ديسمبر",
   "summary": [
    "تقرير CPI لشهر أكتوبر (صدر 11-10) جاء أسخن من التوقعات: الرئيسي 0.4% مقابل 0.3%، والأساسي 0.3% مقابل 0.2% على أساس شهري (تقويم المنصة).",

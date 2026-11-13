@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-12T22:43:29Z",
+ "fetched_utc": "2026-11-13T12:28:17Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -99,9 +99,7 @@
   },
   "NASDAQ100": {
    "state": "ok",
-   "issues": [
-    "قفزة غير معتادة في آخر قيمة (+633.5)"
-   ]
+   "issues": []
   },
   "SP500": {
    "state": "ok",
@@ -112,7 +110,5 @@
    "issues": []
   }
  },
- "extra_warnings": [
-  "فشل كتابة تقرير Claude: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go"
- ]
+ "extra_warnings": []
 }
