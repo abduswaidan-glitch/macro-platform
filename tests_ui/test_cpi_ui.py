@@ -32,6 +32,9 @@ def _payload():
               # مدخلا المربع الآخران: growth_inflation_quadrant يتعطل إن وُجد PCE وحده (خلل قائم خارج هذا التصحيح)
               "INDPRO": pd.Series(np.linspace(100, 104, len(full)), index=full, name="INDPRO"),
               "PAYEMS": pd.Series(np.linspace(150000, 160000, len(full)), index=full, name="PAYEMS"),
+              # سلسلتا PR 2 في فئة العمل: غيابهما يضيف «لا بيانات» قبل تحذير CPI، والصندوق يعرض أول 8 تحذيرات
+              "CCSA": pd.Series(1.9e6, index=pd.date_range("2025-01-04", "2026-10-31", freq="W-SAT"), name="CCSA"),
+              "CES0500000003": pd.Series(np.linspace(30, 37, len(full)), index=full, name="CES0500000003"),
               # KPI بـgood_up=None كما في الإنتاج: بدونه يصبح عمود good_up منطقياً فيخرج numpy.bool لا يقبله JSON
               "DGS10": pd.Series(4.5, index=pd.bdate_range("2025-01-01", "2026-11-11"), name="DGS10")}
     return build_payload(series, {}, load_config(ROOT / "config.json"), now=NOW)

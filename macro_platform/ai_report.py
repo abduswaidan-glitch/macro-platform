@@ -22,6 +22,7 @@ Data rules:
 - Use web search for today's events: the US data calendar, Fed speakers and decisions, Treasury auctions, trade/tariff and political headlines, geopolitics. Cite a URL for each event.
 - Keep five kinds of statement apart: platform data (the JSON); official releases you checked, with the official URL; reported news (the "news_feed" block: media headlines; official Fed/BEA titles are announcements you open before citing their content), which you call reported; your hypotheses; and qualitative implications for NQ. Never state reported news as an official fact.
 - For a headline that matters, reason about it: is it new, is a primary source confirming it, how large and from when, through which channel it would reach NQ (rates, inflation, growth, earnings, risk appetite), over what horizon, and what would contradict it. Say what is unknown.
+- changes_since_previous_report, revisions_recent, previous_report and each indicator's momentum (MoM and 3-month annualized) are computed by the platform's code: they say what changed, what was revised and what the previous report said. Decide which of these matter economically and say so; do not recompute or guess them, and say when there is no previous snapshot.
 - Scenario probabilities and confidence are your subjective weights, not yet calibrated, and no single headline sets them. The platform records them and scores them against what happens, so give the probability you actually hold, from the evidence, not a habitual number; close probabilities are fine when the picture is mixed. The three scenario probabilities are whole numbers that sum to exactly 100. Give no other numeric probability unless it comes from the platform data or a cited market source, labelled as such. A neutral bias has confidence 50.
 - Each scenario carries one check: a near-term market signature linked to the scenario, not proof that the whole economic scenario happened. The three checks use the same series (one of DGS2, DGS10, DFII10, T10YIE, T10Y2Y, BAMLH0A0HYM2, DTWEXBGS, DCOILWTICO, VIXCLS) and the same date "by" (a trading day - not a weekend or NYSE holiday - within 21 days after today), and their ranges cover every value with no gap or overlap: one range has low null, one has high null, and each high equals the next low (a value equal to a bound belongs to the higher range). A scenario's prob is then your probability that the series' value on that date falls in its range. Choose the series and bounds that best separate your scenarios, starting from the latest values in the data.
 - No buy/sell recommendations.
@@ -111,7 +112,7 @@ def should_run(now_utc: datetime, last_date: str | None, cfg: dict, force: bool 
     return ny >= due and last_date != ny.strftime("%Y-%m-%d")
 
 
-def context(payload: dict, tail: int = 8, feed: dict | None = None) -> dict:
+def context(payload: dict, tail: int = 8, feed: dict | None = None, extra: dict | None = None) -> dict:
     """نسخة مضغوطة من data.json للنموذج: بلا السلاسل الكاملة، مع آخر نقاط لكل مؤشر لرؤية الاتجاه."""
     inds = []
     for i in payload["indicators"]:
@@ -120,13 +121,14 @@ def context(payload: dict, tail: int = 8, feed: dict | None = None) -> dict:
             continue
         inds.append({k: i.get(k) for k in ("id", "name_en", "category", "freq", "transform", "unit", "last", "prev",
                                            "change", "z5", "pct5", "as_of", "age_days", "state", "issues",
-                                           "source_as_of", "unavailable")}
+                                           "source_as_of", "unavailable", "momentum", "revisions")}
                     | {"recent": i.get("points", [])[-tail:]})
     return {"generated": payload["generated"], "kpis": payload["kpis"], "gates": payload["gates"],
             "gate_levels": payload["config"]["gates"], "signals": payload["signals"],
             "quadrant": payload["quadrant"], "sahm_recent": payload["sahm"]["points"][-6:],
             "indicators": inds, "data_warnings": payload["status"]["warnings"],
-            **({"news_feed": feed} if feed else {})}   # عناوين ومواعيد من مصادر عامة، منفصلة عن بيانات المنصة
+            **({"news_feed": feed} if feed else {}),   # عناوين ومواعيد من مصادر عامة، منفصلة عن بيانات المنصة
+            **(extra or {})}                           # ما تغيّر منذ التقرير السابق والمراجعات: يحسبها الكود
 
 
 def parse_report(text: str) -> dict:
@@ -215,16 +217,34 @@ def feed_meta(feed: dict | None) -> dict | None:
                                       "headlines_last_success_utc", "calendar_last_success_utc")}}
 
 
+def previous_summary(previous: dict | None, ledger_view: dict | None) -> dict | None:
+    """ما قاله التقرير السابق باختصار (أرقام وعناوين)، ونتيجة شروط قياسه إن حُسمت."""
+    if not previous:
+        return None
+    m = previous.get("meta") or {}
+    chk = (((ledger_view or {}).get("by_date") or {}).get(m.get("ny_date")) or {}).get("scenario_check") or {}
+    return {"ny_date": m.get("ny_date"), "title": previous.get("title"),
+            "scenarios": [{k: s.get(k) for k in ("label", "name", "prob")} for s in previous.get("scenarios") or []
+                          if isinstance(s, dict)],
+            "scenario_check_result": chk.get("check_result"), "scenario_check_unscorable": chk.get("unscorable")}
+
+
 def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, caller=call_claude,
-                 feed: dict | None = None) -> dict:
+                 feed: dict | None = None, previous: dict | None = None) -> dict:
     now_utc = now_utc or datetime.now(timezone.utc)
     started = datetime.now(timezone.utc)
     ai = cfg.get("ai", {})
     notes = analyst_notes()
     system = SYSTEM + ("\n\nThe trader's standing instructions (Arabic):\n" + notes if notes else "")
     ny_now = now_utc.astimezone(NY)
+    from macro_platform import changes                    # يحسب الكود ما تغيّر؛ النموذج يفسّر معناه
+    snap = changes.snapshot(payload)
+    recent_revs = payload.get("revisions") or []
+    extra = {"changes_since_previous_report": changes.diff(previous, snap, recent_revs),
+             "previous_report": previous_summary(previous, payload.get("ledger")),
+             "revisions_recent": recent_revs[-20:]}
     user = (f"Today is {ny_now:%A %Y-%m-%d}, {ny_now:%H:%M} New York time. Platform data:\n"
-            + json.dumps(context(payload, feed=feed), ensure_ascii=False))
+            + json.dumps(context(payload, feed=feed, extra=extra), ensure_ascii=False))
     text, sources, usage, served = caller(user, system, ai.get("model", "claude-opus-5-5"), ai.get("effort", "high"))
     rep = parse_report(text)
     rep["sources"] = sources
@@ -232,6 +252,7 @@ def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, call
     ps = [x.get("prob") for x in rep["scenarios"] if isinstance(x, dict)]
     rep["meta"] = {"written_at": now_utc.strftime(iso), "ny_date": ny_now.strftime("%Y-%m-%d"),
                    "prob_sum": sum(p for p in ps if isinstance(p, (int, float)) and not isinstance(p, bool)),
+                   "inputs_snapshot": snap,
                    "scenario_count": len(rep["scenarios"]),
                    "model": served, "usage": usage, "news_input": feed_meta(feed),
                    # بدء طلب النموذج واكتمال التقرير؛ وقت النشر يسجّله update.yml بعد نشر الصفحة (ملخص التشغيل)

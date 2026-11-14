@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from macro_platform import ai_report, ledger
-from macro_platform.build import build_payload, fetch_all, load_config, load_raw, write_json
+from macro_platform.build import build_payload, fetch_all, load_config, load_raw, merge_status, write_json
 from macro_platform.catalog import INDICATORS
 from macro_platform.demo import demo_series
 
@@ -69,7 +69,13 @@ def main(argv=None) -> int:
         series = load_saved_series(DATA / "raw")
         status, extra = load_status(status_p)
     else:
+        prev_status, _ = load_status(status_p)
         series, status = fetch_all(DATA / "raw", cfg["start"], log=log)
+        status = merge_status(prev_status, status, now)       # مراجعات آخر 45 يوماً، ووقت آخر قراءة جديدة
+        for sid, st in status.items():
+            for r in st.get("revisions", []):
+                if r.get("detected_utc", "") >= now.strftime("%Y-%m-%dT%H:%M:%SZ")[:16]:
+                    log(f"revision detected: {sid} {r}")
     if not series:
         log("no data at all; data.json left unchanged")
         return 1
@@ -86,6 +92,9 @@ def main(argv=None) -> int:
     hist_p = DATA / "ai_history.json"
     ledger_p = DATA / "forecast_ledger.json"
     led = ledger.load(ledger_p)
+    # الحكم على الشروط من سلاسل FRED نفسها قبل التقرير، فيرى التقرير نتيجة شروط سابقه
+    settled = ledger.resolve(led, series)
+    payload["ledger"] = ledger.view(led)
     if args.demo or args.offline:
         log("AI report skipped (demo/offline build)")
     elif not os.environ.get("ANTHROPIC_API_KEY", "").strip():
@@ -96,7 +105,11 @@ def main(argv=None) -> int:
             from macro_platform import news
             # يُرسل دائماً مع حالة التغطية، ولو كان المصدر متوقفاً: الغياب الصامت يوحي بأن لا أخبار
             feed = news.report_feed(load_live("https://abduswaidan-glitch.github.io/macro-platform/news.json"), now)
-            rep = ai_report.write_report(payload, cfg, now_utc=now, feed=feed)
+            hist = json.loads(hist_p.read_text(encoding="utf-8")) if hist_p.exists() else []
+            today = now.astimezone(ai_report.NY).strftime("%Y-%m-%d")
+            older = [h for h in hist if (h.get("meta") or {}).get("ny_date", "") < today]
+            previous = max(older, key=lambda h: h["meta"]["ny_date"]) if older else None
+            rep = ai_report.write_report(payload, cfg, now_utc=now, feed=feed, previous=previous)
             ai_report.update_history(hist_p, rep, keep=cfg.get("ai", {}).get("keep", 14))
             ledger.add(led, ledger.entry(rep, cfg.get("ai", {})))   # ما التزم به التقرير، أرقاماً فقط
             state["ai_last_date"] = rep["meta"]["ny_date"]
@@ -112,7 +125,6 @@ def main(argv=None) -> int:
             extra.append(msg)
     payload["ai_available"] = hist_p.exists()
     # الحكم على التوقعات من سلاسل FRED نفسها؛ يُحفظ فقط في تحديث البيانات (update.yml يحفظ data/ في المستودع)
-    settled = ledger.resolve(led, series)
     payload["ledger"] = ledger.view(led)
     if settled:
         log(f"forecast ledger: {settled} outcome(s) settled")

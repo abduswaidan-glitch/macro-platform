@@ -110,6 +110,28 @@ def yoy_unavailable(ind: Indicator, raw: pd.Series, last_date: pd.Timestamp) -> 
             "base_label": base_label, "reason": f"التغير السنوي لقراءة {label} غير متاح: {why}"}
 
 
+def momentum(ind: Indicator, raw: pd.Series) -> dict | None:
+    """زخم شهري حتمي: MoM و3m annualized بالفترة التقويمية. «غير متاح» إن نقص الشهر المطلوب في المصدر،
+    بالمنطق نفسه الذي أُصلح به التغير السنوي لـCPI (لا ملء للفجوات ولا اعتماد على يوم التاريخ داخل الشهر)."""
+    if ind.freq != "M" or raw is None or raw.dropna().empty:
+        return None
+    s = raw.dropna()
+    per = pd.Series(s.values, index=s.index.to_period("M"))
+    per = per[~per.index.duplicated(keep="last")]
+    last_p, v = per.index[-1], float(per.iloc[-1])
+
+    def at(k):
+        p = last_p - k
+        return float(per[p]) if p in per.index and float(per[p]) > 0 else None
+
+    m1, m3 = at(1), at(3)
+    missing = [f"{period_label((last_p - k).to_timestamp(), 'M')}" for k, x in ((1, m1), (3, m3)) if x is None]
+    return {"as_of": last_p.to_timestamp().strftime("%Y-%m-%d"), "label": period_label(last_p.to_timestamp(), "M"),
+            "mom": round((v / m1 - 1) * 100, 3) if m1 else None,
+            "ann3m": round(((v / m3) ** 4 - 1) * 100, 2) if m3 else None,
+            "unavailable": ("غير منشور في المصدر: " + "، ".join(missing)) if missing else None}
+
+
 def sahm_rule(unrate: pd.Series) -> pd.Series:
     """Sahm Rule: متوسط البطالة 3 أشهر ناقص أدنى متوسط 3 أشهر خلال الـ12 شهراً السابقة."""
     u3 = unrate.rolling(3).mean()
@@ -233,5 +255,5 @@ def finite(x) -> bool:
     return x is not None and not (isinstance(x, float) and math.isnan(x))
 
 
-__all__ = ["BY_ID", "transform", "transform_indicator", "snapshot", "sahm_rule", "monthly_panel",
+__all__ = ["BY_ID", "transform", "transform_indicator", "snapshot", "momentum", "sahm_rule", "monthly_panel",
            "growth_inflation_quadrant", "signals", "finite"]
