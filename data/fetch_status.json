@@ -1,113 +1,300 @@
 {
- "fetched_utc": "2026-11-13T22:35:49Z",
+ "fetched_utc": "2026-11-14T19:49:56Z",
  "series": {
   "GDPC1": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2024-10-01",
+     "old": 23641.8,
+     "new": 23641.759
+    },
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2025-01-01",
+     "old": 23650.2,
+     "new": 23650.213
+    },
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2025-04-01",
+     "old": 23884.6,
+     "new": 23884.563
+    },
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2025-07-01",
+     "old": 24113.0,
+     "new": 24112.966
+    },
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2025-10-01",
+     "old": 24125.5,
+     "new": 24125.479
+    },
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2026-01-01",
+     "old": 24274.4,
+     "new": 24274.383
+    },
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2026-04-01",
+     "old": 24408.0,
+     "new": 24408.011
+    },
+    {
+     "detected_utc": "2026-11-14T19:49:56Z",
+     "date": "2026-07-01",
+     "old": 24611.1,
+     "new": 24611.077
+    }
+   ],
+   "last_new_obs_utc": null
   },
   "INDPRO": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-14T19:49:57Z",
+     "bulk": true,
+     "count": 19,
+     "range": [
+      "2024-12-01",
+      "2026-09-01"
+     ],
+     "largest": {
+      "date": "2025-05-01",
+      "old": 100.966,
+      "new": 100.9655
+     }
+    }
+   ],
+   "last_new_obs_utc": null
   },
   "RSAFS": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "HOUST": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "PAYEMS": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "UNRATE": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "ICSA": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
+  },
+  "CCSA": {
+   "state": "ok",
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": "2026-11-14T19:49:56Z"
   },
   "JTSJOL": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
+  },
+  "CES0500000003": {
+   "state": "ok",
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": "2026-11-14T19:49:56Z"
   },
   "CPIAUCSL": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "CPILFESL": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "PCEPILFE": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
-  "FEDFUNDS": {
+  "DFF": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": "2026-11-14T19:49:56Z"
   },
   "DGS2": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "DGS10": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "T10Y2Y": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "DFII10": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "T10YIE": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "MORTGAGE30US": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "M2SL": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "WALCL": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-09-09",
+     "old": 6740620.0,
+     "new": 6740619.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-09-16",
+     "old": 6746550.0,
+     "new": 6746548.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-09-23",
+     "old": 6747700.0,
+     "new": 6747704.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-09-30",
+     "old": 6743030.0,
+     "new": 6743031.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-10-14",
+     "old": 6755640.0,
+     "new": 6755639.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-10-21",
+     "old": 6753600.0,
+     "new": 6753604.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-10-28",
+     "old": 6745640.0,
+     "new": 6745635.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-11-04",
+     "old": 6748140.0,
+     "new": 6748145.0
+    },
+    {
+     "detected_utc": "2026-11-14T19:50:01Z",
+     "date": "2026-11-11",
+     "old": 6758870.0,
+     "new": 6758867.0
+    }
+   ],
+   "last_new_obs_utc": null
   },
   "BAMLH0A0HYM2": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "VIXCLS": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "DTWEXBGS": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "DCOILWTICO": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   },
   "NASDAQ100": {
    "state": "ok",
-   "issues": []
+   "issues": [
+    "قفزة غير معتادة في آخر قيمة (-345.4)"
+   ],
+   "revisions": [],
+   "last_new_obs_utc": "2026-11-14T19:49:56Z"
   },
   "SP500": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": "2026-11-14T19:49:56Z"
   },
   "UMCSENT": {
    "state": "ok",
-   "issues": []
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
   }
  },
  "extra_warnings": []
