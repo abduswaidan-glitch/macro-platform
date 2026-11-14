@@ -495,31 +495,23 @@ function checkTxt(c) {
   const r = c.low == null ? `أقل من ${fmtV(c.high)}` : c.high == null ? `${fmtV(c.low)} أو أعلى` : `من ${fmtV(c.low)} إلى أقل من ${fmtV(c.high)}`;
   return `<bdi>${esc(c.series)}</bdi> ${esc(r)} في <bdi>${esc(c.by)}</bdi>`;
 }
+/* Scenario-check: بصمة قريبة الأجل مرتبطة بالسيناريو، وليست إثباتاً لتحقق السيناريو الاقتصادي كاملاً */
 function scenarioCheck(s, led) {
   if (!s.check || typeof s.check !== "object") return "";
-  const sc = led && led.scenarios, o = sc && sc.outcome;
-  const st = !sc || sc.invalid ? "" : !o ? " · لم يُحسم بعد"
+  const sc = led && led.scenario_check, o = sc && sc.check_result;
+  const st = !sc || sc.unscorable ? "" : !o ? " · لم يُحسم بعد"
     : !o.scorable ? ` · تعذّر الحسم: ${esc(o.why)}`
-    : o.label === s.label ? ` · <span class="hit">تحقق</span> (<bdi>${esc(fmtV(o.value))}</bdi> في <bdi>${esc(o.date)}</bdi>)` : ' · <span class="miss">لم يتحقق</span>';
-  return `<div class="chk">القياس: ${checkTxt(s.check)}${st}</div>`;
-}
-function biasCheck(led) {
-  const b = led && led.bias;
-  if (!b) return "";
-  if (b.invalid) return `<div class="chk">الانحياز غير قابل للقياس: ${esc(b.invalid)}</div>`;
-  const o = b.outcome, head = `يُقاس بإغلاق Nasdaq 100 في جلسة <bdi>${esc(b.session)}</bdi> مقابل الإغلاق السابق`;
-  if (!o) return `<div class="chk">${head} · لم يُحسم بعد</div>`;
-  if (!o.scorable) return `<div class="chk">${head} · تعذّر الحسم: ${esc(o.why)}</div>`;
-  const res = o.hit === null ? "" : o.hit ? ' · <span class="hit">أصاب الاتجاه</span>' : ' · <span class="miss">أخطأ الاتجاه</span>';
-  return `<div class="chk">${head}: ${o.up ? "صعد" : o.change_pct < 0 ? "هبط" : "لم يتغير"} <bdi>${esc(fmtV(o.change_pct))}%</bdi>${res}</div>`;
+    : o.range_hit === s.label ? ` · <span class="hit">تحقق شرط قياس السيناريو</span> (<bdi>${esc(fmtV(o.value))}</bdi> في <bdi>${esc(o.date)}</bdi>)`
+    : ' · <span class="miss">لم يتحقق شرط قياس السيناريو</span>';
+  return `<div class="chk">شرط القياس: ${checkTxt(s.check)}${st}</div>`;
 }
 function ledgerSummary(data) {
   const S = ((data || {}).ledger || {}).summary;
   if (!S || !S.reports) return "";
-  const b = S.bias, c = S.scenarios;
-  return `<p class="muted led-sum">سجل القياس: ${esc(b.n)} انحيازاً محسوماً (أصاب الاتجاه ${esc(b.hits)} من ${esc(b.directional)})، و${esc(c.n)} مجموعة سيناريوهات محسومة. ${S.meaningful
-    ? `Brier (الأقل أفضل): الانحياز <bdi>${esc(b.brier)}</bdi> مقابل <bdi>${esc(b.baseline)}</bdi> لمن يقول 50% دائماً، والسيناريوهات <bdi>${esc(c.brier)}</bdi> مقابل <bdi>${esc(c.baseline)}</bdi> لمن يعطي كل سيناريو الثلث.`
-    : `أقل من ${esc(S.min_n)} حالة محسومة: لا دلالة إحصائية بعد.`}</p>`;
+  const c = S.scenario_check || {};
+  return `<p class="muted led-sum">Scenario-check: ${esc(c.n)} مجموعة شروط محسومة. ${S.sample === "preliminary"
+    ? `تقييم أولي متاح: Scenario-check Brier <bdi>${esc(c.brier)}</bdi> مقابل <bdi>${esc(c.baseline)}</bdi> لمن يعطي كل سيناريو الثلث (الأقل أفضل).`
+    : `العينة ما زالت صغيرة ولا تكفي للحكم (أقل من ${esc(S.min_n)} حالة محسومة).`} يقيس بصمة السيناريوهات القريبة، لا صحة السرد الاقتصادي كله.</p>`;
 }
 function renderAI(hist, data) {
   const p = $("#p-ai");
@@ -532,8 +524,10 @@ function renderAI(hist, data) {
   }
   const view = idx => {
     const r = hist[idx], b = BIAS[r.bias?.direction] || ["—", "neutral"], led = ledgerOf(data, r.meta?.ny_date);
-    const scInvalid = led && led.scenarios && led.scenarios.invalid && (r.scenarios || []).some(s => s.check)
-      ? `<div class="chk">شروط السيناريوهات غير قابلة للقياس: ${esc(led.scenarios.invalid)}</div>` : "";
+    const unsc = led && led.scenario_check && led.scenario_check.unscorable;
+    const psum = r.meta && typeof r.meta.prob_sum === "number" && r.meta.prob_sum !== 100
+      ? `<div class="chk">مجموع احتمالات السيناريوهات ${esc(r.meta.prob_sum)} لا 100: عُرضت كما كتبها النموذج، ولا تُقاس.</div>` : "";
+    const scInvalid = psum || (unsc ? `<div class="chk">شروط السيناريوهات غير قابلة للقياس: ${esc(unsc)}</div>` : "");
     const list = (title, arr) => arr && arr.length ? `<div class="box"><h4>${title}</h4><ul>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
     p.innerHTML = intro + reportWarnings(hist, data) + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
         <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div></div>
@@ -543,7 +537,7 @@ function renderAI(hist, data) {
         <div class="box"><h4>الملخص</h4><ul>${(r.summary || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
         <div class="box"><h4>انحياز NQ للجلسة القادمة</h4><div class="bias tone-${b[1]}">${b[0]}</div>
           <div class="conf"><i style="width:${Math.max(0, Math.min(100, +r.bias?.confidence || 0))}%"></i></div>
-          <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p>${biasCheck(led)}</div>
+          <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p></div>
       </div>
       <h3>السيناريوهات A وB وC</h3>
       <p class="muted uncal">الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة.</p>

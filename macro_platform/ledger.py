@@ -1,14 +1,12 @@
-"""سجل التوقعات: كل تقرير يترك توقعين قابلين للقياس، ويحكم عليهما الكود من بيانات FRED نفسها بعد وقوعهما.
+"""سجل التوقعات: ما يلتزم به التقرير قابل للقياس، ويحسمه الكود من سلاسل FRED نفسها بعد وقوعه.
 
 لماذا: قبل هذا السجل كانت الثقة 55% في التقارير السبعة الأولى كلها (4 إلى 13 نوفمبر 2026)، وشروط السيناريوهات
 نصاً مركّباً بلا موعد حسم، فلم يكن ممكناً قياس الدقة ولا المعايرة ولا المقارنة بمرجع بسيط.
 
-1) الانحياز: confidence احتمالٌ (50 إلى 100) أن يغلق NASDAQ100 في جلسة التقرير على جهة الاتجاه مقارنة بالإغلاق
-   السابق. p_up = confidence (bullish) أو 100 − confidence (bearish) أو 50 (neutral). Brier = (p_up − up)²،
-   والمرجع 0.25 (خمسون في المئة دائماً).
-2) السيناريوهات A وB وC: شرط لكل سيناريو على سلسلة يومية واحدة وتاريخ واحد، ونطاقات متتالية بلا فجوة ولا تداخل،
-   فالاحتمالات الثلاثة توزيع كامل. يُحسم حين تصل بيانات السلسلة إلى التاريخ. Brier متعدد الفئات، والمرجع ثلث لكل
-   سيناريو (≈0.667).
+Scenario-check: لكل سيناريو شرط على سلسلة اقتصادية/مالية يومية واحدة وتاريخ حسم واحد (يوم تداول خلال 21 يوماً)،
+ونطاقات متتالية بلا فجوة ولا تداخل، والاحتمالات الثلاثة أعداد صحيحة مجموعها 100 بالضبط. الشرط **بصمة قريبة الأجل
+مرتبطة بالسيناريو، وليس إثباتاً لتحقق السيناريو الاقتصادي كاملاً**؛ لذلك يُسمّى الحسم check_result لا outcome،
+ولا يقيس Scenario-check Brier صحة السرد الاقتصادي. المرجع: من يعطي كل سيناريو الثلث (≈0.667).
 
 لا نص من التقرير يُحفظ هنا: أرقام وتواريخ فقط، في data/forecast_ledger.json (يكتبه update.yml ويحفظه في المستودع).
 """
@@ -22,14 +20,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from macro_platform.ai_report import NY, is_trading_day
+from macro_platform.ai_report import is_trading_day
 
-ALLOWED = ("NASDAQ100", "SP500", "DGS10", "DGS2", "DFII10", "T10YIE", "VIXCLS", "DTWEXBGS", "DCOILWTICO",
-           "BAMLH0A0HYM2")   # سلاسل يومية تجلبها المنصة أصلاً؛ لا مصدر جديد
-BIAS_SERIES = "NASDAQ100"
-MAX_DAYS = 21              # أبعد تاريخ حسم للسيناريوهات بعد يوم التقرير
-MIN_N = 30                 # قاعدة إبهام: دون 30 حالة محسومة لا يُقرأ أي متوسط
-BASE_BIAS = 0.25           # Brier لمن يقول 50% دائماً
+VERSION = 2
+# سلاسل اقتصادية/مالية يومية تجلبها المنصة أصلاً. مؤشرات الأسهم ليست هنا: التقرير الاقتصادي لا يُقاس بها.
+ALLOWED = ("DGS2", "DGS10", "DFII10", "T10YIE", "T10Y2Y", "BAMLH0A0HYM2", "DTWEXBGS", "DCOILWTICO", "VIXCLS")
+MAX_DAYS = 21              # أبعد تاريخ حسم بعد يوم التقرير
+MIN_N = 30                 # قاعدة إبهام لا اختبار إحصائي: دونها العينة صغيرة ولا تكفي للحكم
 BASE_SCEN = round(2 / 3, 4)  # Brier لمن يعطي كل سيناريو الثلث
 
 
@@ -40,10 +37,11 @@ def load(path: Path) -> dict:
             return d
     except Exception:
         pass
-    return {"version": 1, "entries": []}
+    return {"version": VERSION, "entries": []}
 
 
 def save(path: Path, led: dict) -> None:
+    led["version"] = VERSION
     Path(path).write_text(json.dumps(led, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
@@ -60,47 +58,45 @@ def _day(s) -> date | None:
         return None
 
 
-# ---------------------------------------------------------------- what a report commits to
-def p_up(bias: dict) -> tuple[float | None, str | None]:
-    """احتمال الصعود من الانحياز، أو سبب عدم صلاحيته."""
-    d = (bias or {}).get("direction")
-    c = _num((bias or {}).get("confidence"))
-    if d == "neutral":
-        return 0.5, None
-    if d not in ("bullish", "bearish"):
-        return None, "unknown direction"
-    if c is None or not 50 <= c <= 100:
-        return None, "confidence outside 50-100"
-    return round(c / 100 if d == "bullish" else 1 - c / 100, 4), None
+def holiday_horizon(cfg: dict) -> int | None:
+    """آخر سنة تغطيها قائمة العطل؛ بعدها لا نعرف أيام التداول فنرفض."""
+    years = [int(str(d)[:4]) for d in cfg.get("market_holidays", []) if str(d)[:4].isdigit()]
+    return max(years) if years else None
 
 
-def session_date(written_at: str, cfg: dict) -> str | None:
-    """جلسة التقرير: يوم كتابته إن كُتب في يوم تداول قبل إغلاق 16:00 بتوقيت نيويورك، وإلا يوم التداول التالي."""
-    try:
-        ny = datetime.fromisoformat(str(written_at).replace("Z", "+00:00")).astimezone(NY)
-    except Exception:
-        return None
-    day = ny if ny.hour < 16 else ny + timedelta(days=1)
-    day = day.replace(hour=12, minute=0, second=0, microsecond=0)
-    for _ in range(10):
-        if is_trading_day(day, cfg):
-            return day.strftime("%Y-%m-%d")
-        day += timedelta(days=1)
+def probs_issue(scenarios: list) -> str | None:
+    """الاحتمالات كما أرسلها النموذج: ثلاثة أعداد صحيحة مجموعها 100 بالضبط. لا تعديل صامت."""
+    if len(scenarios or []) != 3:
+        return f"expected 3 scenarios, got {len(scenarios or [])}"
+    ps = [s.get("prob") if isinstance(s, dict) else None for s in scenarios]
+    if not all(isinstance(p, int) and not isinstance(p, bool) and 0 <= p <= 100 for p in ps):
+        return "probabilities must be whole numbers from 0 to 100"
+    if sum(ps) != 100:
+        return f"probabilities sum to {sum(ps)}, not 100"
     return None
 
 
-def check_scenarios(scenarios: list, ny_date: str) -> tuple[dict | None, str | None]:
-    """شروط السيناريوهات الثلاثة: سلسلة واحدة مسموحة، وتاريخ واحد خلال MAX_DAYS، ونطاقات تغطي كل القيم بلا تداخل."""
-    checks = [s.get("check") if isinstance(s, dict) else None for s in scenarios or []]
-    if len(checks) != 3 or not all(isinstance(c, dict) for c in checks):
+def check_scenarios(scenarios: list, ny_date: str, cfg: dict) -> tuple[dict | None, str | None]:
+    """شروط السيناريوهات الثلاثة: سلسلة واحدة مسموحة، وتاريخ حسم واحد هو يوم تداول خلال MAX_DAYS، ونطاقات
+    تغطي كل القيم بلا تداخل، والاحتمالات مجموعها 100 بالضبط."""
+    why = probs_issue(scenarios)
+    if why:
+        return None, why
+    checks = [s.get("check") for s in scenarios]
+    if not all(isinstance(c, dict) for c in checks):
         return None, "missing check"
     series = {c.get("series") for c in checks}
     if len(series) != 1 or next(iter(series)) not in ALLOWED:
         return None, "checks must use one allowed series"
     bys = {c.get("by") for c in checks}
-    by, day = next(iter(bys)), _day(ny_date)
-    if len(bys) != 1 or _day(by) is None or day is None or not day < _day(by) <= day + timedelta(days=MAX_DAYS):
+    by, day = _day(next(iter(bys))), _day(ny_date)
+    if len(bys) != 1 or by is None or day is None or not day < by <= day + timedelta(days=MAX_DAYS):
         return None, f"checks must share one date within {MAX_DAYS} days after the report"
+    horizon = holiday_horizon(cfg)
+    if horizon is None or by.year > horizon:
+        return None, "market holidays are not known for that date"
+    if not is_trading_day(datetime(by.year, by.month, by.day, 12), cfg):
+        return None, "the check date is not a trading day"
     ranges = []
     for s, c in zip(scenarios, checks):
         lo, hi = c.get("low"), c.get("high")
@@ -109,36 +105,31 @@ def check_scenarios(scenarios: list, ny_date: str) -> tuple[dict | None, str | N
             return None, "range bounds must be numbers or null"
         if lo_n is not None and hi_n is not None and lo_n >= hi_n:
             return None, "low must be below high"
-        ranges.append({"label": s.get("label"), "low": lo_n, "high": hi_n, "prob": int(s.get("prob", 0))})
+        ranges.append({"label": s.get("label"), "low": lo_n, "high": hi_n, "prob": s["prob"]})
     ranges.sort(key=lambda r: -math.inf if r["low"] is None else r["low"])
     if ranges[0]["low"] is not None or ranges[-1]["high"] is not None:
         return None, "ranges must be open at both ends"
     for a, b in zip(ranges, ranges[1:]):
         if a["high"] is None or b["low"] is None or abs(a["high"] - b["low"]) > 1e-9:
             return None, "ranges must meet with no gap or overlap"
-    return {"series": next(iter(series)), "by": by, "ranges": ranges, "outcome": None}, None
+    return {"series": next(iter(series)), "by": by.isoformat(), "ranges": ranges, "check_result": None}, None
 
 
 def entry(rep: dict, cfg: dict) -> dict:
     m = rep.get("meta") or {}
-    pu, why = p_up(rep.get("bias") or {})
-    sc, sc_why = check_scenarios(rep.get("scenarios") or [], m.get("ny_date"))
+    sc, why = check_scenarios(rep.get("scenarios") or [], m.get("ny_date"), cfg)
     return {"ny_date": m.get("ny_date"), "written_at": m.get("completed_at") or m.get("written_at"),
             "model": m.get("model"), "run_id": m.get("run_id"),
-            "bias": {"direction": (rep.get("bias") or {}).get("direction"),
-                     "confidence": _num((rep.get("bias") or {}).get("confidence")), "p_up": pu,
-                     "session": session_date(m.get("completed_at") or m.get("written_at"), cfg),
-                     "invalid": why, "outcome": None},
-            "scenarios": sc or {"invalid": sc_why}}
+            "scenario_check": sc or {"unscorable": why}}
 
 
 def add(led: dict, e: dict) -> None:
-    """تقرير ثانٍ لليوم نفسه (تشغيل يدوي) يحلّ محل الأول، كما في ai_history.json."""
+    """مدخل واحد لكل جلسة: تقرير ثانٍ لليوم نفسه يحلّ محل الأول."""
     led["entries"] = [x for x in led["entries"] if x.get("ny_date") != e.get("ny_date")] + [e]
     led["entries"].sort(key=lambda x: x.get("ny_date") or "")
 
 
-# ---------------------------------------------------------------- outcomes, from the platform's own FRED series
+# ---------------------------------------------------------------- settling, from the platform's own FRED series
 def _clean(s) -> pd.Series:
     if s is None or len(s) == 0:
         return pd.Series(dtype=float)
@@ -147,25 +138,10 @@ def _clean(s) -> pd.Series:
     return s.sort_index()
 
 
-def _resolve_bias(b: dict, s: pd.Series) -> dict | None:
-    sess = pd.Timestamp(b["session"])
-    if s.empty or s.index.max() < sess:
-        return None                                        # لم تصل البيانات إلى الجلسة بعد
-    prev = s[s.index < sess]
-    if sess not in s.index or prev.empty:
-        return {"scorable": False, "why": "no close for the session"}
-    close, before = float(s[sess]), float(prev.iloc[-1])
-    up = close > before
-    return {"scorable": True, "close": close, "prev_close": before, "prev_date": prev.index[-1].strftime("%Y-%m-%d"),
-            "change_pct": round((close / before - 1) * 100, 3), "up": up,
-            "hit": None if b["direction"] == "neutral" else (up == (b["direction"] == "bullish")),
-            "brier": round((b["p_up"] - (1.0 if up else 0.0)) ** 2, 4)}
-
-
-def _resolve_scenarios(sc: dict, s: pd.Series, ny_date: str) -> dict | None:
+def _settle(sc: dict, s: pd.Series, ny_date: str) -> dict | None:
     by = pd.Timestamp(sc["by"])
     if s.empty or s.index.max() < by:
-        return None
+        return None                                        # لم تصل البيانات إلى تاريخ الحسم: لا حكم
     upto = s[(s.index <= by) & (s.index > pd.Timestamp(ny_date))]
     if upto.empty:
         return {"scorable": False, "why": "no observation between the report and the date"}
@@ -173,42 +149,33 @@ def _resolve_scenarios(sc: dict, s: pd.Series, ny_date: str) -> dict | None:
     hit = next(r["label"] for r in sc["ranges"]
                if (r["low"] is None or v >= r["low"]) and (r["high"] is None or v < r["high"]))
     brier = sum((r["prob"] / 100 - (1.0 if r["label"] == hit else 0.0)) ** 2 for r in sc["ranges"])
-    return {"scorable": True, "value": v, "date": on, "label": hit, "brier": round(brier, 4)}
+    return {"scorable": True, "value": v, "date": on, "range_hit": hit, "brier": round(brier, 4)}
 
 
 def resolve(led: dict, series: dict) -> int:
-    """يحسم ما وصلت بياناته. لا يحسم شيئاً قبل أن تتجاوز السلسلةُ التاريخَ، فلا حكم على بيانات ناقصة."""
+    """يحسم ما وصلت بياناته. لا يحسم قبل أن تتجاوز السلسلةُ تاريخَ الحسم، فلا حكم على بيانات ناقصة."""
     done = 0
     for e in led["entries"]:
-        b = e.get("bias") or {}
-        if b.get("outcome") is None and b.get("p_up") is not None and b.get("session"):
-            out = _resolve_bias(b, _clean(series.get(BIAS_SERIES)))
+        sc = e.get("scenario_check") or {}
+        if sc.get("ranges") and sc.get("check_result") is None:
+            out = _settle(sc, _clean(series.get(sc["series"])), e["ny_date"])
             if out is not None:
-                b["outcome"], done = out, done + 1
-        sc = e.get("scenarios") or {}
-        if sc.get("ranges") and sc.get("outcome") is None:
-            out = _resolve_scenarios(sc, _clean(series.get(sc["series"])), e["ny_date"])
-            if out is not None:
-                sc["outcome"], done = out, done + 1
+                sc["check_result"], done = out, done + 1
     return done
 
 
 def summary(led: dict) -> dict:
-    bias = [e["bias"]["outcome"] for e in led["entries"] if (e.get("bias") or {}).get("outcome", {}) and
-            e["bias"]["outcome"].get("scorable")]
-    scen = [e["scenarios"]["outcome"] for e in led["entries"] if (e.get("scenarios") or {}).get("outcome") and
-            e["scenarios"]["outcome"].get("scorable")]
-    directional = [o for o in bias if o.get("hit") is not None]
-    mean = lambda xs: round(sum(xs) / len(xs), 4) if xs else None   # noqa: E731
+    res = [e["scenario_check"]["check_result"] for e in led["entries"]
+           if (e.get("scenario_check") or {}).get("check_result") and e["scenario_check"]["check_result"].get("scorable")]
+    n = len(res)
     return {"reports": len(led["entries"]),
-            "bias": {"n": len(bias), "directional": len(directional), "hits": sum(o["hit"] for o in directional),
-                     "brier": mean([o["brier"] for o in bias]), "baseline": BASE_BIAS},
-            "scenarios": {"n": len(scen), "brier": mean([o["brier"] for o in scen]), "baseline": BASE_SCEN},
-            "min_n": MIN_N, "meaningful": min(len(bias), len(scen)) >= MIN_N}
+            "scenario_check": {"n": n, "brier": round(sum(r["brier"] for r in res) / n, 4) if n else None,
+                               "baseline": BASE_SCEN},
+            "min_n": MIN_N, "sample": "preliminary" if n >= MIN_N else "small"}
 
 
 def view(led: dict, keep: int = 14) -> dict:
     """ما تعرضه الصفحة: الملخص، وحالة آخر التقارير بتاريخها."""
     return {"summary": summary(led),
-            "by_date": {e["ny_date"]: {"bias": e.get("bias"), "scenarios": e.get("scenarios")}
+            "by_date": {e["ny_date"]: {"scenario_check": e.get("scenario_check")}
                         for e in led["entries"][-keep:] if e.get("ny_date")}}

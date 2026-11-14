@@ -22,9 +22,8 @@ Data rules:
 - Use web search for today's events: the US data calendar, Fed speakers and decisions, Treasury auctions, trade/tariff and political headlines, geopolitics. Cite a URL for each event.
 - Keep five kinds of statement apart: platform data (the JSON); official releases you checked, with the official URL; reported news (the "news_feed" block: media headlines; official Fed/BEA titles are announcements you open before citing their content), which you call reported; your hypotheses; and qualitative implications for NQ. Never state reported news as an official fact.
 - For a headline that matters, reason about it: is it new, is a primary source confirming it, how large and from when, through which channel it would reach NQ (rates, inflation, growth, earnings, risk appetite), over what horizon, and what would contradict it. Say what is unknown.
-- Scenario probabilities and confidence are your subjective weights, not yet calibrated, and no single headline sets them. The platform records them and scores them against what happens, so give the probability you actually hold, from the evidence, not a habitual number. Give no other numeric probability unless it comes from the platform data or a cited market source, labelled as such.
-- bias.confidence is your probability, in percent from 50 to 100, that the Nasdaq 100 (FRED NASDAQ100) closes this report's session above (bullish) or below (bearish) the previous close. If you see no edge, say neutral with 50.
-- Each scenario carries one check that the platform scores from FRED after the date: the three checks use the same series (one of NASDAQ100, SP500, DGS10, DGS2, DFII10, T10YIE, VIXCLS, DTWEXBGS, DCOILWTICO, BAMLH0A0HYM2) and the same date "by" (a trading day within 21 days after today), and their ranges cover every value with no gap or overlap: one range has low null, one has high null, and each high equals the next low (a value equal to a bound belongs to the higher range). A scenario's prob is then your probability that the series' value on that date falls in its range. Choose the series and bounds that best separate your scenarios, starting from the latest values in the data.
+- Scenario probabilities and confidence are your subjective weights, not yet calibrated, and no single headline sets them. The platform records them and scores them against what happens, so give the probability you actually hold, from the evidence, not a habitual number; close probabilities are fine when the picture is mixed. The three scenario probabilities are whole numbers that sum to exactly 100. Give no other numeric probability unless it comes from the platform data or a cited market source, labelled as such. A neutral bias has confidence 50.
+- Each scenario carries one check: a near-term market signature linked to the scenario, not proof that the whole economic scenario happened. The three checks use the same series (one of DGS2, DGS10, DFII10, T10YIE, T10Y2Y, BAMLH0A0HYM2, DTWEXBGS, DCOILWTICO, VIXCLS) and the same date "by" (a trading day - not a weekend or NYSE holiday - within 21 days after today), and their ranges cover every value with no gap or overlap: one range has low null, one has high null, and each high equals the next low (a value equal to a bound belongs to the higher range). A scenario's prob is then your probability that the series' value on that date falls in its range. Choose the series and bounds that best separate your scenarios, starting from the latest values in the data.
 - No buy/sell recommendations.
 
 Write everything in Modern Standard Arabic (فصحى), keeping technical terms in English (NQ, CPI, PCE, VIX, bp, Fed, FOMC, yield, ...).
@@ -33,7 +32,7 @@ Output: after any research, end your answer with exactly one JSON object between
 {
   "title": "one-line headline of the day's macro read",
   "summary": ["3-6 short bullet sentences"],
-  "bias": {"direction": "bullish" | "bearish" | "neutral", "confidence": 50-100, "reason": "why, for NQ next session"},
+  "bias": {"direction": "bullish" | "bearish" | "neutral", "confidence": 0-100, "reason": "why, for NQ next session"},
   "scenarios": [{"label": "A", "name": "...", "prob": integer, "trigger": "what confirms it", "reason": "...",
                  "check": {"series": "DGS10", "by": "YYYY-MM-DD", "low": null, "high": 4.9}}, B, C],
   "sections": [{"heading": "...", "body": "a paragraph"}],
@@ -138,15 +137,10 @@ def parse_report(text: str) -> dict:
     for key in ("title", "summary", "bias", "scenarios", "one_liner"):
         if key not in rep:
             raise ReportError(f"الحقل {key} مفقود")
-    sc = rep["scenarios"]
-    if len(sc) != 3:
-        raise ReportError("عدد السيناريوهات ليس 3")
-    total = sum(int(s.get("prob", 0)) for s in sc)
-    if not 95 <= total <= 105:
-        raise ReportError(f"مجموع الاحتمالات {total}")
-    if total != 100:  # تصحيح تقريب بسيط على أكبر احتمال
-        big = max(sc, key=lambda s: int(s["prob"]))
-        big["prob"] = int(big["prob"]) + 100 - total
+    if not isinstance(rep["scenarios"], list):
+        raise ReportError("السيناريوهات ليست قائمة")
+    # لا تعديل صامت ولا رفض للتقرير المدفوع: الأرقام تُحفظ كما أرسلها النموذج. إن لم يكن مجموعها 100 بالضبط
+    # (أو لم تكن ثلاثة) يُنشر التقرير كما هو مع ملاحظة، ويُسجَّل شرط القياس «غير قابل للقياس».
     for k in ("sections", "watch", "risks", "data_audit", "events"):
         rep.setdefault(k, [])
     rep.setdefault("gates_read", "")
@@ -235,7 +229,10 @@ def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, call
     rep = parse_report(text)
     rep["sources"] = sources
     iso = "%Y-%m-%dT%H:%M:%SZ"
+    ps = [x.get("prob") for x in rep["scenarios"] if isinstance(x, dict)]
     rep["meta"] = {"written_at": now_utc.strftime(iso), "ny_date": ny_now.strftime("%Y-%m-%d"),
+                   "prob_sum": sum(p for p in ps if isinstance(p, (int, float)) and not isinstance(p, bool)),
+                   "scenario_count": len(rep["scenarios"]),
                    "model": served, "usage": usage, "news_input": feed_meta(feed),
                    # بدء طلب النموذج واكتمال التقرير؛ وقت النشر يسجّله update.yml بعد نشر الصفحة (ملخص التشغيل)
                    "started_at": started.strftime(iso), "completed_at": datetime.now(timezone.utc).strftime(iso),

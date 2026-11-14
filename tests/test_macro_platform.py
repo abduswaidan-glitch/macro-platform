@@ -160,20 +160,22 @@ GOOD = {"title": "t", "summary": ["a"], "bias": {"direction": "neutral", "confid
         "one_liner": "o"}
 
 
-def test_parse_report_extracts_last_block_and_fixes_rounding():
+def test_parse_report_extracts_last_block_and_keeps_probabilities_as_written():
     text = ("بحث...<report>{\"title\": \"old\"}</report> ثم <report>"
             + json.dumps(GOOD, ensure_ascii=False) + "</report>")
     rep = ai_report.parse_report(text)
-    assert rep["title"] == "t" and sum(s["prob"] for s in rep["scenarios"]) == 100
+    # 14 نوفمبر 2026 (قرار Abdu): لا تعديل صامت؛ المجموع غير 100 يُعرض كما هو ويُعلَّم غير قابل للقياس
+    assert rep["title"] == "t" and [s["prob"] for s in rep["scenarios"]] == [s["prob"] for s in GOOD["scenarios"]]
     assert rep["sections"] == [] and rep["events"] == []
 
 
-def test_parse_report_rejects_bad_output():
+def test_parse_report_rejects_only_broken_output():
     with pytest.raises(ai_report.ReportError):
         ai_report.parse_report("no tags here")
-    bad = dict(GOOD, scenarios=GOOD["scenarios"][:2])
     with pytest.raises(ai_report.ReportError):
-        ai_report.parse_report("<report>" + json.dumps(bad) + "</report>")
+        ai_report.parse_report("<report>" + json.dumps({k: v for k, v in GOOD.items() if k != "title"}) + "</report>")
+    two = dict(GOOD, scenarios=GOOD["scenarios"][:2])          # كان يُسقط التقرير المدفوع؛ الآن يُنشر ولا يُقاس
+    assert len(ai_report.parse_report("<report>" + json.dumps(two) + "</report>")["scenarios"]) == 2
 
 
 def test_should_run_schedule():
