@@ -17,7 +17,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from macro_platform import ai_report
+from macro_platform import ai_report, ledger
 from macro_platform.build import build_payload, fetch_all, load_config, load_raw, write_json
 from macro_platform.catalog import INDICATORS
 from macro_platform.demo import demo_series
@@ -84,6 +84,8 @@ def main(argv=None) -> int:
     state = json.loads(state_p.read_text(encoding="utf-8")) if state_p.exists() else {}
     force = os.environ.get("AI_FORCE", "").lower() == "true"
     hist_p = DATA / "ai_history.json"
+    ledger_p = DATA / "forecast_ledger.json"
+    led = ledger.load(ledger_p)
     if args.demo or args.offline:
         log("AI report skipped (demo/offline build)")
     elif not os.environ.get("ANTHROPIC_API_KEY", "").strip():
@@ -96,6 +98,7 @@ def main(argv=None) -> int:
             feed = news.report_feed(load_live("https://abduswaidan-glitch.github.io/macro-platform/news.json"), now)
             rep = ai_report.write_report(payload, cfg, now_utc=now, feed=feed)
             ai_report.update_history(hist_p, rep, keep=cfg.get("ai", {}).get("keep", 14))
+            ledger.add(led, ledger.entry(rep, cfg.get("ai", {})))   # ما التزم به التقرير، أرقاماً فقط
             state["ai_last_date"] = rep["meta"]["ny_date"]
             state_p.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
             u = rep["meta"]["usage"]
@@ -108,9 +111,16 @@ def main(argv=None) -> int:
             payload["status"]["warnings"].append(msg)
             extra.append(msg)
     payload["ai_available"] = hist_p.exists()
+    # الحكم على التوقعات من سلاسل FRED نفسها؛ يُحفظ فقط في تحديث البيانات (update.yml يحفظ data/ في المستودع)
+    settled = ledger.resolve(led, series)
+    payload["ledger"] = ledger.view(led)
+    if settled:
+        log(f"forecast ledger: {settled} outcome(s) settled")
     if not (args.demo or args.offline):
         DATA.mkdir(exist_ok=True)
         save_status(status_p, status, extra, now)
+        if led["entries"]:
+            ledger.save(ledger_p, led)
 
     DATA.mkdir(exist_ok=True)
     write_json(args.out, payload)

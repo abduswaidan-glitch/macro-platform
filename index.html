@@ -160,6 +160,10 @@ td .yoy-na{white-space:normal;min-width:14em}  /* سبب غياب التغير �
 .sc-top{display:flex;justify-content:space-between;gap:8px;font-weight:600}
 .sc .conf{margin:6px 0}
 .sc p{margin:4px 0 0;font-size:14px}
+.chk{font-size:12.5px;color:var(--muted);margin-top:6px}
+.chk .hit{color:var(--ok);font-weight:600}
+.chk .miss{color:var(--bad);font-weight:600}
+.chk bdi{direction:ltr;unicode-bidi:isolate}
 .one-liner{margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:var(--acc-soft);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);font-weight:600}
 .sec-body p{margin:6px 0 0;max-width:85ch}
 .picker select{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px}
@@ -484,6 +488,39 @@ function reportWarnings(hist, data) {
     out.push(`لا تقرير لليوم (${today}) حتى الآن بعد افتتاح نيويورك. آخر تقرير: ${last || "لا يوجد"}.`);
   return out.length ? `<div class="warn-box ai-late">${out.map(esc).join("<br>")}</div>` : "";
 }
+/* سجل التوقعات (data.ledger): الشرط الذي التزم به التقرير، ونتيجته بعد أن يحسمه الكود من بيانات FRED */
+const fmtV = v => v !== null && v !== "" && isFinite(+v) ? String(+(+v).toFixed(4)) : String(v);
+const ledgerOf = (data, day) => ((((data || {}).ledger || {}).by_date) || {})[day] || null;
+function checkTxt(c) {
+  const r = c.low == null ? `أقل من ${fmtV(c.high)}` : c.high == null ? `${fmtV(c.low)} أو أعلى` : `من ${fmtV(c.low)} إلى أقل من ${fmtV(c.high)}`;
+  return `<bdi>${esc(c.series)}</bdi> ${esc(r)} في <bdi>${esc(c.by)}</bdi>`;
+}
+function scenarioCheck(s, led) {
+  if (!s.check || typeof s.check !== "object") return "";
+  const sc = led && led.scenarios, o = sc && sc.outcome;
+  const st = !sc || sc.invalid ? "" : !o ? " · لم يُحسم بعد"
+    : !o.scorable ? ` · تعذّر الحسم: ${esc(o.why)}`
+    : o.label === s.label ? ` · <span class="hit">تحقق</span> (<bdi>${esc(fmtV(o.value))}</bdi> في <bdi>${esc(o.date)}</bdi>)` : ' · <span class="miss">لم يتحقق</span>';
+  return `<div class="chk">القياس: ${checkTxt(s.check)}${st}</div>`;
+}
+function biasCheck(led) {
+  const b = led && led.bias;
+  if (!b) return "";
+  if (b.invalid) return `<div class="chk">الانحياز غير قابل للقياس: ${esc(b.invalid)}</div>`;
+  const o = b.outcome, head = `يُقاس بإغلاق Nasdaq 100 في جلسة <bdi>${esc(b.session)}</bdi> مقابل الإغلاق السابق`;
+  if (!o) return `<div class="chk">${head} · لم يُحسم بعد</div>`;
+  if (!o.scorable) return `<div class="chk">${head} · تعذّر الحسم: ${esc(o.why)}</div>`;
+  const res = o.hit === null ? "" : o.hit ? ' · <span class="hit">أصاب الاتجاه</span>' : ' · <span class="miss">أخطأ الاتجاه</span>';
+  return `<div class="chk">${head}: ${o.up ? "صعد" : o.change_pct < 0 ? "هبط" : "لم يتغير"} <bdi>${esc(fmtV(o.change_pct))}%</bdi>${res}</div>`;
+}
+function ledgerSummary(data) {
+  const S = ((data || {}).ledger || {}).summary;
+  if (!S || !S.reports) return "";
+  const b = S.bias, c = S.scenarios;
+  return `<p class="muted led-sum">سجل القياس: ${esc(b.n)} انحيازاً محسوماً (أصاب الاتجاه ${esc(b.hits)} من ${esc(b.directional)})، و${esc(c.n)} مجموعة سيناريوهات محسومة. ${S.meaningful
+    ? `Brier (الأقل أفضل): الانحياز <bdi>${esc(b.brier)}</bdi> مقابل <bdi>${esc(b.baseline)}</bdi> لمن يقول 50% دائماً، والسيناريوهات <bdi>${esc(c.brier)}</bdi> مقابل <bdi>${esc(c.baseline)}</bdi> لمن يعطي كل سيناريو الثلث.`
+    : `أقل من ${esc(S.min_n)} حالة محسومة: لا دلالة إحصائية بعد.`}</p>`;
+}
 function renderAI(hist, data) {
   const p = $("#p-ai");
   const intro = `<div class="sec-head"><h2>التقرير الذكي</h2><p>قراءة يومية يكتبها Claude قبل افتتاح نيويورك من بيانات المنصة وأخبار اليوم: ملخص، وانحياز لـNQ، وثلاثة سيناريوهات باحتمالاتها، ومصادر كل حدث.</p></div>
@@ -494,7 +531,9 @@ function renderAI(hist, data) {
     return;
   }
   const view = idx => {
-    const r = hist[idx], b = BIAS[r.bias?.direction] || ["—", "neutral"];
+    const r = hist[idx], b = BIAS[r.bias?.direction] || ["—", "neutral"], led = ledgerOf(data, r.meta?.ny_date);
+    const scInvalid = led && led.scenarios && led.scenarios.invalid && (r.scenarios || []).some(s => s.check)
+      ? `<div class="chk">شروط السيناريوهات غير قابلة للقياس: ${esc(led.scenarios.invalid)}</div>` : "";
     const list = (title, arr) => arr && arr.length ? `<div class="box"><h4>${title}</h4><ul>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
     p.innerHTML = intro + reportWarnings(hist, data) + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
         <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div></div>
@@ -504,13 +543,14 @@ function renderAI(hist, data) {
         <div class="box"><h4>الملخص</h4><ul>${(r.summary || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
         <div class="box"><h4>انحياز NQ للجلسة القادمة</h4><div class="bias tone-${b[1]}">${b[0]}</div>
           <div class="conf"><i style="width:${Math.max(0, Math.min(100, +r.bias?.confidence || 0))}%"></i></div>
-          <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p></div>
+          <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p>${biasCheck(led)}</div>
       </div>
       <h3>السيناريوهات A وB وC</h3>
       <p class="muted uncal">الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة.</p>
+      ${ledgerSummary(data)}${scInvalid}
       ${(r.scenarios || []).map(s => `<div class="sc"><div class="sc-top"><span>${esc(s.label)}. ${esc(s.name)}</span><span class="num">${esc(s.prob)}%</span></div>
         <div class="conf"><i style="width:${Math.max(0, Math.min(100, +s.prob || 0))}%"></i></div>
-        <p><b>المُحفِّز:</b> ${esc(s.trigger)}</p><p class="muted">${esc(s.reason)}</p></div>`).join("")}
+        <p><b>المُحفِّز:</b> ${esc(s.trigger)}</p><p class="muted">${esc(s.reason)}</p>${scenarioCheck(s, led)}</div>`).join("")}
       ${r.gates_read ? `<h3>قراءة بوابات NQ</h3><div class="box sec-body"><p>${esc(r.gates_read)}</p></div>` : ""}
       ${(r.sections || []).map(s => `<h3>${esc(s.heading)}</h3><div class="box sec-body"><p>${esc(s.body)}</p></div>`).join("")}
       <div class="ai-grid">${list("ما يستحق المتابعة", r.watch)}${list("المخاطر", r.risks)}</div>
