@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-14T21:22:21Z",
+ "fetched_utc": "2026-11-14T21:33:16Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -160,16 +160,16 @@
   "NASDAQ100": {
    "state": "ok",
    "issues": [
-    "قفزة غير معتادة في آخر قيمة (-345.4)"
+    "قفزة غير معتادة في آخر قيمة"
    ],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-14T19:49:56Z"
+   "last_new_obs_utc": "2026-11-14T21:33:16Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-14T19:49:56Z"
+   "last_new_obs_utc": "2026-11-14T21:33:16Z"
   },
   "UMCSENT": {
    "state": "ok",
