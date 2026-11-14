@@ -207,7 +207,7 @@ def test_outage_report_is_written_and_states_the_coverage_gap(monkeypatch, tmp_p
 def test_news_does_not_become_a_numeric_probability(monkeypatch, tmp_path):
     live, _ = run_news(monkeypatch, tmp_path, {})
     seen, _ = run_report(monkeypatch, tmp_path, live)
-    assert "subjective weights, not calibrated" in seen["system"] and "no single headline sets them" in seen["system"]
+    assert "subjective weights, not yet calibrated" in seen["system"] and "no single headline sets them" in seen["system"]
     feed = seen["ctx"]["news_feed"]
     assert {k for h in feed["headlines"] for k in h} == {"utc", "title", "source", "link"}   # لا درجة أهمية ولا احتمال
     html = (ROOT / "index.html").read_text(encoding="utf-8")
