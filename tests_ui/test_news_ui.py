@@ -135,7 +135,8 @@ def test_report_probabilities_are_labelled_uncalibrated(ui):
     payload = cpi_ui._payload()
     payload["ai_available"] = True
     page = ui.open(payload, {"data/ai_history.json": [rep], "news.json": news_json()})
-    page.click('button.tab[data-k="ai"]')
-    text = page.locator("#p-ai").inner_text()
-    assert "الثقة 55% · تقدير ذاتي من النموذج، غير معاير" in text
-    assert "الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة." in text
+    page.click('button.tab[data-k="gates"]')                         # التقرير القديم الموجه لـNQ: أرشيف في Market Gates
+    old = page.locator('#p-gates .gate-pane[data-g="nq"]')
+    assert "الثقة 55% · تقدير ذاتي من النموذج، غير معاير" in old.locator(".legacy-bias").inner_text()
+    old.locator(".legacy-archive summary").click()
+    assert "الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة." in old.locator(".legacy-archive").inner_text()

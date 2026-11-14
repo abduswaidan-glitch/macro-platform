@@ -1,19 +1,21 @@
 """عمر تقرير Claude في الصفحة: وقت كتابته بتوقيت نيويورك، وتحذير صريح إن تأخر تقرير يوم التداول أو فشل.
 ساعة المتصفح مثبّتة (Playwright clock) فلا تعتمد النتيجة على وقت تشغيل الاختبار."""
 import importlib.util
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "tests"))
+from _report import body  # noqa: E402
 _spec = importlib.util.spec_from_file_location("cpi_ui_case", ROOT / "tests_ui" / "test_cpi_ui.py")
 cpi_ui = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(cpi_ui)
 
 
 def rep(ny_date, completed):
-    return {"title": "عنوان تقرير", "summary": ["s"], "bias": {"direction": "neutral", "confidence": 50, "reason": "r"},
-            "scenarios": [{"label": x, "name": x, "prob": p, "trigger": "", "reason": ""}
-                          for x, p in (("A", 50), ("B", 30), ("C", 20))], "one_liner": "o",
+    b = body()                                          # تقرير اقتصادي بالصيغة 2: وحده يُعرض في تبويب التقرير
+    return {**b, "title": "عنوان تقرير", "scenarios": b["economy"]["scenarios"],
             "meta": {"ny_date": ny_date, "model": "m", "written_at": completed, "completed_at": completed}}
 
 

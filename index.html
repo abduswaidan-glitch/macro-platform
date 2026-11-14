@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="description" content="الاقتصاد الكلي الأمريكي: النمو والتوظيف والتضخم والفائدة وبوابات NQ | US Macro Desk">
+<meta name="description" content="الاقتصاد الكلي الأمريكي: النمو والتوظيف والتضخم والفائدة وبوابات السوق | US Macro Desk">
 <title>الاقتصاد الكلي الأمريكي</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%232F6FDB'/><polyline points='22,68 40,50 54,60 78,32' fill='none' stroke='%23CFE0FF' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,6 +185,10 @@ footer a{color:inherit}
 .learn dd{margin:0}
 .chapter{margin-top:10px}
 @media (max-width:700px){.learn dl{grid-template-columns:1fr}.learn dt{margin-top:6px}}
+.verdicts{margin:8px 0;padding-inline-start:18px;font-size:14px}
+.verdicts li{margin:4px 0}
+.legacy-bias{margin-top:10px}
+.legacy-archive{margin-top:14px}
 .late-tag{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:6px;padding:2px 8px}
 .eco h3{margin-top:18px}
 .exec .dir{font-size:13px;margin-inline-start:8px}
@@ -406,7 +410,7 @@ const LEGACY_TABS = {"cat-housing": "cat-growth", "cat-rates": "cat-fed_rates", 
 const OFF_NAV = ["method"];
 const norm = k => String(k).startsWith("learn-") ? "learn" : (LEGACY_TABS[k] || k);
 function setupTabs(data) {
-  const tabs = [["overview", "الملخص"], ["ai", 'التقرير الاقتصادي <span class="ai-badge">AI</span>', true], ["news", "الأخبار"]];
+  const tabs = [["overview", "الرئيسية"], ["ai", 'التقرير الاقتصادي <span class="ai-badge">AI</span>', true], ["news", "الأخبار"]];
   data.categories.forEach(c => { if (data.indicators.some(i => i.category === c.key && !i.internal_only)) tabs.push(["cat-" + c.key, esc(c.ar)]); });
   tabs.push(["gates", "Market Gates"], ["learn", "التعليم"]);
   $("#tabs").innerHTML = tabs.map(([k, label, ai]) =>
@@ -468,23 +472,19 @@ function cardsHtml(list) {
 }
 
 /* ---------- الملخص ---------- */
+/* الرئيسية: قراءة الاقتصاد فقط. انعكاسها على المؤشرات في Market Gates وحده */
+const NO_ECO = "لا تقرير اقتصادي بالصيغة الجديدة بعد: أول تقرير يُكتب في يوم التداول التالي عند 09:00 بتوقيت نيويورك.";
 function reportCard(r) {
-  if (!r) return `<div class="box rep-card"><h4>التقرير الاقتصادي</h4><p class="muted">لا تقرير بعد.</p></div>`;
+  if (!r) return `<div class="box rep-card"><h4>التقرير الاقتصادي</h4><p class="muted">${NO_ECO}</p></div>`;
   const m = r.meta || {}, e = r.economy || {}, x = e.executive || {};
   const d = DIR[x.direction];
-  const g = ((r.market_translation || {}).gates) || {};
-  const imp = ["nq", "spx", "dow"].map(k => {
-    const v = g[k] && g[k].impact, ok = Number.isInteger(v) && v >= -2 && v <= 2, im = ok ? IMPACT[String(v)] : null;
-    return `<span>${GATE_AR[k]}: <b class="${im ? "tone-" + im[1] : "muted"}">${im ? im[0] : "غير متاح"}</b></span>`;
-  }).join("");
   return `<div class="box rep-card"><h4>آخر تقرير اقتصادي ${d ? `<span class="dir tone-${d[1]}">${d[0]}</span>` : ""}</h4>
-    <p><b>${esc(r.title)}</b></p>${e.bottom_line || r.one_liner ? `<p>${esc(e.bottom_line || r.one_liner)}</p>` : ""}
-    <div class="meta">${reportTimeLabel(r)}${m.delayed ? " · تقرير متأخر" : ""} · <a href="#ai">التقرير كاملاً</a></div>
-    ${r.economy ? `<div class="imp">${imp} · <a href="#gates">Market Gates</a></div>` : ""}</div>`;
+    <p><b>${esc(r.title)}</b></p>${e.bottom_line ? `<p>${esc(e.bottom_line)}</p>` : ""}
+    <div class="meta">${reportTimeLabel(r)}${m.delayed ? " · تقرير متأخر" : ""} · <a href="#ai">التقرير كاملاً</a></div></div>`;
 }
 function renderOverview(data, hist) {
   const p = $("#p-overview");
-  p.innerHTML = `<div class="sec-head"><h2>الملخص</h2><p>آخر قراءة اقتصادية وإشارات الدورة في صفحة واحدة. كل رقم بتاريخه؛ البيانات الشهرية تصدر متأخرة.</p></div>
+  p.innerHTML = `<div class="sec-head"><h2>الرئيسية</h2><p>آخر قراءة للاقتصاد الأمريكي وإشارات الدورة في صفحة واحدة. كل رقم بتاريخه؛ البيانات الشهرية تصدر متأخرة.</p></div>
     ${reportCard((hist || [])[0])}
     <h3>إشارات الدورة الاقتصادية</h3>
     <div class="cards">${cardsHtml(data.signals)}</div>
@@ -738,31 +738,52 @@ function gateHtml(k, mt, led, S) {
     <p class="muted"><b>ما يقلب الحكم:</b> ${tx(v.would_flip)} · <b>الأفق:</b> ${tx(v.horizon)}</p>
     ${k === "nq" ? translationHtml(mt, led, S) : ""}</div>`;
 }
-/* Market Gates: ترجمة سوقية من آخر تقرير بالصيغة 2، وتحت NQ بوابات المنصة الحتمية وقياس الترجمة فقط */
+function legacyBias(r) {
+  const b = BIAS[r.bias?.direction] || ["—", "neutral"];
+  return `<div class="box legacy-bias"><h4>انحياز NQ في آخر تقرير بالصيغة القديمة <bdi>(${esc(r.meta?.ny_date)})</bdi></h4>
+    <div class="bias tone-${b[1]}">${b[0]}</div><div class="conf"><i style="width:${Math.max(0, Math.min(100, +r.bias?.confidence || 0))}%"></i></div>
+    <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p>
+    ${r.gates_read ? `<h5>قراءة البوابات</h5><p>${esc(r.gates_read)}</p>` : ""}</div>`;
+}
+function legacyArchive(legacy, data) {
+  if (!legacy.length) return "";
+  return `<details class="about legacy-archive"><summary>أرشيف التقارير السابقة الموجهة لـNQ (الصيغة القديمة، ${legacy.length})</summary><div class="body">
+    <p class="muted">كُتبت قبل 16 نوفمبر 2026 بتعليمات قديمة موجهة لمتداول NQ. التقرير الاقتصادي الجديد في تبويبه.</p>
+    <label class="picker">التقرير: <select class="legacy-pick">${legacy.map((h, k) => `<option value="${k}">${esc(h.meta?.ny_date)}</option>`).join("")}</select></label>
+    <div class="legacy-body"></div></div></details>`;
+}
+/* Market Gates: انعكاس التقييم الاقتصادي على كل مؤشر (من آخر تقرير اقتصادي). تحت NQ: حدود المنصة الحتمية كأحكام
+   (لا تكرار لأرقام الرئيسية)، وقيادة NQ مقابل ES، وقياس الترجمة، وأرشيف التقارير القديمة الموجهة لـNQ */
 const GATE_TABS = [["nq", "NQ"], ["spx", "S&P 500"], ["dow", "Dow"]];
-function renderGates(hist, data) {
-  const p = $("#p-gates"), r = (hist || [])[0], v2 = !!(r && r.economy), mt = v2 ? r.market_translation : null;
+function renderGates(eco, legacy, data) {
+  const p = $("#p-gates"), r = (eco || [])[0], mt = r ? r.market_translation : null, old = (legacy || [])[0];
   const led = r ? ledgerOf(data, r.meta?.ny_date) : null, S = ((data || {}).ledger || {}).summary;
-  const src = !v2 ? '<p class="muted gates-na">لا ترجمة سوقية في آخر تقرير.</p>'
+  const src = !r ? '<p class="muted gates-na">لا ترجمة سوقية بعد: تبدأ مع أول تقرير اقتصادي بالصيغة الجديدة.</p>'
     : !mt || typeof mt !== "object" ? '<p class="muted gates-na">بوابات السوق غير متاحة اليوم.</p>' : "";
   const want = store.get("macro-gate");
   const cur = GATE_TABS.some(t => t[0] === want) ? want : "nq";
-  p.innerHTML = `<div class="sec-head"><h2>Market Gates</h2><p>كيف يُترجَم التقييم الاقتصادي نفسه إلى Nasdaq-100 وS&amp;P 500 وDow${v2 ? ` (من تقرير <bdi>${esc(r.meta?.ny_date)}</bdi>)` : ""}. لا Entry ولا Stop ولا Target ولا توصية شراء أو بيع.</p></div>
+  const limits = (data.gates || []).filter(g => g.key !== "leadership"), lead = (data.gates || []).filter(g => g.key === "leadership");
+  p.innerHTML = `<div class="sec-head"><h2>Market Gates</h2><p>انعكاس التقييم الاقتصادي على Nasdaq-100 وS&amp;P 500 وDow${r ? ` (من تقرير <bdi>${esc(r.meta?.ny_date)}</bdi>)` : ""}. لا Entry ولا Stop ولا Target ولا توصية شراء أو بيع.</p></div>
     ${src}
     <div class="subtabs" role="tablist">${GATE_TABS.map(([k, l]) => `<button class="subtab" type="button" role="tab" data-g="${k}" aria-selected="${k === cur}">${l}</button>`).join("")}</div>
     ${GATE_TABS.map(([k]) => `<div class="gate-pane" data-g="${k}"${k === cur ? "" : " hidden"}>
-      ${v2 && mt && typeof mt === "object" ? gateHtml(k, mt, led, S) : ""}
-      ${k === "nq" ? `<h3>بوابات NQ من بيانات المنصة</h3>
-        <details class="about"><summary>كيف أقرأ البوابات؟</summary><div class="body">
-        <p>العائد 10Y فوق الحد الحرج يضغط على تقييمات أسهم النمو، وVIX يحدد نوع اليوم (Mean reversion تحت ${esc(data.config.gates.vix_calm)}، وتوسّع تذبذب فوق ${esc(data.config.gates.vix_stress)}). تُعدَّل الحدود من <code>config.json</code>.</p>
+      ${r && mt && typeof mt === "object" ? gateHtml(k, mt, led, S) : k === "nq" && old ? legacyBias(old) : ""}
+      ${k === "nq" ? `<h3>حدود NQ من بيانات المنصة</h3>
+        <details class="about"><summary>ما هذه الحدود؟</summary><div class="body">
+        <p>أحكام حتمية على حدود ثابتة في <code>config.json</code>: العائد 10Y مقابل الحد الحرج، وVIX (Mean reversion تحت ${esc(data.config.gates.vix_calm)}، وتوسّع تذبذب فوق ${esc(data.config.gates.vix_stress)})، والعائد الحقيقي، وتسعير الفيدرالي، والائتمان. القيم نفسها في الرئيسية وتبويبات البيانات؛ هنا الحكم بالنسبة لـNQ فقط.</p>
         <p>قيادة NQ مقابل ES هي تغير نسبة Nasdaq 100 إلى S&amp;P 500 خلال 20 يوم تداول (رقم مشتق؛ مستويات المؤشرين لا تُنشر لأسباب الترخيص).</p></div></details>
-        <div class="cards">${cardsHtml(data.gates)}</div>` : ""}
+        <ul class="verdicts">${limits.map(g => `<li><b>${esc(g.title)}:</b> <span class="tone-${esc(g.tone)}">${esc(g.detail)}</span></li>`).join("")}</ul>
+        ${lead.length ? `<div class="cards">${cardsHtml(lead)}</div>` : ""}
+        ${legacyArchive(legacy || [], data)}` : ""}
     </div>`).join("")}`;
   p.querySelectorAll(".subtab").forEach(b => b.onclick = () => {
     store.set("macro-gate", b.dataset.g);
     p.querySelectorAll(".subtab").forEach(x => x.setAttribute("aria-selected", x === b));
     p.querySelectorAll(".gate-pane").forEach(x => x.hidden = x.dataset.g !== b.dataset.g);
   });
+  const pick = p.querySelector(".legacy-pick"), body = p.querySelector(".legacy-body");
+  const showOld = k => { const o = legacy[k]; body.innerHTML = `<div class="ai-title">${esc(o.title)}</div><div class="ai-meta">${reportTimeLabel(o)}</div>` + legacyHtml(o, data, ledgerOf(data, o.meta?.ny_date)); };
+  if (pick) { pick.onchange = () => showOld(+pick.value); showOld(0); }
 }
 function legacyHtml(r, data, led) {
   const b = BIAS[r.bias?.direction] || ["—", "neutral"], unsc = led && led.scenario_check && led.scenario_check.unscorable;
@@ -790,21 +811,21 @@ function legacyHtml(r, data, led) {
 }
 function renderAI(hist, data) {
   const p = $("#p-ai");
-  const intro = `<div class="sec-head"><h2>التقرير الاقتصادي</h2><p>قراءة يومية يكتبها Claude من بيانات المنصة وأخبار اليوم: تقييم اقتصادي أولاً (النمو، والتضخم، وسوق العمل، والفيدرالي، والأوضاع المالية) وثلاثة سيناريوهات قابلة للقياس، ثم ترجمة سوقية قصيرة لـNasdaq-100 وS&amp;P 500 وDow.</p></div>
+  const intro = `<div class="sec-head"><h2>التقرير الاقتصادي</h2><p>يقرأ النموذج كل أقسام المنصة (النمو، والتضخم، وسوق العمل، والفيدرالي والفائدة، والأوضاع المالية) مع أخبار اليوم وتقويمه، ويكتب تقييماً لحالة الاقتصاد الأمريكي وثلاثة سيناريوهات باحتمالاتها. انعكاس هذا التقييم على المؤشرات في قسم <a href="#gates">Market Gates</a>، لا هنا.</p></div>
     <details class="about"><summary>متى يُكتب وما قواعده؟</summary><div class="body">
     <p>مرة واحدة كل يوم تداول عند 09:00 بتوقيت نيويورك. إن فشل توليده فشلاً تقنياً يُعاد مرة واحدة عند 12:00، ولا محاولة بعد ذلك إلا يدوياً. التقرير الذي يكتمل بعد افتتاح 9:30 يُوسم «متأخر» ويُقاس منفصلاً. الأرقام من بيانات المنصة نفسها، وما صدر صباحاً ولم يصل إليها يُؤخذ من الإصدار الرسمي برابطه. النموذج ممنوع من اختراع الأرقام ومن توصيات الشراء والبيع. تعليماته الدائمة في <code>prompts/analyst.md</code> وتُعدَّل من GitHub. نحتفظ بآخر 14 تقريراً.</p></div></details>`;
   if (!hist || !hist.length) {
-    p.innerHTML = intro + reportWarnings(hist, data) + `<p class="empty">لا يوجد تقرير بعد. يُكتب أول تقرير في يوم التداول التالي عند 09:00 بتوقيت نيويورك، أو بتشغيل الـworkflow يدوياً مع <code>report_attempt=manual</code>.</p>`;
+    p.innerHTML = intro + reportWarnings(hist, data) + `<p class="empty no-eco">${NO_ECO} التقارير السابقة بالصيغة القديمة نُقلت أرشيفاً إلى <a href="#gates">Market Gates</a>.</p>`;
     return;
   }
   const view = idx => {
-    const r = hist[idx], led = ledgerOf(data, r.meta?.ny_date), v2 = !!(r.economy && typeof r.economy === "object");
+    const r = hist[idx], led = ledgerOf(data, r.meta?.ny_date);
     const warn = arr(r.warnings);
     p.innerHTML = intro + reportWarnings(hist, data) + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
         <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div>${lateTag(r)}</div>
         ${hist.length > 1 ? `<label class="picker">تقارير سابقة: <select id="aiPick">${hist.map((h, k) =>
           `<option value="${k}"${k === idx ? " selected" : ""}>${esc(h.meta?.ny_date)}</option>`).join("")}</select></label>` : ""}</div>
-      ${v2 ? economyHtml(r, data, led) + '<p class="muted gates-link">الترجمة السوقية (NQ وS&amp;P وDow) في قسم <a href="#gates">Market Gates</a>.</p>' : legacyHtml(r, data, led)}
+      ${economyHtml(r, data, led)}<p class="muted gates-link">انعكاس هذا التقييم على المؤشرات في قسم <a href="#gates">Market Gates</a>.</p>
       ${arr(r.events).length ? `<div class="box events"><h4>الأحداث المؤثرة</h4><ul>${r.events.map(e =>
           `<li>${esc(e.date || "")} <a href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.title)}</a></li>`).join("")}</ul></div>` : ""}
       ${warn.length ? `<details class="about checks"><summary>ملاحظات التحقق الآلي (${warn.length})</summary><div class="body"><ul>${warn.map(w => `<li><bdi>${esc(w)}</bdi></li>`).join("")}</ul></div></details>` : ""}
@@ -968,12 +989,15 @@ async function getJSON(f) {
     APP.data = data;
     renderHeader(data);
     renderAlerts();
-    renderAI(hist, data);
-    renderOverview(data, hist);
+    // التقرير الاقتصادي (الصيغة 2) وحده في تبويب التقرير والرئيسية؛ القديم الموجه لـNQ أرشيف في Market Gates
+    const isEco = r => !!(r && r.economy && typeof r.economy === "object");
+    const eco = hist.filter(isEco), legacy = hist.filter(r => r && !isEco(r));
+    renderAI(eco, data);
+    renderOverview(data, eco);
     renderNewsPanel();
     loadNews();
     renderCategories(data);
-    renderGates(hist, data);
+    renderGates(eco, legacy, data);
     getJSON("content/learn.json").then(renderLearn, () => renderLearn(null));
     renderMethod(data);
     setupTabs(data);

@@ -95,6 +95,18 @@ def test_old_links_and_the_saved_tab_go_to_the_new_places(ui):
     assert page.locator("#p-cat-growth").is_visible()
 
 
+def test_the_home_tab_is_called_home_and_is_about_the_economy_only(ui):
+    page = open_page(ui, healthy(), hist=[eco.report()])
+    assert page.locator('#tabs .tab[data-k="overview"]').inner_text() == "الرئيسية"
+    page.click('button.tab[data-k="overview"]')
+    home = page.locator("#p-overview").inner_text()
+    assert home.startswith("الرئيسية") and "الملخص" not in home
+    assert not any(x in home for x in ("NQ", "Nasdaq", "S&P", "Dow"))           # الانعكاس على المؤشرات في Market Gates وحده
+    page.click('button.tab[data-k="ai"]')
+    rep_tab = page.locator("#p-ai").inner_text()
+    assert not any(x in rep_tab for x in ("NQ", "Nasdaq", "S&P", "Dow")), rep_tab[:300]
+
+
 def test_housing_indicators_live_in_growth_and_fed_rates_and_indices_have_no_tab(ui):
     page = open_page(ui, healthy())
     page.click('button.tab[data-k="cat-growth"]')
@@ -127,12 +139,16 @@ def test_no_horizontal_scroll_on_a_phone(ui):
 # ---------------------------------------------------------------- Market Gates
 def test_market_gates_have_three_sub_tabs_and_the_translation_check_only_under_nq(ui):
     page = open_page(ui, healthy(), hist=[eco.report()])
-    assert page.locator("#p-ai .gate").count() == 0 and page.locator('#p-ai a[href="#gates"]').count() == 1
+    assert page.locator("#p-ai .gate").count() == 0 and page.locator('#p-ai a[href="#gates"]').count() >= 1
     page.click('button.tab[data-k="gates"]')
     g = page.locator("#p-gates")
     assert g.locator(".subtab").all_inner_texts() == ["NQ", "S&P 500", "Dow"]
     assert g.locator('.gate-pane[data-g="nq"] .trans').is_visible() and g.locator(".trans").count() == 1
-    assert "بوابات NQ من بيانات المنصة" in g.inner_text() and g.locator('.gate-pane[data-g="nq"] .cards .card').count() > 0
+    assert "حدود NQ من بيانات المنصة" in g.inner_text()
+    # لا تكرار لأرقام الرئيسية: الحدود أحكام نصية، والبطاقة الوحيدة قيادة NQ مقابل ES (رقم مشتق خاص بالسوق)
+    nq = g.locator('.gate-pane[data-g="nq"]')
+    assert nq.locator(".cards .card").count() == 1 and "قيادة NQ مقابل ES" in nq.locator(".cards .card").inner_text()
+    assert nq.locator(".verdicts li").count() == len([x for x in healthy()["gates"] if x["key"] != "leadership"])
     g.locator('.subtab[data-g="spx"]').click()
     assert g.locator('.gate-pane[data-g="spx"] .impact').inner_text() == "متوازن (0)"
     assert not g.locator('.gate-pane[data-g="nq"]').is_visible()
@@ -144,8 +160,8 @@ def test_gates_say_unavailable_without_a_new_style_report(ui):
     old = {"title": "قديم", "summary": ["s"], "scenarios": [], "one_liner": "o", "meta": {"ny_date": "2026-11-13"}}
     page = open_page(ui, healthy(), hist=[old])
     page.click('button.tab[data-k="gates"]')
-    assert "لا ترجمة سوقية في آخر تقرير." in page.locator("#p-gates").inner_text()
-    assert page.locator('#p-gates .gate-pane[data-g="nq"] .cards .card').count() > 0     # بوابات المنصة باقية
+    assert "لا ترجمة سوقية بعد: تبدأ مع أول تقرير اقتصادي بالصيغة الجديدة." in page.locator("#p-gates").inner_text()
+    assert page.locator('#p-gates .gate-pane[data-g="nq"] .verdicts li').count() > 0     # حدود المنصة باقية
 
 
 # ---------------------------------------------------------------- alerts: only when there is a problem
