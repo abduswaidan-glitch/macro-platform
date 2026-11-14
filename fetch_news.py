@@ -23,7 +23,7 @@ from macro_platform.build import load_config
 
 ROOT = Path(__file__).resolve().parent
 LIVE = "https://abduswaidan-glitch.github.io/macro-platform/news.json"
-SITE_FILES = ["index.html", "data.json", ".nojekyll", "data/ai_history.json"]
+SITE_FILES = ["index.html", "data.json", ".nojekyll", "data/ai_history.json", "content/learn.json"]   # التعليم: محتوى ثابت
 
 
 def log(*a):

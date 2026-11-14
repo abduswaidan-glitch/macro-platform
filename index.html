@@ -176,6 +176,15 @@ td .yoy-na{white-space:normal;min-width:14em}  /* سبب غياب التغير �
 .rep-card .meta{font-size:12.5px;color:var(--muted)}
 .rep-card .imp{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:13.5px}
 footer a{color:inherit}
+.learn-link{margin-inline-start:6px;font-size:12px;text-decoration:none;color:var(--muted)}
+.learn-link:hover{color:var(--acc)}
+.learn{margin-top:8px;padding:10px 14px}
+.learn summary{cursor:pointer}
+.learn dl{margin:8px 0 0;display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:4px 12px;font-size:14px}
+.learn dt{color:var(--muted);font-weight:600}
+.learn dd{margin:0}
+.chapter{margin-top:10px}
+@media (max-width:700px){.learn dl{grid-template-columns:1fr}.learn dt{margin-top:6px}}
 .late-tag{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:6px;padding:2px 8px}
 .eco h3{margin-top:18px}
 .exec .dir{font-size:13px;margin-inline-start:8px}
@@ -261,6 +270,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
   <section class="panel" id="p-news" hidden></section>
   <div id="catPanels"></div>
   <section class="panel" id="p-gates" hidden></section>
+  <section class="panel" id="p-learn" hidden></section>
   <section class="panel" id="p-method" hidden></section>
 </main>
 
@@ -394,26 +404,30 @@ function chartCard(id, title, sub, points, opts = {}) {
    الروابط والتبويب المحفوظ القديم تُحوَّل: الإسكان صار في النمو والفيدرالي، والأسواق في Market Gates */
 const LEGACY_TABS = {"cat-housing": "cat-growth", "cat-rates": "cat-fed_rates", "cat-money": "cat-financial", "cat-markets": "gates"};
 const OFF_NAV = ["method"];
+const norm = k => String(k).startsWith("learn-") ? "learn" : (LEGACY_TABS[k] || k);
 function setupTabs(data) {
   const tabs = [["overview", "الملخص"], ["ai", 'التقرير الاقتصادي <span class="ai-badge">AI</span>', true], ["news", "الأخبار"]];
   data.categories.forEach(c => { if (data.indicators.some(i => i.category === c.key && !i.internal_only)) tabs.push(["cat-" + c.key, esc(c.ar)]); });
-  tabs.push(["gates", "Market Gates"]);
+  tabs.push(["gates", "Market Gates"], ["learn", "التعليم"]);
   $("#tabs").innerHTML = tabs.map(([k, label, ai]) =>
     `<button class="tab${ai ? " tab-ai" : ""}" role="tab" data-k="${k}" aria-selected="false">${label}</button>`).join("");
-  const show = k => {
+  /* raw: الرابط كما جاء؛ #learn-PAYEMS يفتح التعليم ويذهب إلى مدخل المؤشر */
+  const show = (k, raw) => {
     document.querySelectorAll(".panel").forEach(p => p.hidden = p.id !== "p-" + k);
     document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.k === k));
     store.set("macro-tab", k);
-    if (location.hash !== "#" + k) history.replaceState(null, "", "#" + k);
+    const h = raw && norm(raw) === k ? raw : k;
+    if (location.hash !== "#" + h) history.replaceState(null, "", "#" + h);
     redraw();
+    if (h !== k) openLearn(h);
   };
   $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.k); };
-  const norm = k => LEGACY_TABS[k] || k, known = k => tabs.some(t => t[0] === k) || OFF_NAV.includes(k);
-  const want = norm((location.hash || "").slice(1) || store.get("macro-tab") || "overview");
-  show(known(want) ? want : "overview");
+  const known = k => tabs.some(t => t[0] === k) || OFF_NAV.includes(k);
+  const raw = (location.hash || "").slice(1) || store.get("macro-tab") || "overview", want = norm(raw);
+  show(known(want) ? want : "overview", raw);
   window.addEventListener("hashchange", () => {
-    const k = norm(location.hash.slice(1));
-    if (known(k)) show(k);
+    const r = location.hash.slice(1), k = norm(r);
+    if (known(k)) show(k, r);
   });
 }
 function redraw() {
@@ -442,7 +456,7 @@ function renderHeader(data) {
   if (data.demo) $("#demoFlag").style.display = "block";
   $("#kpis").innerHTML = data.kpis.map(k => {
     const tone = chgTone(k.change, k.good_up);
-    return `<div class="kpi"><span>${esc(k.label)}</span><b class="num">${esc(fmt(k.value, k.unit))}</b>
+    return `<div class="kpi"><span>${esc(k.label)}${learnLink(k.id, k.label)}</span><b class="num">${esc(fmt(k.value, k.unit))}</b>
       <small class="num tone-${tone}">${arrow(k.change)} ${esc(fmt(Math.abs(k.change ?? 0)))}</small> <small>· ${esc(k.as_of)}</small>${k.unavailable ? ` <small class="tone-warn yoy-na" title="${esc(k.unavailable.reason)}">· ${esc(k.unavailable.label)}: غير متاح</small>` : ""}</div>`;
   }).join("");
 }
@@ -555,7 +569,7 @@ function renderCategories(data) {
       <p>اضغط على أي صف لعرض رسمه البياني. Z (5y) يقيس بُعد القيمة عن متوسط 5 سنوات بالانحرافات المعيارية، والمئوي نسبة القيم التاريخية الأدنى منها.</p></div>
       <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>المؤشر</th><th>آخر قيمة</th><th>التغير</th><th>Z (5y)</th><th>المئوي (5y)</th><th>التاريخ</th></tr></thead>
       <tbody>${inds.map(i => i.points ? `<tr data-id="${esc(i.id)}" aria-selected="false">
-        <td><span class="dot ${esc(i.state)}" title="${esc((i.issues || []).join("؛ ") || "سليم")}"></span>${esc(i.name_ar)}<span class="en">${esc(i.name_en)} · ${esc(i.id)}</span></td>
+        <td><span class="dot ${esc(i.state)}" title="${esc((i.issues || []).join("؛ ") || "سليم")}"></span>${esc(i.name_ar)}${learnLink(i.id, i.name_ar)}<span class="en">${esc(i.name_en)} · ${esc(i.id)}</span></td>
         <td class="num">${esc(fmt(i.last, i.unit))}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl" title="${esc(i.unavailable.reason)}">${esc(i.unavailable.label)}: غير متاح</span>` : ""}${momTxt(i.momentum)}${revTxt(i.revisions)}</td>
         <td class="num tone-${chgTone(i.change, i.good_up)}">${arrow(i.change)} ${esc(fmt(Math.abs(i.change ?? 0)))}</td>
         <td class="num">${i.z5 === null ? "—" : (i.z5 > 0 ? "+" : "") + i.z5.toFixed(1) + "σ"}</td>
@@ -801,6 +815,34 @@ function renderAI(hist, data) {
   view(0);
 }
 
+/* ---------- التعليم: محتوى ثابت (content/learn.json)، لا يكتبه نموذج يومياً ---------- */
+const learnLink = (id, name) => `<a class="learn-link" href="#learn-${esc(id)}" title="شرح المؤشر" aria-label="شرح ${esc(name)}">ⓘ</a>`;
+const LEARN_SEC = {growth: "النمو", inflation: "التضخم", labor: "سوق العمل", fed_rates: "الفيدرالي والفائدة", financial: "الأوضاع المالية", gates: "Market Gates"};
+const LEARN_KEYS = ["what", "measures", "why", "rise", "fall", "compare", "timing", "relation", "mistakes", "example"];
+function openLearn(h) {
+  const el = document.getElementById(h);
+  if (!el) return;
+  if (el.tagName === "DETAILS") el.open = true;
+  el.scrollIntoView({block: "start"});
+}
+function renderLearn(L) {
+  const p = $("#p-learn");
+  const head = `<div class="sec-head"><h2>التعليم</h2><p>شرح ثابت لكل مؤشر في المنصة ولطريقة عملها وقياسها. لا يكتبه نموذج يومياً، ولا يتغير إلا بتعديل مراجَع.</p></div>`;
+  if (!L || !Array.isArray(L.entries)) { p.innerHTML = head + '<p class="empty">تعذّر تحميل المحتوى التعليمي.</p>'; return; }
+  const f = L.fields || {};
+  const entry = e => `<details class="box learn${e.status === "concept_only" ? " concept" : ""}" id="learn-${esc(e.id)}">
+    <summary><b>${esc(e.title)}</b> <span class="en">${esc(e.id)}</span>${e.status === "concept_only" ? ` <span class="pill tone-warn concept-label">${esc(e.label || L.label_concept_only)}</span>` : ""}</summary>
+    <dl>${LEARN_KEYS.map(k => `<dt>${esc(f[k] || k)}</dt><dd>${esc(e[k])}</dd>`).join("")}</dl></details>`;
+  p.innerHTML = head + arr(L.chapters).map(c => `<details class="about chapter" id="learn-ch-${esc(c.id)}"><summary>${esc(c.title)}</summary>
+      <div class="body">${arr(c.body).map(x => `<p>${esc(x)}</p>`).join("")}</div></details>`).join("")
+    + Object.entries(LEARN_SEC).map(([sec, name]) => {
+      const es = L.entries.filter(e => e && e.section === sec);
+      return es.length ? `<h3>${name}</h3>${es.map(entry).join("")}` : "";
+    }).join("");
+  const h = location.hash.slice(1);
+  if (h.startsWith("learn-") && !p.hidden) openLearn(h);
+}
+
 /* ---------- methodology ---------- */
 function renderMethod(data) {
   $("#p-method").innerHTML = `<div class="sec-head"><h2>المنهجية وحالة البيانات</h2><p>من أين تأتي الأرقام، وكيف تُفحص قبل النشر، وحالة كل مصدر الآن.</p></div>
@@ -932,6 +974,7 @@ async function getJSON(f) {
     loadNews();
     renderCategories(data);
     renderGates(hist, data);
+    getJSON("content/learn.json").then(renderLearn, () => renderLearn(null));
     renderMethod(data);
     setupTabs(data);
   } catch (e) {
