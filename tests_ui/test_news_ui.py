@@ -50,7 +50,7 @@ def news_json(items_ok=None, cal_ok=None, calendar=None, errors=()):
 
 def overview(ui, nj, wait="#calBox .news-meta"):
     page = ui.open(cpi_ui._payload(), {"news.json": nj} if nj is not None else None)
-    page.click('button.tab[data-k="overview"]')
+    page.click('button.tab[data-k="news"]')                          # الأخبار والتقويم في تبويبهما (PR 4)
     page.wait_for_selector("#newsBox .news, #newsBox .empty")
     page.wait_for_selector(wait)
     return page

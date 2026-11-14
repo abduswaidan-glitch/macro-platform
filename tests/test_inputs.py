@@ -186,7 +186,8 @@ def test_changes_list_every_kind_without_thresholds():
 def test_snapshot_is_numbers_and_dates_only():
     payload = build_payload(demo_series(start="2020-01-01", end="2026-06-30"), {}, load_config("config.json"), now=NOW)
     s = changes.snapshot(payload)
-    assert set(s) == {i["id"] for i in payload["indicators"] if "last" in i} | {i["id"] for i in payload["indicators"]}
+    # مؤشرا الأسهم (ترخيص S&P DJI وNasdaq) لا يدخلان اللقطة العامة في ai_history.json
+    assert set(s) == {i["id"] for i in payload["indicators"]} - {"NASDAQ100", "SP500"}
     assert all(set(v) == {"last", "as_of", "source_as_of", "state", "pct5"} for v in s.values())
 
 

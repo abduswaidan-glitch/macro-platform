@@ -48,7 +48,7 @@ def test_the_economy_report_reads_as_one_flow_before_the_market_gates(ui):
     t = ai.inner_text()
     order = ["الخلاصة التنفيذية", "النظام الاقتصادي: تباطؤ معتدل", "المحرك المهيمن", "التعارضات الرئيسية",
              "ما الذي تغيّر منذ التقرير السابق", "النمو", "التضخم", "سوق العمل", "الفيدرالي والفائدة", "الأوضاع المالية",
-             "الأخبار وأثرها", "عدم اليقين في البيانات", "السيناريوهات A وB وC", "القناعة", "الخلاصة", "بوابات السوق"]
+             "الأخبار وأثرها", "عدم اليقين في البيانات", "السيناريوهات A وB وC", "القناعة", "الخلاصة", "Market Gates"]
     at = t.index("الخلاصة التنفيذية")                       # بعد المقدمة: كل عنوان بعد سابقه
     for x in order:
         at = t.index(x, at)                                  # ValueError إن جاء قبل سابقه أو غاب
@@ -58,25 +58,37 @@ def test_the_economy_report_reads_as_one_flow_before_the_market_gates(ui):
     assert ai.locator(".sc", has_text="سيناريو A").locator(".chk").inner_text().startswith("شرط القياس: DGS10")
 
 
+def gates_panel(ai):
+    """البوابات في قسم Market Gates (PR 4)، كل بوابة في تبويب فرعي."""
+    pg = ai.page
+    pg.click('button.tab[data-k="gates"]')
+    g = pg.locator("#p-gates")
+    for k in ("nq", "spx", "dow"):                                   # إظهار الثلاثة للفحص
+        g.evaluate(f"el => el.querySelector('.gate-pane[data-g=\"{k}\"]').hidden = false")
+    return g
+
+
 def test_gates_use_the_minus_two_to_plus_two_words_and_show_text_as_written(ui):
     b = body(gates={"nq": gate(-1), "spx": gate(0), "dow": gate(3, matters_now="الأثر مماثل إلى حد كبير لـS&P 500")})
-    ai = page(ui, [report(b)])
+    ai = gates_panel(page(ui, [report(b)]))
     assert ai.locator('[data-g="nq"] .impact').inner_text() == "سلبي (-1)"
     assert ai.locator('[data-g="nq"] .impact bdi').get_attribute("dir") == "ltr"     # لا يُعرض (1-) في سياق RTL
     assert ai.locator('[data-g="spx"] .impact').inner_text() == "متوازن (0)"
     assert ai.locator('[data-g="dow"] .impact').inner_text() == "غير صالح"          # 3 خارج المجال: لا يُعرض رقماً
-    assert "الأثر مماثل إلى حد كبير لـS&P 500" in ai.locator('[data-g="dow"]').inner_text()
+    assert "الأثر مماثل إلى حد كبير لـS&P 500" in ai.locator('.gate[data-g="dow"]').inner_text()
     assert "Entry" in ai.inner_text() and "توصية شراء أو بيع" in ai.inner_text()     # النفي المكتوب فقط
 
 
 def test_translation_check_appears_under_nq_only_and_says_it_is_not_the_economic_analysis(ui):
-    ai = page(ui, [report()])
+    rep_panel = page(ui, [report()])
+    led_sum = rep_panel.locator(".led-sum").inner_text()
+    ai = gates_panel(rep_panel)
     assert ai.locator(".trans").count() == 1 and ai.locator('[data-g="nq"] .trans').count() == 1
     tr = ai.locator(".trans").inner_text()
     assert "قياس الترجمة السوقية: NQ مقابل S&P 500 خلال 10 أيام" in tr
     assert "قياس للترجمة السوقية، وليس قياساً لصحة التحليل الاقتصادي." in tr
     assert "احتمال تفوق Nasdaq-100 على S&P 500: 45%" in tr and "لم يُحسم بعد" in tr
-    assert "Translation-check" in tr and "Translation-check" not in ai.locator(".led-sum").inner_text()
+    assert "Translation-check" in tr and "Translation-check" not in led_sum
 
 
 def test_missing_market_translation_and_secondary_fields_do_not_break_the_page(ui):
@@ -85,8 +97,8 @@ def test_missing_market_translation_and_secondary_fields_do_not_break_the_page(u
     del b["economy"]["regime"]
     del b["economy"]["conviction"]
     ai = page(ui, [report(b)])
-    assert "بوابات السوق غير متاحة اليوم." in ai.inner_text()
     assert ai.locator(".conv").inner_text().endswith("غير محدد") and ai.locator(".reg .na").count() == 5
+    assert "بوابات السوق غير متاحة اليوم." in gates_panel(ai).inner_text()
 
 
 def test_a_failed_09_00_attempt_says_when_it_retries(ui):
@@ -129,5 +141,7 @@ def test_model_text_is_escaped_and_bad_links_are_neutralised(ui):
     r["warnings"] = [bad]
     ai = page(ui, [r])
     assert ai.locator("img").count() == 0 and bad in ai.locator(".exec").inner_text()
+    g = gates_panel(ai)
+    assert g.locator("img").count() == 0 and bad in g.locator('[data-g="nq"] .gate').inner_text()
     assert all(h in ("#", None) for h in ai.locator(".events a").evaluate_all("as => as.map(a => a.getAttribute('href'))"))
     assert "ملاحظات التحقق الآلي (1)" in ai.inner_text()

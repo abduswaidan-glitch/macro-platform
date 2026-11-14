@@ -28,13 +28,13 @@ def open_ai(ui, hist, now, warnings=()):
 
 def test_on_time_report_shows_new_york_time_before_the_open(ui):
     ai = open_ai(ui, [rep("2026-11-16", "2026-11-16T13:46:00Z")], "2026-11-16T15:00:00")   # 10:00 EST
-    assert "كُتب 2026-11-16 08:46 بتوقيت نيويورك · قبل الافتتاح" in ai.inner_text()
+    assert "كُتب 2026-11-16 08:46 بتوقيت نيويورك (14:46 فيينا) · قبل الافتتاح" in ai.inner_text()
     assert ai.locator(".ai-late").count() == 0
 
 
 def test_report_written_after_the_open_says_how_late(ui):
     ai = open_ai(ui, [rep("2026-11-13", "2026-11-13T19:31:00Z")], "2026-11-13T20:00:00")   # 14:31 EST
-    assert "كُتب 2026-11-13 14:31 بتوقيت نيويورك · بعد الافتتاح بـ301 د" in ai.inner_text()
+    assert "كُتب 2026-11-13 14:31 بتوقيت نيويورك (20:31 فيينا) · بعد الافتتاح بـ301 د" in ai.inner_text()
 
 
 def test_missing_report_after_the_open_on_a_trading_day_is_flagged(ui):

@@ -53,6 +53,7 @@ The market translation (after the economy, derived from it):
 - S&P 500 (spx): the balance of growth, the earnings backdrop, rates, credit, financial conditions, risk appetite.
 - Dow (dow): the industrial cycle, manufacturing, cyclicals, financials (curve steepness), domestic growth, yields, the dollar. Energy has a small weight in the Dow. If there is no real macro difference from the S&P 500 today, say that the effect is largely similar to the S&P 500, and do not invent a difference.
 - nq_vs_spx_10d.prob: your probability, a whole number from 0 to 100, that the Nasdaq-100 outperforms the S&P 500 over the next 10 trading days, measured from the last close before this report (from today's close for a report written after the open). 50 means no view and is valid. The platform scores it apart from the economic scenarios; it does not measure the economic analysis.
+- Do not quote equity index levels (S&P DJI and Nasdaq data are licensed for internal use here); use relative performance and percentage moves.
 - No entries, stops, targets, or buy/sell recommendations, anywhere.
 
 Write everything in Modern Standard Arabic (فصحى), keeping technical terms in English (CPI, PCE, Fed, FOMC, yield, bp, VIX, NQ, ...).
