@@ -108,3 +108,27 @@ def test_offline_builds_publish_the_derived_numbers_without_the_indices(monkeypa
 
 def test_the_report_is_told_not_to_quote_index_levels():
     assert "Do not quote equity index levels" in ai_report.SYSTEM
+
+
+def test_offline_builds_report_the_last_real_fetch_state_not_a_false_error():
+    # أول بناء حي بعد PR 4 (14 نوفمبر 2026): المؤشران غائبان عمداً عن البناء offline فظهرا «خطأ / لا بيانات»،
+    # وظهر تنبيه «تعذّر جلب 2 من المؤشرات» في كل بناء
+    series = {k: v for k, v in demo_series(start="2018-01-01", end="2026-06-30").items() if k not in INTERNAL_IDS}
+    ok = build_payload(series, {"SP500": {"state": "ok", "issues": []}, "NASDAQ100": {"state": "ok", "issues": []}},
+                       CFG, now=NOW)
+    got = {i["id"]: i for i in ok["indicators"] if i["id"] in INTERNAL_IDS}
+    assert {k: (v["state"], v["issues"], v["internal_only"]) for k, v in got.items()} == {
+        "NASDAQ100": ("ok", [], True), "SP500": ("ok", [], True)}
+    assert not any("Nasdaq" in w or "S&P" in w for w in ok["status"]["warnings"])
+    failed = build_payload(series, {"SP500": {"state": "error", "issues": ["فشل الجلب: down"]}}, CFG, now=NOW)
+    sp = next(i for i in failed["indicators"] if i["id"] == "SP500")
+    assert sp["state"] == "error" and any("SP500" in w for w in failed["status"]["warnings"])   # فشل حقيقي يبقى ظاهراً
+
+
+def test_a_jump_warning_on_an_index_carries_no_number():
+    from macro_platform.build import validate
+    s = pd.Series([100.0 + 0.1 * k for k in range(600)] + [400.0], index=pd.bdate_range("2024-01-01", periods=601))
+    _, issues = validate(BY_ID["NASDAQ100"], s, None)
+    assert issues == ["قفزة غير معتادة في آخر قيمة"]
+    _, issues = validate(BY_ID["DGS10"], s, None)
+    assert issues[0].startswith("قفزة غير معتادة في آخر قيمة (+")                  # غير الداخلي كما كان

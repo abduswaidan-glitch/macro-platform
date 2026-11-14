@@ -88,7 +88,8 @@ def validate(ind: Indicator, new: pd.Series, old: pd.Series | None) -> tuple[boo
     if len(d) > 30:
         med = d.abs().iloc[:-1].median()
         if med > 0 and abs(d.iloc[-1]) > 12 * med:
-            issues.append(f"قفزة غير معتادة في آخر قيمة ({d.iloc[-1]:+.4g})")
+            # مؤشر داخلي (ترخيص طرف ثالث): لا رقم في الرسالة، فهي تُنشر في fetch_status.json وفي الصفحة
+            issues.append("قفزة غير معتادة في آخر قيمة" if ind.internal_only else f"قفزة غير معتادة في آخر قيمة ({d.iloc[-1]:+.4g})")
     return True, issues
 
 
@@ -320,6 +321,13 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
     for ind in INDICATORS:
         s = series.get(ind.id)
         st = dict(status.get(ind.id, {"state": "ok", "issues": []}))
+        if (s is None or s.empty) and ind.internal_only and ind.id in status:
+            # البناء offline بلا المؤشرين عمداً (لا يُحفظان): الحالة من آخر جلب حقيقي، لا «لا بيانات» في كل بناء
+            indicators.append({"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+                               "internal_only": True, "state": st.get("state", "ok"), "issues": st.get("issues") or []})
+            if st.get("issues"):
+                warnings.append(f"{ind.name_ar} ({ind.id}): {'؛ '.join(st['issues'])}")
+            continue
         if s is None or s.empty or ind.id not in snap_rows:
             indicators.append({"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en,
                                "category": ind.category, "state": "error",
