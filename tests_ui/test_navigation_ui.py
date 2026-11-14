@@ -27,7 +27,8 @@ eco = _load("eco_ui_case", ROOT / "tests_ui" / "test_economy_report_ui.py")
 CFG = load_config(ROOT / "config.json")
 WINTER = datetime(2026, 11, 16, 15, 0, tzinfo=timezone.utc)          # الاثنين 10:00 نيويورك، 16:00 فيينا
 SUMMER = datetime(2026, 7, 15, 13, 0, tzinfo=timezone.utc)           # 09:00 نيويورك (EDT)، 15:00 فيينا (CEST)
-TABS = ["overview", "ai", "news", "cat-growth", "cat-inflation", "cat-labor", "cat-fed_rates", "cat-financial", "gates"]
+TABS = ["overview", "ai", "news", "cat-growth", "cat-inflation", "cat-labor", "cat-fed_rates", "cat-financial", "gates",
+        "learn"]                                                      # التعليم: العاشر (PR 5)
 _BASE = {}
 
 
@@ -73,7 +74,7 @@ def open_page(ui, payload, nj="default", hist=None, now=WINTER, hash_=""):
 
 
 # ---------------------------------------------------------------- navigation
-def test_exactly_nine_tabs_in_order_and_methodology_only_by_link(ui):
+def test_exactly_ten_tabs_in_order_and_methodology_only_by_link(ui):
     page = open_page(ui, healthy())
     assert page.locator("#tabs .tab").evaluate_all("bs => bs.map(b => b.dataset.k)") == TABS
     assert page.locator('#tabs .tab[data-k="method"]').count() == 0
