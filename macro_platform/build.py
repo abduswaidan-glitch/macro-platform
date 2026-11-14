@@ -56,11 +56,19 @@ def load_raw(raw_dir: Path, sid: str) -> pd.Series | None:
     return df.iloc[:, 0].astype("float64").rename(sid)
 
 
+RAW_FMT = "%.6g"   # دقة الحفظ في data/raw: ست خانات معنوية
+
+
+def stored(x: float) -> float:
+    """القيمة كما تُحفظ في data/raw، لمقارنة الجديد بالمحفوظ بالدقة نفسها."""
+    return float(RAW_FMT % x)
+
+
 def save_raw(raw_dir: Path, sid: str, s: pd.Series) -> None:
     raw_dir.mkdir(parents=True, exist_ok=True)
     out = s.rename(sid).to_frame()
     out.index.name = "date"
-    out.to_csv(raw_path(raw_dir, sid), float_format="%.6g")
+    out.to_csv(raw_path(raw_dir, sid), float_format=RAW_FMT)
 
 
 # ---------------------------------------------------------------- validation
@@ -94,6 +102,17 @@ REVISION_WINDOW = {"W": 10, "M": 24, "Q": 8}   # آخر N قراءات مشتر�
 REVISION_BULK = 12                              # أكثر من هذا في جلب واحد = مراجعة جماعية (معايير سنوية/موسمية) تُختصر
 REVISION_KEEP_DAYS = 45
 REVISION_TOL = 1e-9                             # نسبي: فروق تمثيل الأعداد ليست مراجعة
+# المحفوظ بست خانات معنوية (RAW_FMT) والجلب الجديد بدقة FRED الكاملة: المقارنة بدقة الحفظ نفسها، وإلا ظهر كل رقم
+# بأكثر من ست خانات (GDPC1، WALCL، INDPRO) «مراجعةً» في كل تشغيل. أول تشغيل حي (14 نوفمبر 2026) سجّل 18 حالة كلها كذلك.
+
+
+def is_noise(r: dict) -> bool:
+    """مراجعة مسجّلة سابقاً ليست إلا فرق دقة الحفظ (تُسقط من fetch_status.json ومن الصفحة)."""
+    x = r.get("largest", r) if r.get("bulk") else r
+    try:
+        return abs(stored(float(x["new"])) - float(x["old"])) <= REVISION_TOL * max(1.0, abs(float(x["old"])))
+    except (KeyError, TypeError, ValueError):
+        return False
 
 
 def detect_revisions(ind: Indicator, old: pd.Series | None, new: pd.Series, when: str) -> list[dict]:
@@ -105,6 +124,7 @@ def detect_revisions(ind: Indicator, old: pd.Series | None, new: pd.Series, when
         o, n = float(old[d]), float(new[d])
         if math.isnan(o) or math.isnan(n):
             continue
+        n = stored(n)
         if abs(n - o) > REVISION_TOL * max(1.0, abs(o)):
             out.append({"date": d.strftime("%Y-%m-%d"), "old": o, "new": n})
     if len(out) > REVISION_BULK:
@@ -120,7 +140,8 @@ def merge_status(prev: dict, status: dict, now: datetime) -> dict:
     cut = (now - pd.Timedelta(days=REVISION_KEEP_DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
     for sid, st in status.items():
         old = prev.get(sid, {}) if isinstance(prev, dict) else {}
-        st["revisions"] = [r for r in old.get("revisions", []) if r.get("detected_utc", "") >= cut] + st.pop("revisions_new", [])
+        st["revisions"] = [r for r in old.get("revisions", []) if r.get("detected_utc", "") >= cut and not is_noise(r)] \
+            + st.pop("revisions_new", [])
         st["last_new_obs_utc"] = now_iso if st.pop("new_obs", False) else old.get("last_new_obs_utc")
     return status
 
@@ -311,7 +332,8 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
             "age_days": age, "state": st["state"], "issues": st["issues"],
             "source_as_of": r["source_as_of"].strftime("%Y-%m-%d"), "unavailable": unavailable,
             "momentum": momentum(ind, s) if ind.id in MOMENTUM_IDS else None,
-            "revisions": (st.get("revisions") or [])[-5:], "last_new_obs_utc": st.get("last_new_obs_utc"),
+            "revisions": [r for r in st.get("revisions") or [] if not is_noise(r)][-5:],
+            "last_new_obs_utc": st.get("last_new_obs_utc"),
             "points": chart_points(ind, s),
         })
     q = growth_inflation_quadrant(series)
