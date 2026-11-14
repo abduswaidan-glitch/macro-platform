@@ -11,8 +11,8 @@ import pytest
 
 from macro_platform import ai_report, changes
 from macro_platform.analytics import momentum
-from macro_platform.build import (REVISION_BULK, build_payload, detect_revisions, fetch_all, load_config, load_raw,
-                                  merge_status, save_raw)
+from macro_platform.build import (REVISION_BULK, build_payload, detect_revisions, fetch_all, is_noise, load_config,
+                                  load_raw, merge_status, save_raw)
 from macro_platform.catalog import BY_ID, INDICATORS, MOMENTUM_IDS
 from macro_platform.demo import demo_series
 
@@ -111,6 +111,39 @@ def test_fetch_all_compares_the_saved_copy_with_the_new_fetch(tmp_path):
     assert st["new_obs"] is True and [(r["date"], r["old"], r["new"]) for r in st["revisions_new"]] == [
         (idx[-2].strftime("%Y-%m-%d"), float(old.iloc[-2]), float(old.iloc[-2] - 40))]
     assert load_raw(tmp_path, "PAYEMS").iloc[-1] == 100200.0
+
+
+# أول تشغيل حي (14 نوفمبر 2026): 18 «مراجعة» كلها فرق دقة الحفظ (data/raw بست خانات معنوية، والجلب بدقة FRED الكاملة)
+LIVE_NOISE = [{"detected_utc": "2026-11-14T19:49:56Z", "date": "2024-10-01", "old": 23641.8, "new": 23641.759},
+              {"detected_utc": "2026-11-14T19:50:01Z", "date": "2026-09-09", "old": 6740620.0, "new": 6740619.0},
+              {"detected_utc": "2026-11-14T19:49:57Z", "bulk": True, "count": 19, "range": ["2024-12-01", "2026-09-01"],
+               "largest": {"date": "2025-05-01", "old": 100.966, "new": 100.9655}}]
+
+
+def test_values_with_more_than_six_digits_are_compared_at_the_stored_precision(tmp_path):
+    idx = pd.date_range("2000-01-01", periods=107, freq="QS")
+    full = pd.Series([13878.123 + 101.789 * k for k in range(107)], index=idx)          # مثل GDPC1: ثماني خانات
+    save_raw(tmp_path, "GDPC1", full)
+    for _ in range(2):                                                                  # ولا تتكرر في التشغيل التالي
+        _, st = fetch_all(tmp_path, "2000-01-01", fetcher=lambda sid, start: full, indicators=(BY_ID["GDPC1"],),
+                          log=lambda *a: None)
+        assert st["GDPC1"]["revisions_new"] == []
+    revised = full.copy()
+    revised.iloc[-2] += 25.0                                                            # مراجعة حقيقية
+    _, st = fetch_all(tmp_path, "2000-01-01", fetcher=lambda sid, start: revised, indicators=(BY_ID["GDPC1"],),
+                      log=lambda *a: None)
+    assert [r["date"] for r in st["GDPC1"]["revisions_new"]] == [idx[-2].strftime("%Y-%m-%d")]
+
+
+def test_precision_noise_already_recorded_is_dropped_and_real_revisions_are_kept(demo_cfg=None):
+    real = {"detected_utc": "2026-11-14T19:49:56Z", "date": "2026-09-01", "old": 150100.0, "new": 150050.0}
+    assert all(is_noise(r) for r in LIVE_NOISE) and not is_noise(real)
+    out = merge_status({"GDPC1": {"revisions": LIVE_NOISE + [real]}}, {"GDPC1": {"state": "ok", "issues": []}}, NOW)
+    assert out["GDPC1"]["revisions"] == [real]
+    cfg = load_config("config.json")
+    p = build_payload(demo_series(start="2015-01-01", end="2026-06-30"),
+                      {"GDPC1": {"state": "ok", "issues": [], "revisions": LIVE_NOISE + [real]}}, cfg, now=NOW)
+    assert p["revisions"] == [{"id": "GDPC1", "name_ar": BY_ID["GDPC1"].name_ar, **real}]   # الصفحة وسياق التقرير
 
 
 def test_a_failed_fetch_produces_no_revision(tmp_path):
