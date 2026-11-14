@@ -18,7 +18,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from macro_platform import ai_report, ledger
-from macro_platform.build import build_payload, fetch_all, load_config, load_raw, merge_status, write_json
+from macro_platform.build import (build_payload, fetch_all, load_config, load_raw, merge_status, public_payload,
+                                  write_json)
 from macro_platform.catalog import INDICATORS
 from macro_platform.demo import demo_series
 
@@ -40,6 +41,25 @@ def load_status(path: Path) -> tuple[dict, list[str]]:
 def save_status(path: Path, status: dict, extra: list[str], when: datetime) -> None:
     path.write_text(json.dumps({"fetched_utc": when.strftime("%Y-%m-%dT%H:%M:%SZ"), "series": status,
                                 "extra_warnings": extra}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+def apply_market_derived(payload: dict, path: Path, write: bool) -> None:
+    """مؤشرا الأسهم داخليان (ترخيص طرف ثالث) فلا يُحفظان في data/raw. ما يُنشر منهما مشتق فقط: الأداء النسبي
+    وبوابة قيادة NQ مقابل ES. تشغيل البيانات يحفظ المشتق هنا، والبناء offline (كل 10 دقائق) يقرؤه."""
+    lead = next((g for g in payload["gates"] if g.get("key") == "leadership"), None)
+    if write and payload.get("market_relative") and lead:
+        path.write_text(json.dumps({"generated": payload["generated"], "market_relative": payload["market_relative"],
+                                    "leadership_gate": lead}, ensure_ascii=False, indent=1), encoding="utf-8")
+        return
+    if payload.get("market_relative") or not path.exists():
+        return
+    try:
+        d = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return
+    payload["market_relative"] = d.get("market_relative")
+    if lead is None and isinstance(d.get("leadership_gate"), dict):
+        payload["gates"].append(d["leadership_gate"])
 
 
 def load_saved_series(raw_dir: Path) -> dict:
@@ -80,6 +100,9 @@ def main(argv=None) -> int:
         log("no data at all; data.json left unchanged")
         return 1
     payload = build_payload(series, status, cfg, now=now, demo=args.demo)
+    if not args.demo:
+        DATA.mkdir(exist_ok=True)
+        apply_market_derived(payload, DATA / "market_derived.json", write=not args.offline)
     payload["status"]["warnings"] += extra
     log(f"{payload['status']['ok']}/{payload['status']['total']} indicators ok")
     for w in payload["status"]["warnings"]:
@@ -146,7 +169,7 @@ def main(argv=None) -> int:
             ledger.save(ledger_p, led)
 
     DATA.mkdir(exist_ok=True)
-    write_json(args.out, payload)
+    write_json(args.out, public_payload(payload))      # بلا مستويات المؤشرين الداخليين ولا نقاطهما
     log("wrote", args.out)
     return 0
 

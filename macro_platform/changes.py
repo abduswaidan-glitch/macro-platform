@@ -9,8 +9,9 @@ from __future__ import annotations
 
 
 def snapshot(payload: dict) -> dict:
+    # مؤشرات internal_only (ترخيص S&P DJI وNasdaq) لا تدخل اللقطة: ai_history.json عام
     return {i["id"]: {k: i.get(k) for k in ("last", "as_of", "source_as_of", "state", "pct5")}
-            for i in payload.get("indicators", []) if isinstance(i, dict) and i.get("id")}
+            for i in payload.get("indicators", []) if isinstance(i, dict) and i.get("id") and not i.get("internal_only")}
 
 
 def diff(previous: dict | None, now_snap: dict, revisions: list[dict]) -> dict:

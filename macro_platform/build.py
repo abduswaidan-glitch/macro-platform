@@ -16,14 +16,15 @@ import pandas as pd
 
 from macro_platform.analytics import (growth_inflation_quadrant, momentum, sahm_rule, signals, snapshot,
                                       transform_indicator, SAHM_TRIGGER)
-from macro_platform.catalog import CATEGORIES, INDICATORS, MOMENTUM_IDS, Indicator, PERIODS_PER_YEAR
+from macro_platform.releases import RELEASES
+from macro_platform.catalog import CATEGORIES, INDICATORS, INTERNAL_IDS, MOMENTUM_IDS, Indicator, PERIODS_PER_YEAR
 from macro_platform.fred import FredError, fetch_series
 
 MIN_ROWS = {"D": 200, "W": 50, "M": 24, "Q": 8}
 MAX_AGE_DAYS = {"D": 7, "W": 14, "M": 80, "Q": 220}  # تأخر النشر الطبيعي لكل تكرار
 # سلاسل يومية ينشرها FRED متأخرة أسبوعاً عادةً (نفط WTI من EIA، الدولار الواسع من الفيدرالي)
 MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14}
-KPI_IDS = ("DGS10", "DFII10", "DTWEXBGS", "DCOILWTICO", "T10Y2Y", "DFF", "PCEPILFE", "UNRATE", "VIXCLS", "NASDAQ100")
+KPI_IDS = ("DGS10", "DFII10", "DTWEXBGS", "DCOILWTICO", "T10Y2Y", "DFF", "PCEPILFE", "UNRATE", "VIXCLS")
 DEFAULT_CONFIG = {
     "start": "2000-01-01",
     "gates": {"us10y_trigger": 4.5, "vix_calm": 20, "vix_stress": 25, "real10_restrictive": 2.0, "hy_stress": 5.0},
@@ -160,7 +161,10 @@ def fetch_all(raw_dir: Path, start: str, fetcher: Callable[[str, str], pd.Series
             if ok:
                 st["revisions_new"] = detect_revisions(ind, old, new, datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
                 st["new_obs"] = old is None or not len(old) or new.index[-1] > old.index[-1]
-                save_raw(raw_dir, ind.id, new)
+                if ind.internal_only:                       # ترخيص طرف ثالث: لا حفظ في المستودع العام
+                    raw_path(raw_dir, ind.id).unlink(missing_ok=True)
+                else:
+                    save_raw(raw_dir, ind.id, new)
                 series[ind.id] = new
             else:
                 st["state"] = "error"
@@ -169,7 +173,7 @@ def fetch_all(raw_dir: Path, start: str, fetcher: Callable[[str, str], pd.Series
             st["state"] = "error"
             st["issues"].append(f"فشل الجلب: {str(exc)[:160]}")
             log(f"{ind.id}: fetch failed: {str(exc)[:160]}")
-        if ind.id not in series and old is not None:
+        if ind.id not in series and old is not None and not ind.internal_only:
             series[ind.id] = old
             st["issues"].append("تُعرض آخر نسخة سليمة محفوظة")
         status[ind.id] = st
@@ -345,6 +349,7 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
             "age_days": age, "state": st["state"], "issues": st["issues"],
             "source_as_of": r["source_as_of"].strftime("%Y-%m-%d"), "unavailable": unavailable,
             "momentum": momentum(ind, s) if ind.id in MOMENTUM_IDS else None,
+            "internal_only": ind.internal_only,
             "revisions": [r for r in st.get("revisions") or [] if not is_noise(r)][-5:],
             "last_new_obs_utc": st.get("last_new_obs_utc"),
             "points": chart_points(ind, s),
@@ -359,7 +364,9 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
         "demo": demo,
         "source": "FRED, Federal Reserve Bank of St. Louis",
         "config": {"gates": cfg["gates"],
-                   "ai_schedule": {k: cfg.get("ai", {}).get(k) for k in ("schedule", "market_holidays")}},
+                   "ai_schedule": {k: cfg.get("ai", {}).get(k) for k in ("schedule", "market_holidays")},
+                   # جدول الإصدارات نفسه (releases.py) لقواعد الخطورة في الصفحة: أهمية الإصدار لا عدد السلاسل
+                   "releases": {k: list(v) for k, v in RELEASES.items()}},
         "categories": [{"key": k, "ar": ar, "en": en} for k, (ar, en) in CATEGORIES.items()],
         "kpis": kpis(snap),
         "gates": nq_gates(series, cfg),
@@ -374,6 +381,20 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
         "status": {"ok": sum(1 for i in indicators if i["state"] == "ok"), "total": len(indicators),
                    "warnings": warnings},
     }
+
+
+PUBLIC_INTERNAL_KEYS = ("id", "name_ar", "name_en", "category", "freq", "state", "issues", "as_of", "age_days",
+                        "source_as_of", "internal_only")
+
+
+def public_payload(payload: dict) -> dict:
+    """ما يُنشر في data.json: مؤشرات internal_only بلا مستويات ولا نقاط ولا تغيرات (حالة الجلب وتاريخه فقط).
+    التقرير يقرأ الحمولة الكاملة في الذاكرة، والنشر يمر من هنا دائماً."""
+    out = dict(payload)
+    out["indicators"] = [({k: i.get(k) for k in PUBLIC_INTERNAL_KEYS} | {"internal_only": True})
+                         if i.get("internal_only") or i.get("id") in INTERNAL_IDS else i for i in payload["indicators"]]
+    out["kpis"] = [k for k in payload.get("kpis", []) if k.get("id") not in INTERNAL_IDS]
+    return out
 
 
 def write_json(path: str | Path, payload: dict) -> None:

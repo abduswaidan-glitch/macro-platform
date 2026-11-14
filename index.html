@@ -164,6 +164,18 @@ td .yoy-na{white-space:normal;min-width:14em}  /* سبب غياب التغير �
 .chk .hit{color:var(--ok);font-weight:600}
 .chk .miss{color:var(--bad);font-weight:600}
 .chk bdi{direction:ltr;unicode-bidi:isolate}
+.clocks{margin-inline-start:auto;font-size:12.5px;color:var(--muted)}
+.clocks b{color:var(--ink);font-weight:600}
+#alerts{margin-top:10px}
+.alert{padding:8px 12px;border-radius:6px;border-inline-start:3px solid var(--warn);background:var(--surface);font-size:14px;margin-top:6px}
+.alert.critical{border-inline-start-color:var(--bad);font-weight:600}
+.alert-more{display:inline-block;margin-top:6px;font-size:12.5px}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.subtab{border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 14px;font:inherit;cursor:pointer}
+.subtab[aria-selected="true"]{border-color:var(--acc);color:var(--acc);font-weight:700}
+.rep-card .meta{font-size:12.5px;color:var(--muted)}
+.rep-card .imp{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:13.5px}
+footer a{color:inherit}
 .late-tag{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:6px;padding:2px 8px}
 .eco h3{margin-top:18px}
 .exec .dir{font-size:13px;margin-inline-start:8px}
@@ -226,11 +238,12 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
   <div class="wrap util">
     <span class="live" id="live"><i></i><b id="liveTxt">…</b></span>
     <span id="updated"></span>
+    <span class="clocks" id="clocks" aria-label="الوقت الآن"></span>
   </div>
   <div class="wrap brand-row">
     <div class="brand">
       <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="3,17 9,11 13,14 21,6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div><h1>الاقتصاد الكلي <span>الأمريكي</span></h1><p>النمو، التوظيف، التضخم، الفائدة، وبوابات NQ: من بيانات FRED مباشرة</p></div>
+      <div><h1>الاقتصاد الكلي <span>الأمريكي</span></h1><p>النمو، والتضخم، والعمل، والفيدرالي، والأوضاع المالية، وبوابات السوق: من بيانات FRED مباشرة</p></div>
     </div>
     <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الوضع الفاتح/الداكن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
   </div>
@@ -238,17 +251,20 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
 </header>
 
 <div class="wrap"><div class="kpis" id="kpis"></div></div>
+<div class="wrap" id="alerts" hidden></div>
 
 <nav class="tabs-bar" aria-label="أقسام المنصة"><div class="wrap tabs" id="tabs" role="tablist"></div></nav>
 
 <main class="wrap" id="main">
-  <section class="panel" id="p-ai" hidden></section>
   <section class="panel" id="p-overview" hidden></section>
+  <section class="panel" id="p-ai" hidden></section>
+  <section class="panel" id="p-news" hidden></section>
   <div id="catPanels"></div>
+  <section class="panel" id="p-gates" hidden></section>
   <section class="panel" id="p-method" hidden></section>
 </main>
 
-<footer class="wrap">المصدر: FRED, Federal Reserve Bank of St. Louis. التقرير الذكي يكتبه Claude من بيانات المنصة وأخبار اليوم. المحتوى تحليلي وليس توصية شراء أو بيع.</footer>
+<footer class="wrap">المصدر: FRED, Federal Reserve Bank of St. Louis. التقرير الاقتصادي يكتبه Claude من بيانات المنصة وأخبار اليوم. المحتوى تحليلي وليس توصية شراء أو بيع. · <a href="#method" class="method-link">المنهجية وحالة البيانات</a></footer>
 
 <script>
 "use strict";
@@ -374,10 +390,14 @@ function chartCard(id, title, sub, points, opts = {}) {
 }
 
 /* ---------- tabs ---------- */
+/* تسعة تبويبات. المنهجية وحالة البيانات خارج التنقل: يُوصل إليها من التنبيه ومن التذييل (#method).
+   الروابط والتبويب المحفوظ القديم تُحوَّل: الإسكان صار في النمو والفيدرالي، والأسواق في Market Gates */
+const LEGACY_TABS = {"cat-housing": "cat-growth", "cat-rates": "cat-fed_rates", "cat-money": "cat-financial", "cat-markets": "gates"};
+const OFF_NAV = ["method"];
 function setupTabs(data) {
-  const tabs = [["ai", 'التقرير الذكي <span class="ai-badge">AI</span>', true], ["overview", "نظرة عامة"]];
-  data.categories.forEach(c => { if (data.indicators.some(i => i.category === c.key)) tabs.push(["cat-" + c.key, esc(c.ar)]); });
-  tabs.push(["method", "المنهجية وحالة البيانات"]);
+  const tabs = [["overview", "الملخص"], ["ai", 'التقرير الاقتصادي <span class="ai-badge">AI</span>', true], ["news", "الأخبار"]];
+  data.categories.forEach(c => { if (data.indicators.some(i => i.category === c.key && !i.internal_only)) tabs.push(["cat-" + c.key, esc(c.ar)]); });
+  tabs.push(["gates", "Market Gates"]);
   $("#tabs").innerHTML = tabs.map(([k, label, ai]) =>
     `<button class="tab${ai ? " tab-ai" : ""}" role="tab" data-k="${k}" aria-selected="false">${label}</button>`).join("");
   const show = k => {
@@ -388,11 +408,12 @@ function setupTabs(data) {
     redraw();
   };
   $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.k); };
-  const want = (location.hash || "").slice(1) || store.get("macro-tab") || "overview";
-  show(tabs.some(t => t[0] === want) ? want : "overview");
+  const norm = k => LEGACY_TABS[k] || k, known = k => tabs.some(t => t[0] === k) || OFF_NAV.includes(k);
+  const want = norm((location.hash || "").slice(1) || store.get("macro-tab") || "overview");
+  show(known(want) ? want : "overview");
   window.addEventListener("hashchange", () => {
-    const k = location.hash.slice(1);
-    if (tabs.some(t => t[0] === k)) show(k);
+    const k = norm(location.hash.slice(1));
+    if (known(k)) show(k);
   });
 }
 function redraw() {
@@ -402,7 +423,15 @@ window.__redraw = redraw;
 let rT; window.addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(redraw, 150); });
 
 /* ---------- header & KPIs ---------- */
+const tzTime = (iso, tz) => { try { return new Date(iso).toLocaleTimeString("en-GB", {timeZone: tz, hour: "2-digit", minute: "2-digit"}); } catch (e) { return ""; } };
+const viTime = iso => tzTime(iso, "Europe/Vienna");
+function renderClocks() {
+  const now = new Date().toISOString();
+  $("#clocks").innerHTML = `نيويورك <b class="num">${esc(tzTime(now, "America/New_York"))}</b> · فيينا <b class="num">${esc(viTime(now))}</b>`;
+}
+setInterval(renderClocks, 30000);
 function renderHeader(data) {
+  renderClocks();
   const gen = new Date(data.generated);
   const hrs = (Date.now() - gen) / 36e5;
   const live = $("#live");
@@ -424,21 +453,25 @@ function cardsHtml(list) {
     ${c.extra || c.as_of ? `<div class="x">${[c.extra, c.as_of].filter(Boolean).map(x => `<bdi>${esc(x)}</bdi>`).join(" · ")}</div>` : ""}</div>`).join("");
 }
 
-/* ---------- overview ---------- */
-function renderOverview(data) {
+/* ---------- الملخص ---------- */
+function reportCard(r) {
+  if (!r) return `<div class="box rep-card"><h4>التقرير الاقتصادي</h4><p class="muted">لا تقرير بعد.</p></div>`;
+  const m = r.meta || {}, e = r.economy || {}, x = e.executive || {};
+  const d = DIR[x.direction];
+  const g = ((r.market_translation || {}).gates) || {};
+  const imp = ["nq", "spx", "dow"].map(k => {
+    const v = g[k] && g[k].impact, ok = Number.isInteger(v) && v >= -2 && v <= 2, im = ok ? IMPACT[String(v)] : null;
+    return `<span>${GATE_AR[k]}: <b class="${im ? "tone-" + im[1] : "muted"}">${im ? im[0] : "غير متاح"}</b></span>`;
+  }).join("");
+  return `<div class="box rep-card"><h4>آخر تقرير اقتصادي ${d ? `<span class="dir tone-${d[1]}">${d[0]}</span>` : ""}</h4>
+    <p><b>${esc(r.title)}</b></p>${e.bottom_line || r.one_liner ? `<p>${esc(e.bottom_line || r.one_liner)}</p>` : ""}
+    <div class="meta">${reportTimeLabel(r)}${m.delayed ? " · تقرير متأخر" : ""} · <a href="#ai">التقرير كاملاً</a></div>
+    ${r.economy ? `<div class="imp">${imp} · <a href="#gates">Market Gates</a></div>` : ""}</div>`;
+}
+function renderOverview(data, hist) {
   const p = $("#p-overview");
-  const w = data.status.warnings;
-  p.innerHTML = `<div class="sec-head"><h2>نظرة عامة</h2><p>بوابات NQ الكلية وإشارات الدورة الاقتصادية في صفحة واحدة. كل رقم بتاريخه؛ البيانات الشهرية تصدر متأخرة.</p></div>
-    ${w.length ? `<div class="warn-box"><b>تنبيهات البيانات (${w.length})</b><ul>${w.slice(0, 8).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
-    <h3>الأخبار المؤثرة</h3>
-    <div id="newsBox"><p class="empty">جارٍ تحميل الأخبار…</p></div>
-    <h3>تقويم البيانات الأمريكية</h3>
-    <div id="calBox"><p class="empty">جارٍ تحميل التقويم…</p></div>
-    <h3>بوابات NQ</h3>
-    <details class="about"><summary>كيف أقرأ البوابات؟</summary><div class="body">
-      <p>العائد 10Y فوق الحد الحرج يضغط على تقييمات أسهم النمو، وVIX يحدد نوع اليوم (Mean reversion تحت ${esc(data.config.gates.vix_calm)}، وتوسّع تذبذب فوق ${esc(data.config.gates.vix_stress)}). تُعدَّل الحدود من <code>config.json</code>.</p>
-      <p>قيادة NQ مقابل ES هي تغير نسبة Nasdaq 100 إلى S&amp;P 500 خلال 20 يوم تداول.</p></div></details>
-    <div class="cards">${cardsHtml(data.gates)}</div>
+  p.innerHTML = `<div class="sec-head"><h2>الملخص</h2><p>آخر قراءة اقتصادية وإشارات الدورة في صفحة واحدة. كل رقم بتاريخه؛ البيانات الشهرية تصدر متأخرة.</p></div>
+    ${reportCard((hist || [])[0])}
     <h3>إشارات الدورة الاقتصادية</h3>
     <div class="cards">${cardsHtml(data.signals)}</div>
     <div id="sahmChart"></div>`;
@@ -447,6 +480,52 @@ function renderOverview(data) {
       data.sahm.points, {years: 10, unit: "", refs: [{y: data.sahm.trigger, label: "0.50"}], label: "Sahm Rule"});
     $("#sahmChart").replaceWith(c);
   }
+}
+function renderNewsPanel() {
+  $("#p-news").innerHTML = `<div class="sec-head"><h2>الأخبار والتقويم</h2><p>عناوين من مصادر عامة (Fed وBEA وCNBC وMarketWatch) وتقويم البيانات الأمريكية، تُحدَّث كل نحو 10 دقائق.</p></div>
+    <h3>الأخبار المؤثرة</h3>
+    <div id="newsBox"><p class="empty">جارٍ تحميل الأخبار…</p></div>
+    <h3>تقويم البيانات الأمريكية</h3>
+    <div id="calBox"><p class="empty">جارٍ تحميل التقويم…</p></div>`;
+}
+
+/* ---------- التنبيهات: تظهر فقط حين توجد مشكلة؛ أهمية الإصدار لا عدد السلاسل ---------- */
+const APP = {data: null};
+function computeAlerts(data, news, newsFailed, nowIso) {
+  const out = [], inds = (data && data.indicators) || [], byId = Object.fromEntries(inds.map(i => [i.id, i]));
+  const name = id => byId[id] ? `${byId[id].name_ar} (${id})` : id;
+  const rel = (data && data.config && data.config.releases) || {}, today = nyDay(nowIso), crit = new Set();
+  // حرج: سلسلة يصدر لها اليوم حدث مرتفع التأثير، وهي في حالة خطأ (لا مجرد تأخر FRED المعتاد)
+  ((news && news.calendar) || []).filter(e => e && e.us && e.impact === 1 && nyDay(e.timeUtc) === today).forEach(e =>
+    (rel[e.title] || []).forEach(id => { if (byId[id] && byId[id].state === "error" && !crit.has(id)) crit.add(id) && out.push(
+      {level: "critical", kind: "release_data", ids: [id], text: `خطأ في ${name(id)} يوم صدور ${e.title}: أرقام اليوم وتقريره مبنيان على بيانات ناقصة.`}); }));
+  // تقرير اليوم: فشل مرتين، أو فشلت الأولى ولا إعادة قبل آخر موعد بدء = حرج؛ فشل الأولى وما زالت الإعادة ممكنة = تنبيه
+  const st = (data && data.ai_status) || {}, sch = st.schedule || {};
+  const att = (st.attempts || []).filter(a => a && (a.attempt === "1" || a.attempt === "2"));
+  if (att.length && !att.some(a => a.ok)) {
+    if (att.length >= 2 || nyMins(nowIso) >= hmMin(sch.last_start || "13:00"))
+      out.push({level: "critical", kind: "report", ids: [], text: "التقرير الاقتصادي غير متاح اليوم بسبب فشل التوليد."});
+    else out.push({level: "warning", kind: "report", ids: [], text: `فشلت المحاولة الأولى لتقرير اليوم، وإعادة المحاولة ${sch.attempt_2 || "12:00"} بتوقيت نيويورك.`});
+  }
+  if (newsFailed && !news) out.push({level: "critical", kind: "news", ids: [], text: "تعذّرت قراءة الأخبار والتقويم (news.json)."});
+  // تنبيه: بقية الأخطاء والتقادم في سطر واحد لكل نوع (لا قائمة مقطوعة)
+  const err = inds.filter(i => i.state === "error" && !crit.has(i.id)).map(i => i.id);
+  const stale = inds.filter(i => i.state === "stale").map(i => i.id);
+  if (err.length) out.push({level: "warning", kind: "error", ids: err, text: `تعذّر جلب ${err.length} من المؤشرات، وتُعرض آخر نسخة سليمة: ${err.map(name).join("، ")}.`});
+  if (stale.length) out.push({level: "warning", kind: "stale", ids: stale, text: `بيانات متقادمة في ${stale.length} من المؤشرات: ${stale.map(name).join("، ")}.`});
+  if (news) {
+    const ma = feedAge(news, "items"), mc = feedAge(news, "calendar");
+    if (isStale(ma, "items")) out.push({level: "warning", kind: "feed", ids: [], text: `العناوين غير محدّثة (آخر جلب ناجح: ${agoTxt(ma)}).`});
+    if (isStale(mc, "calendar")) out.push({level: "warning", kind: "feed", ids: [], text: `التقويم غير محدّث (آخر جلب ناجح: ${agoTxt(mc)}).`});
+  }
+  return out.sort((a, b) => (a.level === "critical" ? 0 : 1) - (b.level === "critical" ? 0 : 1));
+}
+function renderAlerts() {
+  const box = $("#alerts"); if (!box || !APP.data) return;
+  const a = computeAlerts(APP.data, NEWS.data, NEWS.failed, new Date().toISOString());
+  box.hidden = !a.length;
+  box.innerHTML = a.length ? a.map(x => `<div class="alert ${x.level}" data-kind="${esc(x.kind)}">${x.level === "critical" ? "حرج" : "تنبيه"}: ${esc(x.text)}</div>`).join("")
+    + '<a href="#method" class="alert-more">التفاصيل في المنهجية وحالة البيانات</a>' : "";
 }
 
 /* ---------- category panels ---------- */
@@ -468,7 +547,7 @@ function renderCategories(data) {
   const host = $("#catPanels");
   host.innerHTML = "";
   data.categories.forEach(cat => {
-    const inds = data.indicators.filter(i => i.category === cat.key);
+    const inds = data.indicators.filter(i => i.category === cat.key && !i.internal_only);
     if (!inds.length) return;
     const sec = document.createElement("section");
     sec.className = "panel"; sec.id = "p-cat-" + cat.key; sec.hidden = true;
@@ -506,7 +585,7 @@ function reportTimeLabel(r) {
   const t = (r.meta && (r.meta.completed_at || r.meta.written_at)) || ""; if (!t) return "";
   const mins = nyMins(t), open = 9 * 60 + 30;
   const rel = nyDay(t) !== (r.meta && r.meta.ny_date) ? "" : mins < open ? " · قبل الافتتاح" : ` · بعد الافتتاح بـ${mins - open} د`;
-  return `كُتب ${esc(nyDay(t))} ${esc(nyTime(t))} بتوقيت نيويورك${rel}`;
+  return `كُتب ${esc(nyDay(t))} ${esc(nyTime(t))} بتوقيت نيويورك (${esc(viTime(t))} فيينا)${rel}`;
 }
 /* محاولات اليوم (data.ai_status من state.json): تظهر فقط حين توجد مشكلة. المحاولة 1 عند 09:00، والثانية 12:00 بعد فشل تقني */
 const hmMin = hm => { const [h, m] = String(hm || "").split(":").map(Number); return h * 60 + (m || 0); };
@@ -635,21 +714,41 @@ function translationHtml(mt, led, S) {
     ${ok ? `<p>احتمال تفوق Nasdaq-100 على S&amp;P 500: <b class="num">${p}%</b>${p === 50 ? " (لا رأي)" : ""}</p>` : '<p class="muted">الاحتمال غائب أو غير صالح، فلا يُقاس.</p>'}
     ${st}${g && S.reports ? `<p class="muted trans-sum">${groupTxt(g, "Translation-check، قبل الافتتاح", "لمن يقول 50", "Translation-check", S.min_n)}</p>` : ""}</div>`;
 }
-function gatesHtml(r, data, led) {
-  const mt = r.market_translation;
-  const head = `<h3 id="gates">بوابات السوق</h3><p class="muted">ترجمة سوقية مشتقة من التقييم الاقتصادي أعلاه. لا Entry ولا Stop ولا Target ولا توصية شراء أو بيع.</p>`;
-  if (!mt || typeof mt !== "object") return head + `<p class="muted gates-na">بوابات السوق غير متاحة اليوم.</p>`;
-  const g = mt.gates || {}, S = ((data || {}).ledger || {}).summary;
-  return head + `<div class="gates">${["nq", "spx", "dow"].map(k => {
-    const v = g[k] && typeof g[k] === "object" ? g[k] : null;
-    if (!v) return `<div class="box gate" data-g="${k}"><h4>${GATE_AR[k]}</h4><p class="muted">غير متاحة اليوم.</p></div>`;
-    const ok = Number.isInteger(v.impact) && v.impact >= -2 && v.impact <= 2, im = ok ? IMPACT[String(v.impact)] : ["غير صالح", "warn"];
-    return `<div class="box gate" data-g="${k}"><h4>${GATE_AR[k]} <span class="impact tone-${im[1]}">${im[0]}${ok ? ` <bdi dir="ltr">(${v.impact > 0 ? "+" : ""}${v.impact})</bdi>` : ""}</span></h4>
-      <p><b>ما يهم الآن:</b> ${tx(v.matters_now)}</p>
-      <div class="gate-cols"><div><h5>المحركات</h5>${ul(v.drivers)}</div><div><h5>إيجابي</h5>${ul(v.positive)}</div><div><h5>سلبي</h5>${ul(v.negative)}</div></div>
-      <p class="muted"><b>ما يقلب الحكم:</b> ${tx(v.would_flip)} · <b>الأفق:</b> ${tx(v.horizon)}</p>
-      ${k === "nq" ? translationHtml(mt, led, S) : ""}</div>`;
-  }).join("")}</div>`;
+function gateHtml(k, mt, led, S) {
+  const g = (mt && mt.gates) || {}, v = g[k] && typeof g[k] === "object" ? g[k] : null;
+  if (!v) return `<div class="box gate" data-g="${k}"><h4>${GATE_AR[k]}</h4><p class="muted">غير متاحة اليوم.</p></div>`;
+  const ok = Number.isInteger(v.impact) && v.impact >= -2 && v.impact <= 2, im = ok ? IMPACT[String(v.impact)] : ["غير صالح", "warn"];
+  return `<div class="box gate" data-g="${k}"><h4>${GATE_AR[k]} <span class="impact tone-${im[1]}">${im[0]}${ok ? ` <bdi dir="ltr">(${v.impact > 0 ? "+" : ""}${v.impact})</bdi>` : ""}</span></h4>
+    <p><b>ما يهم الآن:</b> ${tx(v.matters_now)}</p>
+    <div class="gate-cols"><div><h5>المحركات</h5>${ul(v.drivers)}</div><div><h5>إيجابي</h5>${ul(v.positive)}</div><div><h5>سلبي</h5>${ul(v.negative)}</div></div>
+    <p class="muted"><b>ما يقلب الحكم:</b> ${tx(v.would_flip)} · <b>الأفق:</b> ${tx(v.horizon)}</p>
+    ${k === "nq" ? translationHtml(mt, led, S) : ""}</div>`;
+}
+/* Market Gates: ترجمة سوقية من آخر تقرير بالصيغة 2، وتحت NQ بوابات المنصة الحتمية وقياس الترجمة فقط */
+const GATE_TABS = [["nq", "NQ"], ["spx", "S&P 500"], ["dow", "Dow"]];
+function renderGates(hist, data) {
+  const p = $("#p-gates"), r = (hist || [])[0], v2 = !!(r && r.economy), mt = v2 ? r.market_translation : null;
+  const led = r ? ledgerOf(data, r.meta?.ny_date) : null, S = ((data || {}).ledger || {}).summary;
+  const src = !v2 ? '<p class="muted gates-na">لا ترجمة سوقية في آخر تقرير.</p>'
+    : !mt || typeof mt !== "object" ? '<p class="muted gates-na">بوابات السوق غير متاحة اليوم.</p>' : "";
+  const want = store.get("macro-gate");
+  const cur = GATE_TABS.some(t => t[0] === want) ? want : "nq";
+  p.innerHTML = `<div class="sec-head"><h2>Market Gates</h2><p>كيف يُترجَم التقييم الاقتصادي نفسه إلى Nasdaq-100 وS&amp;P 500 وDow${v2 ? ` (من تقرير <bdi>${esc(r.meta?.ny_date)}</bdi>)` : ""}. لا Entry ولا Stop ولا Target ولا توصية شراء أو بيع.</p></div>
+    ${src}
+    <div class="subtabs" role="tablist">${GATE_TABS.map(([k, l]) => `<button class="subtab" type="button" role="tab" data-g="${k}" aria-selected="${k === cur}">${l}</button>`).join("")}</div>
+    ${GATE_TABS.map(([k]) => `<div class="gate-pane" data-g="${k}"${k === cur ? "" : " hidden"}>
+      ${v2 && mt && typeof mt === "object" ? gateHtml(k, mt, led, S) : ""}
+      ${k === "nq" ? `<h3>بوابات NQ من بيانات المنصة</h3>
+        <details class="about"><summary>كيف أقرأ البوابات؟</summary><div class="body">
+        <p>العائد 10Y فوق الحد الحرج يضغط على تقييمات أسهم النمو، وVIX يحدد نوع اليوم (Mean reversion تحت ${esc(data.config.gates.vix_calm)}، وتوسّع تذبذب فوق ${esc(data.config.gates.vix_stress)}). تُعدَّل الحدود من <code>config.json</code>.</p>
+        <p>قيادة NQ مقابل ES هي تغير نسبة Nasdaq 100 إلى S&amp;P 500 خلال 20 يوم تداول (رقم مشتق؛ مستويات المؤشرين لا تُنشر لأسباب الترخيص).</p></div></details>
+        <div class="cards">${cardsHtml(data.gates)}</div>` : ""}
+    </div>`).join("")}`;
+  p.querySelectorAll(".subtab").forEach(b => b.onclick = () => {
+    store.set("macro-gate", b.dataset.g);
+    p.querySelectorAll(".subtab").forEach(x => x.setAttribute("aria-selected", x === b));
+    p.querySelectorAll(".gate-pane").forEach(x => x.hidden = x.dataset.g !== b.dataset.g);
+  });
 }
 function legacyHtml(r, data, led) {
   const b = BIAS[r.bias?.direction] || ["—", "neutral"], unsc = led && led.scenario_check && led.scenario_check.unscorable;
@@ -691,7 +790,7 @@ function renderAI(hist, data) {
         <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div>${lateTag(r)}</div>
         ${hist.length > 1 ? `<label class="picker">تقارير سابقة: <select id="aiPick">${hist.map((h, k) =>
           `<option value="${k}"${k === idx ? " selected" : ""}>${esc(h.meta?.ny_date)}</option>`).join("")}</select></label>` : ""}</div>
-      ${v2 ? economyHtml(r, data, led) + gatesHtml(r, data, led) : legacyHtml(r, data, led)}
+      ${v2 ? economyHtml(r, data, led) + '<p class="muted gates-link">الترجمة السوقية (NQ وS&amp;P وDow) في قسم <a href="#gates">Market Gates</a>.</p>' : legacyHtml(r, data, led)}
       ${arr(r.events).length ? `<div class="box events"><h4>الأحداث المؤثرة</h4><ul>${r.events.map(e =>
           `<li>${esc(e.date || "")} <a href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.title)}</a></li>`).join("")}</ul></div>` : ""}
       ${warn.length ? `<details class="about checks"><summary>ملاحظات التحقق الآلي (${warn.length})</summary><div class="body"><ul>${warn.map(w => `<li><bdi>${esc(w)}</bdi></li>`).join("")}</ul></div></details>` : ""}
@@ -710,12 +809,14 @@ function renderMethod(data) {
       <div class="box"><h4>الفحص قبل النشر</h4><p>تُرفض السلسلة إن جاءت قصيرة أو بتاريخ أقدم من المحفوظ أو بسجل ناقص، وتبقى آخر نسخة سليمة مع تحذير. وتُعلَّم القفزة غير المعتادة والقيمة التي تجاوز عمرها التأخر الطبيعي لتكرارها.</p></div>
       <div class="box"><h4>المربع: النمو × التضخم</h4><p>النمو صاعد إذا كان الإنتاج الصناعي (تغير سنوي) والتوظيف (متوسط 3 أشهر) موجبين معاً، والتضخم ساخن إذا تجاوز Core PCE (تغير سنوي) 2.5%. تصنيف وصفي لا توقع.</p></div>
       <div class="box"><h4>Sahm Rule</h4><p>متوسط البطالة لثلاثة أشهر ناقص أدنى متوسط ثلاثة أشهر في الاثني عشر شهراً السابقة. العتبة 0.50 نقطة مئوية.</p></div>
+      <div class="box"><h4>مؤشرا الأسهم</h4><p>Nasdaq-100 وS&amp;P 500 من FRED عليهما إشعار ملكية لطرف ثالث، فيُستعملان في الحساب فقط: لا تُنشر مستوياتهما ولا رسومهما، ويُنشر المشتق منهما (الأداء النسبي وبوابة القيادة وقياس الترجمة).</p></div>
     </div>
+    ${data.status.warnings.length ? `<h3>تحذيرات البيانات (${data.status.warnings.length})</h3><div class="warn-box data-warnings"><ul>${data.status.warnings.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     <h3>حالة المصادر</h3>
     <div class="tbl-wrap"><table><thead><tr><th>المؤشر</th><th>FRED</th><th>التكرار</th><th>آخر قيمة بتاريخ</th><th>العمر (يوم)</th><th>الحالة</th></tr></thead><tbody>
     ${data.indicators.map(i => `<tr><td>${esc(i.name_ar)}</td><td class="num">${esc(i.id)}</td><td>${esc(FREQ[i.freq] || "")}</td>
       <td class="num">${esc(i.as_of || "—")}</td><td class="num">${esc(i.age_days ?? "—")}</td>
-      <td><span class="dot ${esc(i.state)}"></span>${i.state === "ok" ? "سليم" : i.state === "stale" ? "متأخر" : "خطأ"}${(i.issues || []).length ? `<span class="en">${esc(i.issues.join("؛ "))}</span>` : ""}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl">آخر قيمة من المصدر <bdi>${esc(i.source_as_of)}</bdi>؛ ${esc(i.unavailable.reason)}</span>` : ""}</td></tr>`).join("")}
+      <td><span class="dot ${esc(i.state)}"></span>${i.state === "ok" ? "سليم" : i.state === "stale" ? "متأخر" : "خطأ"}${(i.issues || []).length ? `<span class="en">${esc(i.issues.join("؛ "))}</span>` : ""}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl">آخر قيمة من المصدر <bdi>${esc(i.source_as_of)}</bdi>؛ ${esc(i.unavailable.reason)}</span>` : ""}${i.internal_only ? '<span class="en internal" dir="rtl">داخلي: يُستعمل في الحساب فقط، ولا تُنشر قيمه</span>' : ""}</td></tr>`).join("")}
     </tbody></table></div>`;
 }
 
@@ -802,9 +903,11 @@ function renderCalendar() {
     <p class="news-note" style="margin:8px 0 0">المصدر لا يحمل القيم الفعلية: الأرقام الصادرة في تبويبات البيانات أو في الإصدار الرسمي، وغياب القيمة هنا لا يعني أن الرقم صدر أو لم يصدر. تبقى أحداث الأسبوع حتى افتتاح الأسبوع التالي.</p>`;
 }
 async function loadNews() {
-  try { NEWS.data = await getJSON("news.json"); } catch (e) { if (!NEWS.data) NEWS.data = null; }
+  try { NEWS.data = await getJSON("news.json"); NEWS.failed = false; } catch (e) { NEWS.failed = true; if (!NEWS.data) NEWS.data = null; }
   renderNews();
   renderCalendar();
+  renderAlerts();
+  document.body.dataset.newsLoaded = "1";   // للاختبارات: التنبيهات تُحسب بعد قراءة news.json أو فشلها
 }
 setInterval(() => { if (!document.hidden) loadNews(); }, 120000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) loadNews(); });
@@ -820,11 +923,15 @@ async function getJSON(f) {
     const data = await getJSON("data.json");
     let hist = [];
     if (data.ai_available) { try { hist = await getJSON("data/ai_history.json"); } catch (e) { hist = []; } }
+    APP.data = data;
     renderHeader(data);
+    renderAlerts();
     renderAI(hist, data);
-    renderOverview(data);
+    renderOverview(data, hist);
+    renderNewsPanel();
     loadNews();
     renderCategories(data);
+    renderGates(hist, data);
     renderMethod(data);
     setupTabs(data);
   } catch (e) {

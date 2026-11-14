@@ -57,7 +57,8 @@ def test_inflation_table_shows_september_and_october_unavailable(ui):
 
 def test_status_table_separates_fetch_state_from_missing_yoy(ui):
     page = ui.open(_payload())
-    page.click('button.tab[data-k="method"]')
+    page.evaluate("location.hash = 'method'")
+    page.wait_for_selector("#p-method:not([hidden])")
     cells = _row(page, "#p-method", "CPIAUCSL").locator("td").all_inner_texts()
     # المؤشر | FRED | التكرار | آخر قيمة بتاريخ | العمر | الحالة
     assert cells[3] == "2026-09-01" and cells[4] == "72"
@@ -68,11 +69,13 @@ def test_status_table_separates_fetch_state_from_missing_yoy(ui):
                          " return w.scrollWidth <= w.clientWidth; })()")
 
 
-def test_overview_warning_and_kpi_card(ui):
+def test_known_gap_is_in_the_full_data_warnings_not_an_alert_and_kpi_card(ui):
     page = ui.open(_payload())
-    page.click('button.tab[data-k="overview"]')
-    warn = page.locator("#p-overview .warn-box").inner_text()
+    page.evaluate("location.hash = 'method'")
+    page.wait_for_selector("#p-method:not([hidden])")
+    warn = page.locator("#p-method .data-warnings").inner_text()     # القائمة كاملة، لا أول 8
     assert REASON in warn and "الجلب سليم، وآخر قيمة من المصدر بتاريخ 2026-10-01" in warn
+    assert REASON not in page.locator("#alerts").inner_text()        # فجوة معروفة: بجانب المؤشر، لا تنبيه عام
     kpi = page.locator("#kpis .kpi", has_text="PCE").inner_text()
     assert "2026-09-01" in kpi and "أكتوبر 2026: غير متاح" in kpi
 
@@ -86,7 +89,8 @@ def test_marker_text_is_escaped(ui):
     page = ui.open(payload)
     page.click('button.tab[data-k="cat-inflation"]')
     assert evil in _row(page, "#p-cat-inflation", "CPIAUCSL").inner_text()
-    page.click('button.tab[data-k="method"]')
+    page.evaluate("location.hash = 'method'")
+    page.wait_for_selector("#p-method:not([hidden])")
     assert page.evaluate("window.__xss") is None
 
 
