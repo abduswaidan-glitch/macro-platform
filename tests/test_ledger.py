@@ -17,6 +17,7 @@ import fetch_news
 from macro_platform import ai_report, ledger
 from macro_platform.build import load_config
 from macro_platform.demo import demo_series
+from _report import body, freeze
 
 ROOT = Path(__file__).resolve().parent.parent
 CFG = load_config(ROOT / "config.json")["ai"]
@@ -30,10 +31,12 @@ def sc(label, prob, low, high, series="DGS10", by="2026-11-20"):
 GOOD = [sc("A", 45, 4.95, 5.10), sc("B", 35, None, 4.95), sc("C", 20, 5.10, None)]
 
 
-def rep(scen=GOOD, at="2026-11-16T13:46:00Z", day="2026-11-16"):
-    return {"title": "t", "summary": ["s"], "bias": {"direction": "neutral", "confidence": 50, "reason": "r"},
-            "scenarios": scen, "one_liner": "o",
-            "meta": {"ny_date": day, "completed_at": at, "written_at": at, "model": "m", "run_id": "1"}}
+def rep(scen=GOOD, at="2026-11-16T14:16:00Z", day="2026-11-16", prob=45, delayed=False, attempt="1"):
+    return {"title": "t", "summary": ["s"], "scenarios": scen, "one_liner": "o",
+            "market_translation": {"gates": {}, "nq_vs_spx_10d": {"prob": prob}},
+            "meta": {"ny_date": day, "completed_at": at, "written_at": at, "model": "m", "run_id": "1",
+                     "attempt": attempt, "scheduled_for": "09:00 America/New_York", "started_at": at,
+                     "pre_open": not delayed, "delayed": delayed}}
 
 
 def daily(points):
@@ -90,7 +93,7 @@ def test_no_nasdaq_series_in_the_economic_check_list():
 
 def test_entry_keeps_numbers_only_and_names_the_result_check_result():
     e = ledger.entry(rep(), CFG)
-    assert set(e) == {"ny_date", "written_at", "model", "run_id", "scenario_check"}
+    assert set(e) == {"ny_date", "written_at", "model", "run_id", "timing", "scenario_check", "translation_check"}
     assert e["scenario_check"]["check_result"] is None and "outcome" not in json.dumps(e)
     text = json.dumps(e)
     assert '"t"' not in text and '"r"' not in text and "trigger" not in text and "reason" not in text
@@ -148,9 +151,10 @@ def test_summary_says_small_sample_never_statistical_significance():
     led = {"version": 2, "entries": [ledger.entry(rep(), CFG)]}
     ledger.resolve(led, {"DGS10": daily([("2026-11-16", 5.0), ("2026-11-20", 5.0)])})
     s = ledger.summary(led)
-    assert s["scenario_check"]["n"] == 1 and s["scenario_check"]["baseline"] == 0.6667 and s["sample"] == "small"
+    pre = s["scenario_check"]["pre_open"]
+    assert pre["n"] == 1 and pre["baseline"] == 0.6667 and pre["sample"] == "small"
     big = {"version": 2, "entries": [json.loads(json.dumps(led["entries"][0])) | {"ny_date": f"d{k}"} for k in range(30)]}
-    assert ledger.summary(big)["sample"] == "preliminary"
+    assert ledger.summary(big)["scenario_check"]["pre_open"]["sample"] == "preliminary"
     assert "significan" not in json.dumps(s).lower()
 
 
@@ -162,16 +166,16 @@ def test_bad_ledger_file_starts_empty(tmp_path):
 
 
 # ---------------------------------------------------------------- no silent probability changes
+def _parse(scen):
+    return ai_report.parse_report("<report>" + json.dumps(body(scenarios=scen)) + "</report>")
+
+
 def test_parse_report_keeps_the_models_probabilities_exactly():
-    body = {"title": "t", "summary": ["s"], "bias": {"direction": "neutral", "confidence": 50, "reason": "r"},
-            "scenarios": [{"label": x, "name": x, "prob": p} for x, p in (("A", 50), ("B", 30), ("C", 21))],
-            "one_liner": "o"}
-    got = ai_report.parse_report("<report>" + json.dumps(body) + "</report>")
+    got = _parse([{**s, "prob": p} for s, p in zip(GOOD, (50, 30, 21))])
     assert [s["prob"] for s in got["scenarios"]] == [50, 30, 21]                     # لا تعديل على أكبر احتمال
-    body["scenarios"] = [{"label": "A", "name": "A", "prob": 90}]                     # كان يُسقط التقرير المدفوع
-    assert ai_report.parse_report("<report>" + json.dumps(body) + "</report>")["scenarios"][0]["prob"] == 90
-    body["scenarios"] = [{"label": x, "name": x, "prob": 25} for x in "ABCD"]         # أربعة: تُعرض كلها، لا قصّ
-    assert len(ai_report.parse_report("<report>" + json.dumps(body) + "</report>")["scenarios"]) == 4
+    assert _parse([{**GOOD[0], "prob": 90}])["scenarios"][0]["prob"] == 90            # كان يُسقط التقرير المدفوع
+    four = [{**GOOD[0], "label": x, "prob": 25} for x in "ABCD"]                      # أربعة: تُعرض كلها، لا قصّ
+    assert len(_parse(four)["scenarios"]) == 4
     for broken in ("no report tag", "<report>{bad json</report>"):
         with pytest.raises(Exception):
             ai_report.parse_report(broken)
@@ -182,10 +186,13 @@ def test_the_prompt_states_the_same_rules_the_code_scores():
     s = ai_report.SYSTEM
     assert all(x in s for x in ledger.ALLOWED) and "NASDAQ100" not in s
     assert "within 21 days" in s and "not a weekend or NYSE holiday" in s and "sum to exactly 100" in s
-    assert "not proof that the whole economic scenario happened" in s and "A neutral bias has confidence 50" in s
+    assert "not proof that the whole economic scenario happened" in s and "bias" not in s.lower()
 
 
-def _run(monkeypatch, tmp_path, argv, body=None, series_extra=None):
+MONDAY = "2026-11-16T14:00:00"     # 09:00 EST، يوم تداول
+
+
+def _run(monkeypatch, tmp_path, argv, body=None, series_extra=None, attempt="1"):
     def caller(user, system, model, effort):
         return "<report>" + json.dumps(body) + "</report>", [], {k: 0 for k in ai_report.USAGE_KEYS}, model
 
@@ -200,7 +207,11 @@ def _run(monkeypatch, tmp_path, argv, body=None, series_extra=None):
     monkeypatch.setattr(fetch_macro, "DATA", data)
     monkeypatch.setattr(fetch_news, "load_live", lambda url: {})
     monkeypatch.setenv("ANTHROPIC_API_KEY", "fake")
-    monkeypatch.setenv("AI_FORCE", "true")
+    freeze(monkeypatch, MONDAY)
+    if attempt:
+        monkeypatch.setenv("REPORT_ATTEMPT", attempt)
+    else:
+        monkeypatch.delenv("REPORT_ATTEMPT", raising=False)
     out = tmp_path / "data.json"
     assert fetch_macro.main(["--out", str(out), *argv]) == 0
     return data, json.loads(out.read_text(encoding="utf-8"))
@@ -215,30 +226,28 @@ def _next_trading_day(d, n):
 
 
 def test_report_run_records_its_commitment_and_later_runs_settle_it(monkeypatch, tmp_path):
-    today = datetime.now(timezone.utc).astimezone(ai_report.NY).date()
+    today = datetime.fromisoformat(MONDAY).date()
     by = _next_trading_day(today, 5)
-    body = {k: v for k, v in rep().items() if k != "meta"}
-    body["scenarios"] = [sc("A", 50, 4.9, 5.1, by=str(by)), sc("B", 30, None, 4.9, by=str(by)), sc("C", 20, 5.1, None, by=str(by))]
-    data, payload = _run(monkeypatch, tmp_path, [], body)
+    b = body(scenarios=[sc("A", 50, 4.9, 5.1, by=str(by)), sc("B", 30, None, 4.9, by=str(by)),
+                        sc("C", 20, 5.1, None, by=str(by))])
+    data, payload = _run(monkeypatch, tmp_path, [], b)
     led = json.loads((data / "forecast_ledger.json").read_text(encoding="utf-8"))
     e = led["entries"][-1]
     assert e["ny_date"] == str(today) and e["scenario_check"]["series"] == "DGS10", e
     assert "reason" not in json.dumps(led) and led["version"] == 2
     later = {"DGS10": daily([(str(today), 5.0), (str(by), 5.25), (str(by + timedelta(days=1)), 5.3)])}
-    monkeypatch.delenv("AI_FORCE")
     before = (data / "forecast_ledger.json").read_text(encoding="utf-8")
-    _, payload = _run(monkeypatch, tmp_path, ["--offline"], body, later)
+    _, payload = _run(monkeypatch, tmp_path, ["--offline"], b, later, attempt=None)
     assert payload["ledger"]["by_date"][str(today)]["scenario_check"]["check_result"]["range_hit"] == "C"
     assert (data / "forecast_ledger.json").read_text(encoding="utf-8") == before   # offline لا يكتب السجل
 
 
 def test_a_report_with_unmeasurable_checks_is_still_published(monkeypatch, tmp_path):
-    body = {k: v for k, v in rep().items() if k != "meta"}
-    body["scenarios"] = [{k: v for k, v in s.items() if k != "check"} for s in GOOD]
-    body["scenarios"][0]["prob"] = 46                                                  # المجموع 101
-    data, payload = _run(monkeypatch, tmp_path, [], body)
+    scen = [{k: v for k, v in s.items() if k != "check"} for s in GOOD]
+    scen[0]["prob"] = 46                                                               # المجموع 101
+    data, payload = _run(monkeypatch, tmp_path, [], body(scenarios=scen))
     h = json.loads((data / "ai_history.json").read_text(encoding="utf-8"))[0]
-    assert h["title"] == "t" and h["meta"]["prob_sum"] == 101 and [s["prob"] for s in h["scenarios"]] == [46, 35, 20]
+    assert h["title"] == "عنوان اليوم" and h["meta"]["prob_sum"] == 101 and [s["prob"] for s in h["scenarios"]] == [46, 35, 20]
     e = json.loads((data / "forecast_ledger.json").read_text(encoding="utf-8"))["entries"][-1]
     assert e["scenario_check"] == {"unscorable": "probabilities sum to 101, not 100"}
 

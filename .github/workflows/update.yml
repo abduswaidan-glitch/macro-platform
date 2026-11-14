@@ -1,17 +1,19 @@
 name: تحديث بيانات الاقتصاد الكلي
+# رقم المحاولة في اسم التشغيل: report_trigger.py يعدّ منه المحاولات التي انتهت بلا تسجيل في state.json
+run-name: ${{ inputs.report_attempt && format('تحديث البيانات وتقرير Claude (report-attempt-{0})', inputs.report_attempt) || 'تحديث بيانات الاقتصاد الكلي' }}
 
 on:
   schedule:
-    # كل يوم عمل: حول الافتتاح (تقرير Claude بعد 8:30 بتوقيت نيويورك، صيفاً وشتاءً)، ثم منتصف اليوم وبعد الإغلاق.
+    # بيانات فقط: هذه المواعيد لا تكتب تقرير Claude أبداً (تقرير واحد يومياً يطلبه news.yml: 09:00 ثم 12:00 عند الفشل).
     # جدولة GitHub قد تتأخر أو تُسقط بعض التشغيلات، لذلك المواعيد متعددة.
     - cron: "7,37 12,13,14 * * 1-5"
     - cron: "17 17,21 * * 1-5"
   workflow_dispatch:
     inputs:
-      ai_force:
-        description: "اكتب تقرير Claude الآن (true / false)"
+      report_attempt:
+        description: "تقرير Claude: فارغ = بيانات فقط؛ 1 أو 2 تطلبهما الجدولة؛ manual = يدوي بإذن Abdu (لا يدخل سجل التوقعات)"
         required: false
-        default: "false"
+        default: ""
 
 permissions:
   contents: write
@@ -42,7 +44,7 @@ jobs:
       - name: جلب البيانات وكتابة data.json
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          AI_FORCE: ${{ github.event.inputs.ai_force }}
+          REPORT_ATTEMPT: ${{ inputs.report_attempt }}
         run: python fetch_macro.py
 
       - name: حفظ التحديث
@@ -80,10 +82,15 @@ jobs:
           import json, os
           from datetime import datetime, timezone
           h = json.load(open("data/ai_history.json", encoding="utf-8")) if os.path.exists("data/ai_history.json") else []
+          st = json.load(open("data/state.json", encoding="utf-8")) if os.path.exists("data/state.json") else {}
           m = h[0]["meta"] if h else {}
           if m.get("run_id") == os.environ["GITHUB_RUN_ID"]:
               print(f"report {m['ny_date']}: started {m.get('started_at')}, completed {m.get('completed_at')}, "
-                    f"published {datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ} (trigger {m.get('trigger')})")
+                    f"published {datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ} (attempt {m.get('attempt')}, "
+                    f"pre_open {m.get('pre_open')}, delayed {m.get('delayed')})")
           else:
               print("no report written in this run")
+          for a in st.get("ai_attempts") or []:
+              if a.get("run_id") == os.environ["GITHUB_RUN_ID"]:
+                  print("attempt:", json.dumps(a, ensure_ascii=False))
           PY

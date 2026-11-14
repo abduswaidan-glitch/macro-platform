@@ -164,6 +164,22 @@ td .yoy-na{white-space:normal;min-width:14em}  /* سبب غياب التغير �
 .chk .hit{color:var(--ok);font-weight:600}
 .chk .miss{color:var(--bad);font-weight:600}
 .chk bdi{direction:ltr;unicode-bidi:isolate}
+.late-tag{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:6px;padding:2px 8px}
+.eco h3{margin-top:18px}
+.exec .dir{font-size:13px;margin-inline-start:8px}
+.reg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px}
+.reg .box p,.gate p{margin:4px 0;font-size:14px}
+.eco>.box,.eco>.ai-grid{margin-top:12px}
+.ev{direction:ltr;unicode-bidi:isolate;font-size:12px;background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:0 5px}
+.pill{font-size:11.5px;font-weight:700;border:1px solid currentColor;border-radius:10px;padding:0 6px}
+.gates{display:grid;gap:12px;margin-top:10px}
+.gate .impact{font-size:14px;margin-inline-start:8px}
+.gate-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gate h5,.trans h5{margin:8px 0 4px;font-size:13.5px}
+.trans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--rule)}
+.trans .hit{color:var(--ok);font-weight:600} .trans .miss{color:var(--bad);font-weight:600}
+.events,.checks{margin-top:14px}
+@media (max-width:700px){.gate-cols{grid-template-columns:1fr}}
 .one-liner{margin-top:16px;padding:14px 16px;border-radius:var(--radius);background:var(--acc-soft);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);font-weight:600}
 .sec-body p{margin:6px 0 0;max-width:85ch}
 .picker select{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px}
@@ -492,15 +508,28 @@ function reportTimeLabel(r) {
   const rel = nyDay(t) !== (r.meta && r.meta.ny_date) ? "" : mins < open ? " · قبل الافتتاح" : ` · بعد الافتتاح بـ${mins - open} د`;
   return `كُتب ${esc(nyDay(t))} ${esc(nyTime(t))} بتوقيت نيويورك${rel}`;
 }
+/* محاولات اليوم (data.ai_status من state.json): تظهر فقط حين توجد مشكلة. المحاولة 1 عند 09:00، والثانية 12:00 بعد فشل تقني */
+const hmMin = hm => { const [h, m] = String(hm || "").split(":").map(Number); return h * 60 + (m || 0); };
+function attemptBanner(data) {
+  const st = (data && data.ai_status) || {}, sch = st.schedule || {};
+  const att = (st.attempts || []).filter(a => a && (a.attempt === "1" || a.attempt === "2"));
+  if (!att.length || att.some(a => a.ok)) return "";
+  const line = a => `المحاولة ${esc(a.attempt)} (${esc(nyTime(a.started_at))} بتوقيت نيويورك): <bdi>${esc(a.reason || "سبب غير معروف")}</bdi>`;
+  const late = nyMins(new Date().toISOString()) >= hmMin(sch.last_start || "13:00");
+  if (att.length >= 2 || late)
+    return `<div class="warn-box ai-fail">التقرير الاقتصادي غير متاح اليوم بسبب فشل التوليد.<br>${att.map(line).join("<br>")}</div>`;
+  return `<div class="warn-box ai-fail">فشلت محاولة ${esc(nyTime(att[0].started_at))} (<bdi>${esc(att[0].reason || "سبب غير معروف")}</bdi>)، وإعادة المحاولة ${esc(sch.attempt_2 || "12:00")} بتوقيت نيويورك.</div>`;
+}
 function reportWarnings(hist, data) {
   const out = ((data && data.status && data.status.warnings) || []).filter(w => String(w).includes("تقرير Claude"));
   const now = new Date().toISOString(), today = nyDay(now);
   const wd = new Date().toLocaleDateString("en-US", {timeZone: "America/New_York", weekday: "short"});
   const hol = (data && data.config && data.config.ai_schedule && data.config.ai_schedule.market_holidays) || [];
   const last = hist && hist.length && hist[0].meta ? hist[0].meta.ny_date : null;
-  if (wd !== "Sat" && wd !== "Sun" && !hol.includes(today) && nyMins(now) >= 9 * 60 + 30 && last !== today)
+  const tried = ((data && data.ai_status && data.ai_status.attempts) || []).length > 0;
+  if (!tried && wd !== "Sat" && wd !== "Sun" && !hol.includes(today) && nyMins(now) >= 9 * 60 + 30 && last !== today)
     out.push(`لا تقرير لليوم (${today}) حتى الآن بعد افتتاح نيويورك. آخر تقرير: ${last || "لا يوجد"}.`);
-  return out.length ? `<div class="warn-box ai-late">${out.map(esc).join("<br>")}</div>` : "";
+  return attemptBanner(data) + (out.length ? `<div class="warn-box ai-late">${out.map(esc).join("<br>")}</div>` : "");
 }
 /* سجل التوقعات (data.ledger): الشرط الذي التزم به التقرير، ونتيجته بعد أن يحسمه الكود من بيانات FRED */
 const fmtV = v => v !== null && v !== "" && isFinite(+v) ? String(+(+v).toFixed(4)) : String(v);
@@ -519,53 +548,153 @@ function scenarioCheck(s, led) {
     : ' · <span class="miss">لم يتحقق شرط قياس السيناريو</span>';
   return `<div class="chk">شرط القياس: ${checkTxt(s.check)}${st}</div>`;
 }
+/* الرقم الرئيسي لتقارير ما قبل الافتتاح؛ المتأخرة تُقاس منفصلة ولا تُخلط بها */
+function groupTxt(g, name, base, what, minN) {
+  return `${name}: ${esc(g.n)} محسومة. ${g.sample === "preliminary"
+    ? `تقييم أولي متاح: ${what} Brier <bdi>${esc(g.brier)}</bdi> مقابل <bdi>${esc(g.baseline)}</bdi> ${base} (الأقل أفضل).`
+    : `العينة ما زالت صغيرة ولا تكفي للحكم (أقل من ${esc(minN)} حالة محسومة).`}`;
+}
 function ledgerSummary(data) {
   const S = ((data || {}).ledger || {}).summary;
   if (!S || !S.reports) return "";
-  const c = S.scenario_check || {};
-  return `<p class="muted led-sum">Scenario-check: ${esc(c.n)} مجموعة شروط محسومة. ${S.sample === "preliminary"
-    ? `تقييم أولي متاح: Scenario-check Brier <bdi>${esc(c.brier)}</bdi> مقابل <bdi>${esc(c.baseline)}</bdi> لمن يعطي كل سيناريو الثلث (الأقل أفضل).`
-    : `العينة ما زالت صغيرة ولا تكفي للحكم (أقل من ${esc(S.min_n)} حالة محسومة).`} يقيس بصمة السيناريوهات القريبة، لا صحة السرد الاقتصادي كله.</p>`;
+  const c = S.scenario_check || {}, pre = c.pre_open || {}, del = c.delayed || {}, base = "لمن يعطي كل سيناريو الثلث";
+  return `<p class="muted led-sum">${groupTxt(pre, "Scenario-check، تقارير ما قبل الافتتاح", base, "Scenario-check", S.min_n)}${
+    del.reports ? " " + groupTxt(del, "التقارير المتأخرة (تُقاس منفصلة)", base, "Scenario-check", S.min_n) : ""
+  } يقيس بصمة السيناريوهات القريبة، لا صحة السرد الاقتصادي كله.</p>`;
+}
+
+/* ---------- التقرير الاقتصادي (الصيغة 2): متصل، ثم بوابات السوق ---------- */
+const DIR = {improving: ["يتحسن", "ok"], stable: ["مستقر", "neutral"], weakening: ["يضعف", "bad"], mixed: ["مختلط", "warn"]};
+const IMPACT = {"-2": ["سلبي قوي", "bad"], "-1": ["سلبي", "bad"], "0": ["متوازن", "neutral"], "1": ["إيجابي", "ok"], "2": ["إيجابي قوي", "ok"]};
+const GATE_AR = {nq: "Nasdaq-100 (NQ)", spx: "S&P 500", dow: "Dow Jones"};
+const SEC_AR = {growth: "النمو", inflation: "التضخم", labor: "سوق العمل", fed_rates: "الفيدرالي والفائدة", financial_conditions: "الأوضاع المالية"};
+const REG_AR = {growth: "النمو", inflation: "التضخم", labor: "العمل", fed_rates: "الفيدرالي والفائدة", financial: "الأوضاع المالية"};
+const NA = '<span class="muted na">غير محدد</span>';
+const tx = v => (v === undefined || v === null || v === "") ? NA : esc(v);
+const arr = v => Array.isArray(v) ? v : [];
+const ul = (a, f = esc) => arr(a).length ? `<ul>${arr(a).map(x => `<li>${f(x)}</li>`).join("")}</ul>` : `<p>${NA}</p>`;
+function supportTxt(d, events) {
+  const ev = arr(d && d.evidence).map(x => `<bdi class="ev">${esc(x)}</bdi>`).join(" ");
+  const ln = arr(d && d.event_ids).map(id => events[id]).filter(Boolean)
+    .map(e => `<a href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.title)}</a>`).join("، ");
+  return ev || ln ? `<div class="chk">الدليل: ${ev}${ev && ln ? " · " : ""}${ln}</div>` : "";
+}
+function lateTag(r) {
+  const m = r.meta || {}; if (!m.delayed) return "";
+  const t = m.completed_at || m.written_at;
+  return `<span class="late-tag">تقرير متأخر: كُتب الساعة ${esc(nyTime(t))} بعد افتتاح السوق${m.attempt === "2" ? " (المحاولة الثانية)" : ""}</span>`;
+}
+function economyHtml(r, data, led) {
+  const e = r.economy || {}, x = e.executive || {}, rg = e.regime || {};
+  const events = Object.fromEntries(arr(r.events).filter(v => v && v.id).map(v => [v.id, v]));
+  const d = DIR[x.direction] || [x.direction ? esc(x.direction) : "غير محدد", "neutral"];
+  const scen = arr(e.scenarios), unsc = led && led.scenario_check && led.scenario_check.unscorable;
+  const psum = r.meta && typeof r.meta.prob_sum === "number" && r.meta.prob_sum !== 100
+    ? `<div class="chk">مجموع احتمالات السيناريوهات ${esc(r.meta.prob_sum)} لا 100: عُرضت كما كتبها النموذج، ولا تُقاس.</div>` : "";
+  const scInvalid = psum || (unsc ? `<div class="chk">شروط السيناريوهات غير قابلة للقياس: ${esc(unsc)}</div>` : "");
+  const dd = e.dominant_driver && typeof e.dominant_driver === "object" ? e.dominant_driver : null;
+  return `<div class="eco">
+    <div class="box exec"><h4>الخلاصة التنفيذية <span class="dir tone-${d[1]}">${d[0]}</span></h4><p>${tx(x.read)}</p>
+      <p class="muted"><b>أكبر تغير:</b> ${tx(x.biggest_change)}</p></div>
+    <h3>النظام الاقتصادي: ${tx(rg.label)}</h3>
+    <div class="reg">${Object.entries(REG_AR).map(([k, a]) => `<div class="box"><h4>${a}</h4><p>${tx(rg[k])}</p></div>`).join("")}</div>
+    <div class="ai-grid">
+      <div class="box drv"><h4>المحرك المهيمن</h4>${dd ? `<p>${tx(dd.driver)}</p>${supportTxt(dd, events)}` : `<p>${NA}</p>`}</div>
+      <div class="box cfl"><h4>التعارضات الرئيسية</h4>${Array.isArray(e.key_conflicts) ? (e.key_conflicts.length
+        ? `<ul>${e.key_conflicts.map(c => `<li>${tx(c && c.text)}${supportTxt(c, events)}</li>`).join("")}</ul>`
+        : '<p class="muted">لا تعارض جوهري اليوم.</p>') : `<p>${NA}</p>`}</div>
+    </div>
+    <div class="box"><h4>ما الذي تغيّر منذ التقرير السابق</h4>${ul(e.what_changed)}</div>
+    ${Object.entries(SEC_AR).map(([k, a]) => `<h3>${a}</h3><div class="box sec-body"><p>${tx((e.sections || {})[k])}</p></div>`).join("")}
+    <h3>الأخبار وأثرها</h3><div class="box news-eff">${arr(e.news).length ? `<ul>${e.news.map(n => `<li><b>${tx(n && n.item)}</b>: ${tx(n && n.effect)}${
+      n && n.changes_picture ? ' <span class="pill tone-warn">يغيّر الصورة</span>' : ""}${supportTxt({event_ids: n && n.event_ids}, events)}</li>`).join("")}</ul>` : `<p class="muted">لا خبر يغيّر الصورة اليوم.</p>`}</div>
+    <div class="box"><h4>عدم اليقين في البيانات</h4>${ul(e.data_uncertainty)}</div>
+    <h3>السيناريوهات A وB وC</h3>
+    <p class="muted uncal">الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة.</p>
+    ${ledgerSummary(data)}${scInvalid}
+    ${scen.length ? scen.map(s => `<div class="sc"><div class="sc-top"><span>${esc(s.label)}. ${tx(s.name)}</span><span class="num">${esc(s.prob)}%</span></div>
+      <div class="conf"><i style="width:${Math.max(0, Math.min(100, +s.prob || 0))}%"></i></div>
+      <p>${tx(s.thesis)}</p><p class="muted"><b>الأفق:</b> ${tx(s.horizon)}</p>
+      <p><b>ما يؤكده:</b> ${tx(s.confirm)}</p><p><b>ما يبطله:</b> ${tx(s.invalidate)}</p>
+      <p class="muted"><b>ما يحرّك الاحتمال:</b> ${tx(s.moves_probability)}</p>${scenarioCheck(s, led)}</div>`).join("") : `<p>${NA}</p>`}
+    <div class="box conv"><h4>القناعة</h4><p>${tx(e.conviction)}</p></div>
+    <div class="one-liner">${tx(e.bottom_line)}</div>
+  </div>`;
+}
+function translationHtml(mt, led, S) {
+  const t = mt && typeof mt.nq_vs_spx_10d === "object" ? mt.nq_vs_spx_10d : {}, p = t ? t.prob : null;
+  const ok = Number.isInteger(p) && p >= 0 && p <= 100;
+  const tc = led && led.translation_check, o = tc && tc.check_result;
+  const st = !tc ? "" : tc.unscorable ? `<p class="muted">غير قابل للقياس: ${esc(tc.unscorable)}</p>`
+    : !o ? `<p class="muted">النافذة من إغلاق <bdi>${esc(tc.start)}</bdi> إلى إغلاق <bdi>${esc(tc.end)}</bdi> · لم يُحسم بعد</p>`
+    : !o.scorable ? `<p class="muted">تعذّر الحسم: ${esc(o.why)}</p>`
+    : `<p>${o.nq_outperformed ? '<span class="hit">تفوق NQ</span>' : '<span class="miss">لم يتفوق NQ</span>'} بفارق <bdi>${esc(o.nq_minus_spx_pct)}</bdi> نقطة مئوية (<bdi>${esc(o.from)}</bdi> إلى <bdi>${esc(o.to)}</bdi>)</p>`;
+  const g = S && S.translation_check && S.translation_check.pre_open;
+  return `<div class="trans"><h5>قياس الترجمة السوقية: NQ مقابل S&amp;P 500 خلال 10 أيام</h5>
+    <p class="muted">قياس للترجمة السوقية، وليس قياساً لصحة التحليل الاقتصادي.</p>
+    ${ok ? `<p>احتمال تفوق Nasdaq-100 على S&amp;P 500: <b class="num">${p}%</b>${p === 50 ? " (لا رأي)" : ""}</p>` : '<p class="muted">الاحتمال غائب أو غير صالح، فلا يُقاس.</p>'}
+    ${st}${g && S.reports ? `<p class="muted trans-sum">${groupTxt(g, "Translation-check، قبل الافتتاح", "لمن يقول 50", "Translation-check", S.min_n)}</p>` : ""}</div>`;
+}
+function gatesHtml(r, data, led) {
+  const mt = r.market_translation;
+  const head = `<h3 id="gates">بوابات السوق</h3><p class="muted">ترجمة سوقية مشتقة من التقييم الاقتصادي أعلاه. لا Entry ولا Stop ولا Target ولا توصية شراء أو بيع.</p>`;
+  if (!mt || typeof mt !== "object") return head + `<p class="muted gates-na">بوابات السوق غير متاحة اليوم.</p>`;
+  const g = mt.gates || {}, S = ((data || {}).ledger || {}).summary;
+  return head + `<div class="gates">${["nq", "spx", "dow"].map(k => {
+    const v = g[k] && typeof g[k] === "object" ? g[k] : null;
+    if (!v) return `<div class="box gate" data-g="${k}"><h4>${GATE_AR[k]}</h4><p class="muted">غير متاحة اليوم.</p></div>`;
+    const ok = Number.isInteger(v.impact) && v.impact >= -2 && v.impact <= 2, im = ok ? IMPACT[String(v.impact)] : ["غير صالح", "warn"];
+    return `<div class="box gate" data-g="${k}"><h4>${GATE_AR[k]} <span class="impact tone-${im[1]}">${im[0]}${ok ? ` <bdi dir="ltr">(${v.impact > 0 ? "+" : ""}${v.impact})</bdi>` : ""}</span></h4>
+      <p><b>ما يهم الآن:</b> ${tx(v.matters_now)}</p>
+      <div class="gate-cols"><div><h5>المحركات</h5>${ul(v.drivers)}</div><div><h5>إيجابي</h5>${ul(v.positive)}</div><div><h5>سلبي</h5>${ul(v.negative)}</div></div>
+      <p class="muted"><b>ما يقلب الحكم:</b> ${tx(v.would_flip)} · <b>الأفق:</b> ${tx(v.horizon)}</p>
+      ${k === "nq" ? translationHtml(mt, led, S) : ""}</div>`;
+  }).join("")}</div>`;
+}
+function legacyHtml(r, data, led) {
+  const b = BIAS[r.bias?.direction] || ["—", "neutral"], unsc = led && led.scenario_check && led.scenario_check.unscorable;
+  const psum = r.meta && typeof r.meta.prob_sum === "number" && r.meta.prob_sum !== 100
+    ? `<div class="chk">مجموع احتمالات السيناريوهات ${esc(r.meta.prob_sum)} لا 100: عُرضت كما كتبها النموذج، ولا تُقاس.</div>` : "";
+  const scInvalid = psum || (unsc ? `<div class="chk">شروط السيناريوهات غير قابلة للقياس: ${esc(unsc)}</div>` : "");
+  const list = (title, a) => a && a.length ? `<div class="box"><h4>${title}</h4><ul>${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
+  return `<div class="ai-grid">
+      <div class="box"><h4>الملخص</h4><ul>${(r.summary || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+      <div class="box"><h4>انحياز NQ للجلسة القادمة</h4><div class="bias tone-${b[1]}">${b[0]}</div>
+        <div class="conf"><i style="width:${Math.max(0, Math.min(100, +r.bias?.confidence || 0))}%"></i></div>
+        <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p></div>
+    </div>
+    <h3>السيناريوهات A وB وC</h3>
+    <p class="muted uncal">الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة.</p>
+    ${ledgerSummary(data)}${scInvalid}
+    ${(r.scenarios || []).map(s => `<div class="sc"><div class="sc-top"><span>${esc(s.label)}. ${esc(s.name)}</span><span class="num">${esc(s.prob)}%</span></div>
+      <div class="conf"><i style="width:${Math.max(0, Math.min(100, +s.prob || 0))}%"></i></div>
+      <p><b>المُحفِّز:</b> ${esc(s.trigger)}</p><p class="muted">${esc(s.reason)}</p>${scenarioCheck(s, led)}</div>`).join("")}
+    ${r.gates_read ? `<h3>قراءة بوابات NQ</h3><div class="box sec-body"><p>${esc(r.gates_read)}</p></div>` : ""}
+    ${(r.sections || []).map(s => `<h3>${esc(s.heading)}</h3><div class="box sec-body"><p>${esc(s.body)}</p></div>`).join("")}
+    <div class="ai-grid">${list("ما يستحق المتابعة", r.watch)}${list("المخاطر", r.risks)}</div>
+    <div class="ai-grid">${list("تدقيق البيانات", r.data_audit)}</div>
+    ${r.one_liner ? `<div class="one-liner">${esc(r.one_liner)}</div>` : ""}`;
 }
 function renderAI(hist, data) {
   const p = $("#p-ai");
-  const intro = `<div class="sec-head"><h2>التقرير الذكي</h2><p>قراءة يومية يكتبها Claude قبل افتتاح نيويورك من بيانات المنصة وأخبار اليوم: ملخص، وانحياز لـNQ، وثلاثة سيناريوهات باحتمالاتها، ومصادر كل حدث.</p></div>
+  const intro = `<div class="sec-head"><h2>التقرير الاقتصادي</h2><p>قراءة يومية يكتبها Claude من بيانات المنصة وأخبار اليوم: تقييم اقتصادي أولاً (النمو، والتضخم، وسوق العمل، والفيدرالي، والأوضاع المالية) وثلاثة سيناريوهات قابلة للقياس، ثم ترجمة سوقية قصيرة لـNasdaq-100 وS&amp;P 500 وDow.</p></div>
     <details class="about"><summary>متى يُكتب وما قواعده؟</summary><div class="body">
-    <p>مرة واحدة كل يوم تداول: يُطلب بعد 8:40 بتوقيت نيويورك (بعد وصول بيانات 8:30)، والهدف قبل افتتاح 9:30 دون ضمان، ويظهر وقت كتابته فوق التقرير. الأرقام من بيانات المنصة نفسها، والنموذج ممنوع من اختراع الأرقام أو إعطاء توصيات شراء وبيع. تعليماته الدائمة في <code>prompts/analyst.md</code> وتُعدَّل من GitHub. نحتفظ بآخر 14 تقريراً.</p></div></details>`;
+    <p>مرة واحدة كل يوم تداول عند 09:00 بتوقيت نيويورك. إن فشل توليده فشلاً تقنياً يُعاد مرة واحدة عند 12:00، ولا محاولة بعد ذلك إلا يدوياً. التقرير الذي يكتمل بعد افتتاح 9:30 يُوسم «متأخر» ويُقاس منفصلاً. الأرقام من بيانات المنصة نفسها، وما صدر صباحاً ولم يصل إليها يُؤخذ من الإصدار الرسمي برابطه. النموذج ممنوع من اختراع الأرقام ومن توصيات الشراء والبيع. تعليماته الدائمة في <code>prompts/analyst.md</code> وتُعدَّل من GitHub. نحتفظ بآخر 14 تقريراً.</p></div></details>`;
   if (!hist || !hist.length) {
-    p.innerHTML = intro + reportWarnings(hist, data) + `<p class="empty">لا يوجد تقرير بعد. يُكتب أول تقرير بعد إضافة السر <code>ANTHROPIC_API_KEY</code> في إعدادات المستودع، أو بتشغيل الـworkflow يدوياً مع <code>ai_force=true</code>.</p>`;
+    p.innerHTML = intro + reportWarnings(hist, data) + `<p class="empty">لا يوجد تقرير بعد. يُكتب أول تقرير في يوم التداول التالي عند 09:00 بتوقيت نيويورك، أو بتشغيل الـworkflow يدوياً مع <code>report_attempt=manual</code>.</p>`;
     return;
   }
   const view = idx => {
-    const r = hist[idx], b = BIAS[r.bias?.direction] || ["—", "neutral"], led = ledgerOf(data, r.meta?.ny_date);
-    const unsc = led && led.scenario_check && led.scenario_check.unscorable;
-    const psum = r.meta && typeof r.meta.prob_sum === "number" && r.meta.prob_sum !== 100
-      ? `<div class="chk">مجموع احتمالات السيناريوهات ${esc(r.meta.prob_sum)} لا 100: عُرضت كما كتبها النموذج، ولا تُقاس.</div>` : "";
-    const scInvalid = psum || (unsc ? `<div class="chk">شروط السيناريوهات غير قابلة للقياس: ${esc(unsc)}</div>` : "");
-    const list = (title, arr) => arr && arr.length ? `<div class="box"><h4>${title}</h4><ul>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
+    const r = hist[idx], led = ledgerOf(data, r.meta?.ny_date), v2 = !!(r.economy && typeof r.economy === "object");
+    const warn = arr(r.warnings);
     p.innerHTML = intro + reportWarnings(hist, data) + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
-        <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div></div>
+        <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div>${lateTag(r)}</div>
         ${hist.length > 1 ? `<label class="picker">تقارير سابقة: <select id="aiPick">${hist.map((h, k) =>
           `<option value="${k}"${k === idx ? " selected" : ""}>${esc(h.meta?.ny_date)}</option>`).join("")}</select></label>` : ""}</div>
-      <div class="ai-grid">
-        <div class="box"><h4>الملخص</h4><ul>${(r.summary || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
-        <div class="box"><h4>انحياز NQ للجلسة القادمة</h4><div class="bias tone-${b[1]}">${b[0]}</div>
-          <div class="conf"><i style="width:${Math.max(0, Math.min(100, +r.bias?.confidence || 0))}%"></i></div>
-          <div class="muted">الثقة ${esc(r.bias?.confidence)}% · تقدير ذاتي من النموذج، غير معاير</div><p>${esc(r.bias?.reason)}</p></div>
-      </div>
-      <h3>السيناريوهات A وB وC</h3>
-      <p class="muted uncal">الاحتمالات أوزان ذاتية من النموذج، غير معايرة على نتائج سابقة.</p>
-      ${ledgerSummary(data)}${scInvalid}
-      ${(r.scenarios || []).map(s => `<div class="sc"><div class="sc-top"><span>${esc(s.label)}. ${esc(s.name)}</span><span class="num">${esc(s.prob)}%</span></div>
-        <div class="conf"><i style="width:${Math.max(0, Math.min(100, +s.prob || 0))}%"></i></div>
-        <p><b>المُحفِّز:</b> ${esc(s.trigger)}</p><p class="muted">${esc(s.reason)}</p>${scenarioCheck(s, led)}</div>`).join("")}
-      ${r.gates_read ? `<h3>قراءة بوابات NQ</h3><div class="box sec-body"><p>${esc(r.gates_read)}</p></div>` : ""}
-      ${(r.sections || []).map(s => `<h3>${esc(s.heading)}</h3><div class="box sec-body"><p>${esc(s.body)}</p></div>`).join("")}
-      <div class="ai-grid">${list("ما يستحق المتابعة", r.watch)}${list("المخاطر", r.risks)}</div>
-      <div class="ai-grid">${list("تدقيق البيانات", r.data_audit)}
-        ${r.events && r.events.length ? `<div class="box"><h4>الأحداث المؤثرة</h4><ul>${r.events.map(e =>
-          `<li>${esc(e.date || "")} <a href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.title)}</a></li>`).join("")}</ul></div>` : ""}</div>
-      ${r.one_liner ? `<div class="one-liner">${esc(r.one_liner)}</div>` : ""}
+      ${v2 ? economyHtml(r, data, led) + gatesHtml(r, data, led) : legacyHtml(r, data, led)}
+      ${arr(r.events).length ? `<div class="box events"><h4>الأحداث المؤثرة</h4><ul>${r.events.map(e =>
+          `<li>${esc(e.date || "")} <a href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.title)}</a></li>`).join("")}</ul></div>` : ""}
+      ${warn.length ? `<details class="about checks"><summary>ملاحظات التحقق الآلي (${warn.length})</summary><div class="body"><ul>${warn.map(w => `<li><bdi>${esc(w)}</bdi></li>`).join("")}</ul></div></details>` : ""}
       ${r.sources && r.sources.length ? `<details class="about"><summary>مصادر البحث (${r.sources.length})</summary><div class="body"><ul>${r.sources.map(s =>
         `<li><a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title || s.url)}</a></li>`).join("")}</ul></div></details>` : ""}`;
     const pick = $("#aiPick"); if (pick) pick.onchange = () => view(+pick.value);

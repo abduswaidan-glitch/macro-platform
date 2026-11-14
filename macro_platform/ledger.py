@@ -8,6 +8,13 @@ Scenario-check: لكل سيناريو شرط على سلسلة اقتصادية/
 مرتبطة بالسيناريو، وليس إثباتاً لتحقق السيناريو الاقتصادي كاملاً**؛ لذلك يُسمّى الحسم check_result لا outcome،
 ولا يقيس Scenario-check Brier صحة السرد الاقتصادي. المرجع: من يعطي كل سيناريو الثلث (≈0.667).
 
+Translation-check (منفصل كلياً، لا يُجمع مع Scenario-check في أي رقم): احتمال أن يتفوق Nasdaq-100 على S&P 500 خلال
+10 أيام تداول، من آخر إغلاق قبل التقرير (أو إغلاق يومه لتقرير متأخر). يقيس الترجمة السوقية لا التحليل الاقتصادي.
+المرجع: 0.25 (من يقول 50). يُحفظ مشتقاً فقط: الفرق النسبي وهل تفوق NQ، لا مستويات المؤشرين.
+
+التوقيت: لكل مدخل timing (المحاولة، وموعدها، والبدء، والاكتمال، وهل اكتمل قبل الافتتاح). الإحصاءات تُحسب منفصلة
+للتقارير قبل الافتتاح وللمتأخرة؛ الرقم الرئيسي للأولى. مدخل واحد لكل جلسة، ومن المحاولات المجدولة الناجحة فقط.
+
 لا نص من التقرير يُحفظ هنا: أرقام وتواريخ فقط، في data/forecast_ledger.json (يكتبه update.yml ويحفظه في المستودع).
 """
 
@@ -28,6 +35,9 @@ ALLOWED = ("DGS2", "DGS10", "DFII10", "T10YIE", "T10Y2Y", "BAMLH0A0HYM2", "DTWEX
 MAX_DAYS = 21              # أبعد تاريخ حسم بعد يوم التقرير
 MIN_N = 30                 # قاعدة إبهام لا اختبار إحصائي: دونها العينة صغيرة ولا تكفي للحكم
 BASE_SCEN = round(2 / 3, 4)  # Brier لمن يعطي كل سيناريو الثلث
+BASE_TRANS = 0.25            # Brier لمن يقول 50 في الترجمة
+TRANS_DAYS = 10              # أيام تداول نافذة Translation-check
+GROUPS = ("pre_open", "delayed")
 
 
 def load(path: Path) -> dict:
@@ -115,12 +125,44 @@ def check_scenarios(scenarios: list, ny_date: str, cfg: dict) -> tuple[dict | No
     return {"series": next(iter(series)), "by": by.isoformat(), "ranges": ranges, "check_result": None}, None
 
 
+def _step(d: date, cfg: dict, n: int) -> date | None:
+    """يوم التداول رقم n بعد d (n سالب = قبله)، أو None إن تجاوز تقويم العطل المعروف."""
+    horizon, k = holiday_horizon(cfg), 1 if n > 0 else -1
+    while n:
+        d += timedelta(days=k)
+        if horizon is None or d.year > horizon:
+            return None
+        if is_trading_day(datetime(d.year, d.month, d.day, 12), cfg):
+            n -= k
+    return d
+
+
+def translation(rep: dict, cfg: dict, delayed: bool) -> dict:
+    """Translation-check: احتمال تفوق NQ على S&P 500 خلال 10 أيام تداول. التقرير قبل الافتتاح يبدأ من آخر إغلاق
+    قبله؛ والمتأخر من إغلاق يومه، فتبدأ النافذة بعد الجلسة التي رأى النموذج جزءاً منها."""
+    mt = rep.get("market_translation") if isinstance(rep.get("market_translation"), dict) else {}
+    tr = mt.get("nq_vs_spx_10d") if isinstance(mt.get("nq_vs_spx_10d"), dict) else {}
+    p = tr.get("prob")
+    if not (isinstance(p, int) and not isinstance(p, bool) and 0 <= p <= 100):
+        return {"unscorable": "probability missing or not a whole number from 0 to 100"}
+    day = _day((rep.get("meta") or {}).get("ny_date"))
+    start = day if delayed else (_step(day, cfg, -1) if day else None)
+    end = _step(start, cfg, TRANS_DAYS) if start else None
+    if start is None or end is None:
+        return {"unscorable": "market holidays are not known for that window"}
+    return {"prob": p, "start": start.isoformat(), "end": end.isoformat(), "check_result": None}
+
+
 def entry(rep: dict, cfg: dict) -> dict:
     m = rep.get("meta") or {}
     sc, why = check_scenarios(rep.get("scenarios") or [], m.get("ny_date"), cfg)
+    delayed = bool(m.get("delayed"))
     return {"ny_date": m.get("ny_date"), "written_at": m.get("completed_at") or m.get("written_at"),
             "model": m.get("model"), "run_id": m.get("run_id"),
-            "scenario_check": sc or {"unscorable": why}}
+            "timing": {k: m.get(k) for k in ("attempt", "scheduled_for", "started_at", "completed_at", "pre_open")}
+                      | {"delayed": delayed},
+            "scenario_check": sc or {"unscorable": why},
+            "translation_check": translation(rep, cfg, delayed)}
 
 
 def add(led: dict, e: dict) -> None:
@@ -152,30 +194,64 @@ def _settle(sc: dict, s: pd.Series, ny_date: str) -> dict | None:
     return {"scorable": True, "value": v, "date": on, "range_hit": hit, "brier": round(brier, 4)}
 
 
+def _settle_translation(tc: dict, ndx: pd.Series, spx: pd.Series) -> dict | None:
+    start, end = pd.Timestamp(tc["start"]), pd.Timestamp(tc["end"])
+    if ndx.empty or spx.empty or ndx.index.max() < end or spx.index.max() < end:
+        return None                                        # لم تصل الإغلاقات إلى نهاية النافذة: لا حكم
+    a, b = ndx[ndx.index <= start], spx[spx.index <= start]
+    c, d = ndx[(ndx.index > start) & (ndx.index <= end)], spx[(spx.index > start) & (spx.index <= end)]
+    if a.empty or b.empty or c.empty or d.empty or a.index[-1] != b.index[-1] or c.index[-1] != d.index[-1]:
+        return {"scorable": False, "why": "no matching closes for both indices at the window ends"}
+    r_ndx, r_spx = c.iloc[-1] / a.iloc[-1], d.iloc[-1] / b.iloc[-1]
+    hit = bool(r_ndx > r_spx)
+    return {"scorable": True, "nq_minus_spx_pct": round(float(r_ndx - r_spx) * 100, 3), "nq_outperformed": hit,
+            "from": a.index[-1].strftime("%Y-%m-%d"), "to": c.index[-1].strftime("%Y-%m-%d"),
+            "brier": round((tc["prob"] / 100 - (1.0 if hit else 0.0)) ** 2, 4)}
+
+
 def resolve(led: dict, series: dict) -> int:
     """يحسم ما وصلت بياناته. لا يحسم قبل أن تتجاوز السلسلةُ تاريخَ الحسم، فلا حكم على بيانات ناقصة."""
     done = 0
+    ndx, spx = _clean(series.get("NASDAQ100")), _clean(series.get("SP500"))
     for e in led["entries"]:
         sc = e.get("scenario_check") or {}
         if sc.get("ranges") and sc.get("check_result") is None:
             out = _settle(sc, _clean(series.get(sc["series"])), e["ny_date"])
             if out is not None:
                 sc["check_result"], done = out, done + 1
+        tc = e.get("translation_check") or {}
+        if "prob" in tc and tc.get("check_result") is None:
+            out = _settle_translation(tc, ndx, spx)
+            if out is not None:
+                tc["check_result"], done = out, done + 1
     return done
 
 
+def _group(e: dict) -> str:
+    return "delayed" if (e.get("timing") or {}).get("delayed") else "pre_open"
+
+
+def _stats(led: dict, key: str, base: float) -> dict:
+    out = {}
+    for g in GROUPS:
+        res = [r for e in led["entries"] if _group(e) == g
+               for r in [((e.get(key) or {}).get("check_result") or {})] if r.get("scorable")]
+        n = len(res)
+        out[g] = {"n": n, "brier": round(sum(r["brier"] for r in res) / n, 4) if n else None, "baseline": base,
+                  "reports": sum(1 for e in led["entries"] if _group(e) == g),
+                  "sample": "preliminary" if n >= MIN_N else "small"}
+    return out
+
+
 def summary(led: dict) -> dict:
-    res = [e["scenario_check"]["check_result"] for e in led["entries"]
-           if (e.get("scenario_check") or {}).get("check_result") and e["scenario_check"]["check_result"].get("scorable")]
-    n = len(res)
-    return {"reports": len(led["entries"]),
-            "scenario_check": {"n": n, "brier": round(sum(r["brier"] for r in res) / n, 4) if n else None,
-                               "baseline": BASE_SCEN},
-            "min_n": MIN_N, "sample": "preliminary" if n >= MIN_N else "small"}
+    """قسمان لا يُجمعان أبداً، وكل منهما منفصل قبل الافتتاح وبعده. الرقم الرئيسي: pre_open."""
+    return {"reports": len(led["entries"]), "min_n": MIN_N,
+            "scenario_check": _stats(led, "scenario_check", BASE_SCEN),
+            "translation_check": _stats(led, "translation_check", BASE_TRANS)}
 
 
 def view(led: dict, keep: int = 14) -> dict:
     """ما تعرضه الصفحة: الملخص، وحالة آخر التقارير بتاريخها."""
     return {"summary": summary(led),
-            "by_date": {e["ny_date"]: {"scenario_check": e.get("scenario_check")}
+            "by_date": {e["ny_date"]: {k: e.get(k) for k in ("scenario_check", "translation_check", "timing")}
                         for e in led["entries"][-keep:] if e.get("ny_date")}}

@@ -1,6 +1,6 @@
-"""نقطة التشغيل: جلب FRED → فحص → data.json → (تقرير Claude إن حان موعده).
+"""نقطة التشغيل: جلب FRED → فحص → data.json → (تقرير Claude إن طُلبت محاولة).
 
-    python fetch_macro.py            # تحديث حقيقي (يحتاج اتصالاً بـFRED)
+    python fetch_macro.py            # تحديث حقيقي (يحتاج اتصالاً بـFRED)؛ تقرير فقط مع REPORT_ATTEMPT=1|2|manual
     python fetch_macro.py --offline  # إعادة بناء data.json من data/raw بلا جلب ولا تقرير (عند كل نشر)
     python fetch_macro.py --demo     # بيانات تجريبية مولّدة لمعاينة الصفحة محلياً
 
@@ -85,21 +85,27 @@ def main(argv=None) -> int:
     for w in payload["status"]["warnings"]:
         log("warning:", w)
 
-    # تقرير Claude
+    # تقرير Claude: فقط في تشغيل يحمل REPORT_ATTEMPT (1 أو 2 من الجدولة، أو manual بإذن Abdu).
+    # تشغيلات cron تحدّث البيانات فقط، فلا مسار ثانٍ لكتابة تقرير مدفوع.
     state_p = DATA / "state.json"
     state = json.loads(state_p.read_text(encoding="utf-8")) if state_p.exists() else {}
-    force = os.environ.get("AI_FORCE", "").lower() == "true"
+    attempt = os.environ.get("REPORT_ATTEMPT", "").strip().lower()
+    ai_cfg = cfg.get("ai", {})
     hist_p = DATA / "ai_history.json"
     ledger_p = DATA / "forecast_ledger.json"
     led = ledger.load(ledger_p)
     # الحكم على الشروط من سلاسل FRED نفسها قبل التقرير، فيرى التقرير نتيجة شروط سابقه
     settled = ledger.resolve(led, series)
     payload["ledger"] = ledger.view(led)
+    allowed, why = ai_report.attempt_allowed(attempt, now, state, ai_cfg)
     if args.demo or args.offline:
         log("AI report skipped (demo/offline build)")
+    elif not allowed:
+        log(f"AI report skipped: {why}")
     elif not os.environ.get("ANTHROPIC_API_KEY", "").strip():
         log("AI report skipped: no ANTHROPIC_API_KEY secret")
-    elif ai_report.should_run(now, state.get("ai_last_date"), cfg.get("ai", {}), force):
+    else:
+        started, rep, err = datetime.now(timezone.utc), None, None
         try:
             from fetch_news import load_live
             from macro_platform import news
@@ -109,21 +115,26 @@ def main(argv=None) -> int:
             today = now.astimezone(ai_report.NY).strftime("%Y-%m-%d")
             older = [h for h in hist if (h.get("meta") or {}).get("ny_date", "") < today]
             previous = max(older, key=lambda h: h["meta"]["ny_date"]) if older else None
-            rep = ai_report.write_report(payload, cfg, now_utc=now, feed=feed, previous=previous)
-            ai_report.update_history(hist_p, rep, keep=cfg.get("ai", {}).get("keep", 14))
-            ledger.add(led, ledger.entry(rep, cfg.get("ai", {})))   # ما التزم به التقرير، أرقاماً فقط
-            state["ai_last_date"] = rep["meta"]["ny_date"]
-            state_p.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
-            u = rep["meta"]["usage"]
-            cost = ai_report.estimate_cost(rep["meta"]["model"], u)
-            log(f"AI report written ({rep['meta']['model']}, {u}"
-                + (f", est. ${cost}" if cost is not None else "") + ")")   # الكلفة في السجل فقط
-        except Exception as exc:
-            log("AI report FAILED:", repr(exc)[:300])
-            msg = f"فشل كتابة تقرير Claude: {str(exc)[:160]}"
-            payload["status"]["warnings"].append(msg)
-            extra.append(msg)
+            rep = ai_report.write_report(payload, cfg, now_utc=now, feed=feed, previous=previous, attempt=attempt)
+            ai_report.update_history(hist_p, rep, keep=ai_cfg.get("keep", 14))
+            if attempt in ai_report.SCHEDULED:          # Forecast واحد لكل جلسة، من المحاولة المجدولة الناجحة فقط
+                ledger.add(led, ledger.entry(rep, ai_cfg))
+                state["ai_last_date"] = rep["meta"]["ny_date"]
+            m = rep["meta"]
+            log(f"AI report written (attempt {attempt}, {m['model']}, effort {m['effort']}, stop {m['stop_reason']}, "
+                f"{m['duration_s']}s, {m['usage']}, est. ${m['cost_estimate']}, warnings {len(rep['warnings'])})")
+            for w in rep["warnings"]:
+                log("report warning:", w)
+        except Exception as exc:                        # كل فشل هنا تقني ويمنع النشر: قابل لإعادة المحاولة
+            err = exc
+            log(f"AI report FAILED (attempt {attempt}):", repr(exc)[:300])
+        rec = ai_report.attempt_record(attempt, cfg, now, started, datetime.now(timezone.utc), rep, err)
+        log("attempt record:", json.dumps(rec, ensure_ascii=False))
+        state["ai_attempts"] = ((state.get("ai_attempts") or []) + [rec])[-90:]
+        state_p.parent.mkdir(exist_ok=True)
+        state_p.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
     payload["ai_available"] = hist_p.exists()
+    payload["ai_status"] = ai_report.status_view(state, now, ai_cfg)    # محاولات اليوم، في كل بناء (offline أيضاً)
     # الحكم على التوقعات من سلاسل FRED نفسها؛ يُحفظ فقط في تحديث البيانات (update.yml يحفظ data/ في المستودع)
     payload["ledger"] = ledger.view(led)
     if settled:

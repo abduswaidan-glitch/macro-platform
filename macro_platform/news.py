@@ -457,7 +457,7 @@ FEED_NOTE = (
     "event has status past_no_value_in_source: that says nothing about whether the release happened or was postponed; "
     "take released figures from the platform data or the official release. *_current=false means nothing after "
     "*_last_success_utc is covered (null = unknown): treat older items as old, search official sources for the gap, "
-    "and state the gap in data_audit.")
+    "and state the gap in data_uncertainty.")
 
 
 def report_feed(live: dict, now: datetime, limit: int = 60) -> dict:

@@ -65,7 +65,8 @@ def test_pending_checks_are_shown_as_not_settled_and_the_sample_as_small(ui):
     assert a == "شرط القياس: DGS10 من 4.95 إلى أقل من 5.1 في 2026-11-20 · لم يُحسم بعد"
     s = ai.locator(".led-sum").inner_text()
     assert "العينة ما زالت صغيرة ولا تكفي للحكم" in s and "لا صحة السرد الاقتصادي كله" in s
-    assert "Nasdaq" not in ai.inner_text() and "الانحياز غير قابل" not in ai.inner_text()
+    scen = " ".join(ai.locator(".sc").all_inner_texts()) + s                  # شروط القياس اقتصادية: لا مؤشر أسهم
+    assert "Nasdaq" not in scen and "NASDAQ" not in scen and "الانحياز غير قابل" not in ai.inner_text()
 
 
 def test_settled_checks_say_the_check_was_met_never_the_scenario(ui):

@@ -46,19 +46,22 @@ jobs:
 
       - name: طلب تقرير اليوم عند الحاجة (update.yml)
         # جدولة GitHub الصباحية لم تُنفَّذ مرة (0 من 48 بين 4 و13 نوفمبر)، وهذه الحلقة تدور كل 10 دقائق.
-        # مستقلة عن جلب الأخبار وعن بقية الدورة؛ القرار كله في ai_report.dispatch_decision.
+        # مستقلة عن جلب الأخبار وعن بقية الدورة؛ القرار كله في ai_report.dispatch_decision:
+        # المحاولة 1 عند 09:00 نيويورك، والمحاولة 2 عند 12:00 بعد فشل تقني فقط، ولا بدء بعد 13:00.
         if: ${{ !cancelled() }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh run list --repo "$GITHUB_REPOSITORY" --workflow update.yml --limit 30 \
-            --json status,event,createdAt > "$RUNNER_TEMP/runs.json" || true
+            --json status,event,createdAt,displayTitle,conclusion > "$RUNNER_TEMP/runs.json" || true
           gh api "repos/$GITHUB_REPOSITORY/contents/data/state.json?ref=main" --jq .content \
             | base64 -d > "$RUNNER_TEMP/state.json" || true
           d=$(python report_trigger.py --runs "$RUNNER_TEMP/runs.json" --state "$RUNNER_TEMP/state.json")
           echo "$d"
-          case "$d" in dispatch*) gh workflow run update.yml --repo "$GITHUB_REPOSITORY" --ref main ;; esac
+          if [[ "$d" =~ ^dispatch\ ([12]): ]]; then
+            gh workflow run update.yml --repo "$GITHUB_REPOSITORY" --ref main -f report_attempt="${BASH_REMATCH[1]}"
+          fi
 
       - name: تثبيت المكتبات
         run: pip install -r requirements.txt anthropic

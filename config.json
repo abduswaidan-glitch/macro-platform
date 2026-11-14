@@ -9,12 +9,9 @@
   },
   "ai": {
     "model": "claude-opus-5-5",
-    "effort": "high",
-    "ny_hour": 8,
-    "ny_minute": 30,
+    "effort": "xhigh",
     "keep": 14,
-    "trigger_window": ["08:40", "11:30"],
-    "max_dispatches": 3,
+    "schedule": {"attempt_1": "09:00", "attempt_2": "12:00", "last_start": "13:00", "tz": "America/New_York"},
     "market_holidays": ["2026-11-26", "2026-12-25",
                         "2027-01-01", "2027-01-18", "2027-02-15", "2027-03-26", "2027-05-31",
                         "2027-06-18", "2027-07-05", "2027-09-06", "2027-11-25", "2027-12-24"]
