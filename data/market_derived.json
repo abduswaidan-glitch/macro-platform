@@ -1,0 +1,18 @@
+{
+ "generated": "2026-11-14T21:22:21Z",
+ "market_relative": {
+  "as_of": "2026-11-13",
+  "d5": 1.003,
+  "d10": -1.314,
+  "d20": -3.024
+ },
+ "leadership_gate": {
+  "key": "leadership",
+  "title": "قيادة NQ مقابل ES (20 يوماً)",
+  "value": "-3.02%",
+  "detail": "S&P يقود: دوران بعيداً عن النمو",
+  "extra": "نسبة NDX/SPX",
+  "tone": "warn",
+  "as_of": "2026-11-13"
+ }
+}
