@@ -152,56 +152,43 @@ def test_snapshot_and_signals_on_demo(demo):
     assert {"Sahm Rule", "مؤشر VIX"} <= {c["title"] for c in signals(demo)}
 
 
-# ---------------------------------------------------------------- AI report
-GOOD = {"title": "t", "summary": ["a"], "bias": {"direction": "neutral", "confidence": 50, "reason": "r"},
-        "scenarios": [{"label": "A", "name": "a", "prob": 50, "trigger": "x", "reason": "y"},
-                      {"label": "B", "name": "b", "prob": 30, "trigger": "x", "reason": "y"},
-                      {"label": "C", "name": "c", "prob": 19, "trigger": "x", "reason": "y"}],
-        "one_liner": "o"}
+# ---------------------------------------------------------------- AI report (schema 2)
+from _report import body, caller_for, text  # noqa: E402
 
 
 def test_parse_report_extracts_last_block_and_keeps_probabilities_as_written():
-    text = ("بحث...<report>{\"title\": \"old\"}</report> ثم <report>"
-            + json.dumps(GOOD, ensure_ascii=False) + "</report>")
-    rep = ai_report.parse_report(text)
-    # 14 نوفمبر 2026 (قرار Abdu): لا تعديل صامت؛ المجموع غير 100 يُعرض كما هو ويُعلَّم غير قابل للقياس
-    assert rep["title"] == "t" and [s["prob"] for s in rep["scenarios"]] == [s["prob"] for s in GOOD["scenarios"]]
-    assert rep["sections"] == [] and rep["events"] == []
+    b = body()
+    b["economy"]["scenarios"][0]["prob"] = 46                              # المجموع 101: يُعرض كما هو، لا تعديل صامت
+    rep = ai_report.parse_report("بحث...<report>{\"economy\": {}}</report> ثم " + text(b))
+    assert [s["prob"] for s in rep["scenarios"]] == [46, 35, 20]
+    assert rep["warnings"] == ["scenarios: probabilities sum to 101, not 100"]
+    # حقول توافق مشتقة، فالواجهة القديمة تعرض التقرير الجديد مختصراً لا مكسوراً
+    assert rep["title"] == "عنوان اليوم" and rep["summary"] == ["القراءة الاقتصادية", "أكبر تغير"]
+    assert rep["one_liner"] == "الخلاصة" and rep["scenarios"][0]["trigger"] == "يؤكده A"
+    assert rep["sections"][0] == {"heading": "النمو", "body": "فقرة النمو"}
 
 
 def test_parse_report_rejects_only_broken_output():
-    with pytest.raises(ai_report.ReportError):
-        ai_report.parse_report("no tags here")
-    with pytest.raises(ai_report.ReportError):
-        ai_report.parse_report("<report>" + json.dumps({k: v for k, v in GOOD.items() if k != "title"}) + "</report>")
-    two = dict(GOOD, scenarios=GOOD["scenarios"][:2])          # كان يُسقط التقرير المدفوع؛ الآن يُنشر ولا يُقاس
-    assert len(ai_report.parse_report("<report>" + json.dumps(two) + "</report>")["scenarios"]) == 2
-
-
-def test_should_run_schedule():
-    cfg = {"ny_hour": 8, "ny_minute": 30}
-    # الأربعاء 2026-11-04: 13:40 UTC = 8:40 EST
-    assert ai_report.should_run(datetime(2026, 11, 4, 13, 40, tzinfo=timezone.utc), "2026-11-03", cfg)
-    assert not ai_report.should_run(datetime(2026, 11, 4, 13, 40, tzinfo=timezone.utc), "2026-11-04", cfg)
-    assert not ai_report.should_run(datetime(2026, 11, 4, 13, 20, tzinfo=timezone.utc), None, cfg)  # 8:20 قبل الموعد
-    assert not ai_report.should_run(datetime(2026, 11, 7, 15, 0, tzinfo=timezone.utc), None, cfg)   # السبت
-    assert ai_report.should_run(datetime(2026, 11, 7, 15, 0, tzinfo=timezone.utc), None, cfg, force=True)
+    b = body()
+    no_read = body(); no_read["economy"]["executive"]["read"] = ""
+    no_bottom = body(); del no_bottom["economy"]["bottom_line"]
+    legacy = {"title": "t", "summary": ["s"], "scenarios": [], "one_liner": "o"}
+    for broken in ("no tags here", "<report>{bad json</report>", text(legacy), text(no_read), text(no_bottom)):
+        with pytest.raises(ai_report.ReportError):
+            ai_report.parse_report(broken)
+    two = body(scenarios=b["economy"]["scenarios"][:2])                    # يُنشر ولا يُقاس
+    assert len(ai_report.parse_report(text(two))["scenarios"]) == 2
 
 
 def test_write_report_with_fake_model_and_history(demo, cfg, tmp_path):
     payload = build_payload(demo, {}, cfg, now=NOW)
     seen = {}
-
-    def fake(user, system, model, effort):
-        seen.update(user=user, system=system, model=model)
-        return ("<report>" + json.dumps(GOOD) + "</report>", [{"url": "https://x.test", "title": "x"}],
-                {"input_tokens": 1, "output_tokens": 1}, model)
-
-    rep = ai_report.write_report(payload, cfg, now_utc=NOW, caller=fake)
-    assert seen["model"] == cfg["ai"]["model"]
+    rep = ai_report.write_report(payload, cfg, now_utc=NOW, caller=caller_for(seen=seen))
+    assert seen["model"] == cfg["ai"]["model"] and seen["effort"] == "xhigh"
     assert '"points"' not in seen["user"]  # السياق مضغوط بلا السلاسل الكاملة
     assert "أنت محلل" in seen["system"]  # تعليمات prompts/analyst.md وصلت
-    assert "<!--" not in seen["system"]
+    assert "<!--" not in seen["system"] and "انحيازك لـNQ" not in seen["system"]
+    assert rep["meta"]["schema"] == 2 and rep["meta"]["trigger"] == "manual" and rep["meta"]["attempt"] == "manual"
     hist_p = tmp_path / "h.json"
     ai_report.update_history(hist_p, rep, keep=2)
     ai_report.update_history(hist_p, rep, keep=2)  # نفس اليوم: يستبدل ولا يكرر
@@ -233,28 +220,27 @@ def test_offline_rebuild_uses_saved_series_and_keeps_fetch_warnings(tmp_path, mo
     assert not (data / "state.json").exists()
 
 
-# ---------------------------------------------------------------- prompt caching in the Opus report call
-def test_call_claude_enables_prompt_caching_and_records_cache_usage(monkeypatch):
+# ---------------------------------------------------------------- the Opus report call: streaming, caching, no fallback
+class _Usage:
+    def __init__(self, i, o, cw, cr, searches=0):
+        self.input_tokens, self.output_tokens = i, o
+        self.cache_creation_input_tokens, self.cache_read_input_tokens = cw, cr
+        self.server_tool_use = type("S", (), {"web_search_requests": searches})()
+
+
+class _Block:
+    def __init__(self, text):
+        self.type, self.text = "text", text
+
+
+class _Msg:
+    def __init__(self, stop, usage, text, model="claude-opus-5-5"):
+        self.model, self.stop_reason, self.usage, self.content = model, stop, usage, [_Block(text)]
+
+
+def _fake_anthropic(monkeypatch, replies, calls):
     import sys
     import types
-
-    calls = []
-
-    class Usage:
-        def __init__(self, i, o, cw, cr):
-            self.input_tokens, self.output_tokens = i, o
-            self.cache_creation_input_tokens, self.cache_read_input_tokens = cw, cr
-
-    class Block:
-        def __init__(self, text):
-            self.type, self.text = "text", text
-
-    class Msg:
-        def __init__(self, stop, usage, text):
-            self.model, self.stop_reason, self.usage, self.content = "claude-opus-5-5", stop, usage, [Block(text)]
-
-    replies = [Msg("pause_turn", Usage(100, 50, 20000, 0), "part1 "),
-               Msg("end_turn", Usage(80, 900, 500, 19000), "part2")]
 
     class Stream:
         def __init__(self, msg):
@@ -271,21 +257,50 @@ def test_call_claude_enables_prompt_caching_and_records_cache_usage(monkeypatch)
 
     class Client:
         def __init__(self):
-            self.beta = types.SimpleNamespace(messages=types.SimpleNamespace(stream=self.stream))
+            self.messages = types.SimpleNamespace(stream=self.stream)   # المسار العادي، لا beta
 
         def stream(self, **kw):
             calls.append(kw)
             return Stream(replies[len(calls) - 1])
 
     monkeypatch.setitem(sys.modules, "anthropic", types.SimpleNamespace(Anthropic=Client))
-    text, sources, usage, served = ai_report.call_claude("data", "SYSTEM", "claude-opus-5-5", "high")
 
-    assert text == "part1 part2" and len(calls) == 2            # pause_turn ثم إكمال
+
+def test_call_claude_streams_with_caching_xhigh_and_no_fallback(monkeypatch):
+    calls = []
+    _fake_anthropic(monkeypatch, [_Msg("pause_turn", _Usage(100, 50, 20000, 0, 2), "part1 "),
+                                  _Msg("end_turn", _Usage(80, 900, 500, 19000, 3), "part2")], calls)
+    text, sources, usage, served, info = ai_report.call_claude("data", "SYSTEM", "claude-opus-5-5", "xhigh")
+
+    assert text == "part1 part2" and len(calls) == 2 and served == "claude-opus-5-5"   # pause_turn ثم إكمال
     for kw in calls:
         assert kw["cache_control"] == {"type": "ephemeral"}       # caching تلقائي للمحادثة
         assert kw["system"][-1]["cache_control"] == {"type": "ephemeral"}  # نقطة صريحة على التعليمات الثابتة
         assert kw["system"][-1]["text"] == "SYSTEM"
-    assert usage == {"input_tokens": 180, "output_tokens": 950,
-                     "cache_creation_input_tokens": 20500, "cache_read_input_tokens": 19000}
-    # 180*4 + 950*20 + 20500*5 + 19000*0.20 = 720 + 19000 + 102500 + 3800 = 126020 / 1e6
-    assert ai_report.estimate_cost("claude-opus-5-5", usage) == round(126020 / 1e6, 4)
+        assert kw["max_tokens"] == 128000 and kw["output_config"] == {"effort": "xhigh"}
+        assert kw["thinking"] == {"type": "adaptive"} and kw["tools"][0]["max_uses"] == 8
+        assert "fallbacks" not in kw and "betas" not in kw         # قرار Abdu: لا Cross-model fallback
+    assert usage == {"input_tokens": 180, "output_tokens": 950, "cache_creation_input_tokens": 20500,
+                     "cache_read_input_tokens": 19000, "web_search_requests": 5}
+    assert info["stop_reason"] == "end_turn" and info["duration_s"] >= 0
+    # 180*4 + 950*20 + 20500*5 + 19000*0.20 = 126020 / 1e6، + 5 عمليات بحث × 0.01$
+    assert ai_report.estimate_cost("claude-opus-5-5", usage) == round(126020 / 1e6 + 0.05, 4)
+
+
+def test_no_fallback_anywhere_in_the_report_code():
+    code = open("macro_platform/ai_report.py", encoding="utf-8").read()
+    assert "fallbacks=" not in code and "server-side-fallback" not in code and "betas=" not in code
+    assert "client.messages.stream(" in code and "client.beta" not in code
+
+
+@pytest.mark.parametrize("replies, why", [
+    ([_Msg("refusal", _Usage(10, 0, 0, 0), "")], "refusal"),
+    ([_Msg("max_tokens", _Usage(10, 128000, 0, 0), "<report>{")], "max_tokens"),
+    ([_Msg("pause_turn", _Usage(1, 1, 0, 0), "x")] * 5, "pause_turn did not end"),
+])
+def test_stop_reasons_that_block_publication_are_retryable_failures_with_usage(monkeypatch, replies, why):
+    calls = []
+    _fake_anthropic(monkeypatch, replies, calls)
+    with pytest.raises(ai_report.ReportError) as e:
+        ai_report.call_claude("data", "S", "claude-opus-5-5", "xhigh")
+    assert why in str(e.value) and isinstance(e.value.usage, dict) and e.value.info["stop_reason"]

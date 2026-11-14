@@ -194,11 +194,11 @@ def test_kpi_carries_marker_for_a_yoy_kpi():
 # ---------------------------------------------------------------- ما يصل إلى Claude
 def test_claude_context_gets_september_and_the_unavailable_october():
     ctx = ai_report.context(cpi_payload())
-    c = {i["id"]: i for i in ctx["indicators"]}["CPIAUCSL"]
+    c = {i["id"]: i for i in ctx["economy_inputs"]["indicators"]}["CPIAUCSL"]
     assert (c["last"], c["as_of"], c["age_days"], c["state"], c["issues"]) == (3.7173, "2026-09-01", 72, "ok", [])
     assert c["source_as_of"] == "2026-10-01" and "غير متاح" in c["unavailable"]["reason"]
     assert c["recent"][-1][0] == "2026-09-01"
-    assert any("أكتوبر 2026 غير متاح" in w for w in ctx["data_warnings"])
+    assert any("أكتوبر 2026 غير متاح" in w for w in ctx["economy_inputs"]["data_warnings"])
     text = json.dumps(ctx, ensure_ascii=False)
     assert not any(w in text for w in WRONG)
 
@@ -217,7 +217,7 @@ def test_claude_request_text_is_built_from_the_corrected_payload():
     with pytest.raises(Captured):
         ai_report.write_report(cpi_payload(), load_config("config.json"), now_utc=NOW, caller=caller)
     sent = json.loads(seen["user"].split("Platform data:\n", 1)[1])
-    c = {i["id"]: i for i in sent["indicators"]}
+    c = {i["id"]: i for i in sent["economy_inputs"]["indicators"]}
     assert c["CPIAUCSL"]["last"] == 3.7173 and c["CPILFESL"]["last"] == 2.5658
     assert c["CPIAUCSL"]["unavailable"]["label"] == "أكتوبر 2026"
     assert not any(w in seen["user"] for w in WRONG)

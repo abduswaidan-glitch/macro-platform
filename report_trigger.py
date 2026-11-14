@@ -1,8 +1,11 @@
-"""يقرر في كل دورة أخبار هل تطلب تشغيل update.yml لتقرير ما قبل الافتتاح. لا يطلب شيئاً بنفسه.
+"""يقرر في كل دورة أخبار هل تطلب تشغيل update.yml بمحاولة تقرير. لا يطلب شيئاً بنفسه.
 
     python report_trigger.py --runs runs.json --state state.json
-يطبع سطراً واحداً يبدأ بـ dispatch أو skip، ويخرج دائماً بـ0. news.yml يطلب التشغيل عند dispatch فقط.
-runs.json: `gh run list --workflow update.yml --json status,event,createdAt`؛ state.json: data/state.json من main.
+يطبع سطراً واحداً: «dispatch 1: ...» أو «dispatch 2: ...» أو «skip: ...»، ويخرج دائماً بـ0. news.yml يطلب التشغيل
+مع -f report_attempt=N عند dispatch فقط. القواعد كلها في ai_report.dispatch_decision (09:00، وإعادة واحدة 12:00 بعد
+فشل تقني، ولا بدء بعد 13:00، ولا ثالثة إلا يدوياً).
+runs.json: `gh run list --workflow update.yml --json status,event,createdAt,displayTitle,conclusion`؛
+state.json: data/state.json من main (سجل المحاولات ai_attempts).
 """
 
 from __future__ import annotations
@@ -35,9 +38,8 @@ def main(argv=None, now: datetime | None = None) -> int:
     if not isinstance(runs, list) or not isinstance(state, dict) or not isinstance(cfg, dict):
         print("skip: could not read the run list, state.json or config.json (no request without all three)")
         return 0
-    ok, why = ai_report.dispatch_decision(now or datetime.now(timezone.utc), state.get("ai_last_date"), runs,
-                                          cfg.get("ai", {}))
-    print(("dispatch: " if ok else "skip: ") + why)
+    n, why = ai_report.dispatch_decision(now or datetime.now(timezone.utc), state, runs, cfg.get("ai", {}))
+    print(f"dispatch {n}: {why}" if n else f"skip: {why}")
     return 0
 
 

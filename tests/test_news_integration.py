@@ -16,11 +16,10 @@ import fetch_news
 from macro_platform import ai_report, news
 from macro_platform.demo import demo_series
 from _newsfake import CNBC_ECON, CNBC_TOP, FF_THIS, MW, Net, default_routes, ff, ff_row, iso, now
+from _report import body
 
 ROOT = Path(__file__).resolve().parent.parent
-REPORT = {"title": "t", "summary": ["s"], "bias": {"direction": "neutral", "confidence": 50, "reason": "r"},
-          "scenarios": [{"label": x, "name": x, "prob": p, "trigger": "", "reason": ""}
-                        for x, p in (("A", 50), ("B", 30), ("C", 20))], "one_liner": "o"}
+REPORT = body()
 
 
 def run_news(monkeypatch, tmp_path, prev, routes=None, argv=()):
@@ -40,7 +39,7 @@ def run_report(monkeypatch, tmp_path, live):
     seen = {}
 
     def caller(user, system, model, effort):
-        seen["system"], seen["ctx"] = system, json.loads(user.split("\n", 1)[1])
+        seen["system"], seen["ctx"] = system, json.loads(user.split("\n", 1)[1])["economy_inputs"]
         return "<report>" + json.dumps(REPORT) + "</report>", [], {k: 0 for k in ai_report.USAGE_KEYS}, model
 
     orig = ai_report.write_report
@@ -52,7 +51,7 @@ def run_report(monkeypatch, tmp_path, live):
     monkeypatch.setattr(fetch_macro, "DATA", data)
     monkeypatch.setattr(fetch_news, "load_live", lambda url: live)
     monkeypatch.setenv("ANTHROPIC_API_KEY", "fake")
-    monkeypatch.setenv("AI_FORCE", "true")
+    monkeypatch.setenv("REPORT_ATTEMPT", "manual")       # يدوي: يُكتب في أي يوم ولا يدخل سجل التوقعات
     assert fetch_macro.main(["--out", str(tmp_path / "data.json")]) == 0
     return seen, json.loads((data / "ai_history.json").read_text(encoding="utf-8"))[0]
 
@@ -200,8 +199,8 @@ def test_report_gets_headlines_with_their_source_and_calendar_without_actuals(mo
 def test_outage_report_is_written_and_states_the_coverage_gap(monkeypatch, tmp_path, live):
     seen, rep = run_report(monkeypatch, tmp_path, live)
     feed = seen["ctx"]["news_feed"]
-    assert rep["title"] == "t" and feed["headlines_current"] is False and feed["calendar_current"] is False
-    assert "state the gap in data_audit" in feed["note"] and rep["meta"]["news_input"]["headlines_current"] is False
+    assert rep["title"] == "عنوان اليوم" and feed["headlines_current"] is False and feed["calendar_current"] is False
+    assert "state the gap in data_uncertainty" in feed["note"] and rep["meta"]["news_input"]["headlines_current"] is False
 
 
 def test_news_does_not_become_a_numeric_probability(monkeypatch, tmp_path):

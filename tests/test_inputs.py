@@ -191,10 +191,7 @@ def test_snapshot_is_numbers_and_dates_only():
 
 
 # ---------------------------------------------------------------- the report sees them, and stores its snapshot
-def _report(body_extra=None):
-    return {"title": "t", "summary": ["s"], "bias": {"direction": "neutral", "confidence": 50, "reason": "r"},
-            "scenarios": [{"label": x, "name": x, "prob": p} for x, p in (("A", 50), ("B", 30), ("C", 20))],
-            "one_liner": "o"}
+from _report import body as _body  # noqa: E402
 
 
 def test_report_context_carries_changes_revisions_momentum_and_previous_report():
@@ -204,8 +201,8 @@ def test_report_context_carries_changes_revisions_momentum_and_previous_report()
     seen = {}
 
     def caller(user, system, model, effort):
-        seen["ctx"], seen["system"] = json.loads(user.split("\n", 1)[1]), system
-        return "<report>" + json.dumps(_report()) + "</report>", [], {k: 0 for k in ai_report.USAGE_KEYS}, model
+        seen["ctx"], seen["system"] = json.loads(user.split("\n", 1)[1])["economy_inputs"], system
+        return "<report>" + json.dumps(_body()) + "</report>", [], {k: 0 for k in ai_report.USAGE_KEYS}, model
 
     first = ai_report.write_report(payload, cfg, now_utc=NOW, caller=caller)
     assert seen["ctx"]["changes_since_previous_report"] == {"available": False, "reason": "no previous report"}
@@ -216,7 +213,7 @@ def test_report_context_carries_changes_revisions_momentum_and_previous_report()
     ctx = seen["ctx"]
     assert ctx["changes_since_previous_report"]["available"] is True
     assert any(i["kind"] == "revision" for i in ctx["changes_since_previous_report"]["items"])
-    assert ctx["previous_report"]["scenarios"][0] == {"label": "A", "name": "A", "prob": 50}
+    assert ctx["previous_report"]["scenarios"][0] == {"label": "A", "name": "سيناريو A", "prob": 45}
     cpi = next(i for i in ctx["indicators"] if i["id"] == "CPILFESL")
     assert "momentum" in cpi and "revisions" in cpi
     assert "computed by the platform's code" in seen["system"] and "do not recompute or guess them" in seen["system"]

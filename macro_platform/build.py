@@ -279,6 +279,19 @@ def nq_gates(series: dict[str, pd.Series], cfg: dict) -> list[dict]:
     return out
 
 
+def market_relative(series: dict[str, pd.Series]) -> dict | None:
+    """أداء Nasdaq-100 النسبي مقابل S&P 500 (نقاط مئوية لنسبة NDX/SPX) خلال 5 و10 و20 جلسة: مشتق فقط،
+    مدخل للترجمة السوقية في التقرير."""
+    ndx, sp = series.get("NASDAQ100"), series.get("SP500")
+    if ndx is None or sp is None:
+        return None
+    ratio = (ndx / sp).dropna()
+    if len(ratio) < 21:
+        return None
+    return {"as_of": ratio.index[-1].strftime("%Y-%m-%d"),
+            **{f"d{n}": _r((ratio.iloc[-1] / ratio.iloc[-1 - n] - 1) * 100, 3) for n in (5, 10, 20)}}
+
+
 def kpis(snap: pd.DataFrame) -> list[dict]:
     rows = snap.set_index("id")
     out = []
@@ -346,10 +359,11 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
         "demo": demo,
         "source": "FRED, Federal Reserve Bank of St. Louis",
         "config": {"gates": cfg["gates"],
-                   "ai_schedule": {k: cfg.get("ai", {}).get(k) for k in ("trigger_window", "market_holidays")}},
+                   "ai_schedule": {k: cfg.get("ai", {}).get(k) for k in ("schedule", "market_holidays")}},
         "categories": [{"key": k, "ar": ar, "en": en} for k, (ar, en) in CATEGORIES.items()],
         "kpis": kpis(snap),
         "gates": nq_gates(series, cfg),
+        "market_relative": market_relative(series),
         "signals": signals(series),
         "quadrant": q,
         "sahm": {"trigger": SAHM_TRIGGER,
