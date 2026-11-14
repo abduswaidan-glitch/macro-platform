@@ -7,6 +7,10 @@ from pathlib import Path
 
 import pandas as pd
 
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tests"))
+from _report import body  # noqa: E402
 from macro_platform import ledger
 from macro_platform.build import load_config
 
@@ -26,8 +30,7 @@ def report(scen=None, day="2026-11-16", prob_sum=None):
     scen = scen if scen is not None else [sc("A", 45, 4.95, 5.10), sc("B", 35, None, 4.95), sc("C", 20, 5.10, None)]
     meta = {"ny_date": day, "model": "m", "completed_at": "2026-11-16T13:46:00Z", "written_at": "2026-11-16T13:46:00Z",
             "prob_sum": prob_sum if prob_sum is not None else sum(s["prob"] for s in scen)}
-    return {"title": "عنوان", "summary": ["s"], "bias": {"direction": "neutral", "confidence": 50, "reason": "r"},
-            "scenarios": scen, "one_liner": "o", "meta": meta}
+    return {**body(scenarios=scen), "title": "عنوان", "scenarios": scen, "meta": meta}
 
 
 def view(rep, series=None, copies=1):
@@ -94,11 +97,20 @@ def test_probabilities_not_summing_to_100_are_shown_as_written_and_not_measured(
     assert "46%" in ai.locator(".sc", has_text="سيناريو A").inner_text()
 
 
-def test_older_reports_without_checks_render_as_before(ui):
-    old = report(scen=[{k: v for k, v in s.items() if k != "check"} for s in report()["scenarios"]], day="2026-11-13")
+def test_older_nq_reports_leave_the_report_tab_for_the_market_gates_archive(ui):
+    # التقارير قبل 16 نوفمبر كُتبت بتعليمات موجهة لمتداول NQ: مكانها Market Gates ← NQ، لا تبويب التقرير الاقتصادي
+    old = {"title": "انحياز سلبي حذر لـNQ", "summary": ["s"], "bias": {"direction": "bearish", "confidence": 60, "reason": "سبب NQ"},
+           "scenarios": [{"label": "A", "name": "سيناريو A", "prob": 100}], "gates_read": "قراءة بوابات NQ", "one_liner": "o",
+           "meta": {"ny_date": "2026-11-13", "model": "m", "completed_at": "2026-11-13T13:46:00Z"}}
     ai = ai_panel(ui, [old], None)
-    assert ai.locator(".chk").count() == 0 and ai.locator(".led-sum").count() == 0
-    assert "سيناريو A" in ai.inner_text()
+    assert "NQ" not in ai.inner_text() and ai.locator(".no-eco").count() == 1
+    page = ai.page
+    page.click('button.tab[data-k="gates"]')
+    g = page.locator('#p-gates .gate-pane[data-g="nq"]')
+    assert "انحياز NQ في آخر تقرير بالصيغة القديمة (2026-11-13)" in g.locator(".legacy-bias").inner_text()
+    assert "هابط" in g.locator(".legacy-bias").inner_text() and "قراءة بوابات NQ" in g.locator(".legacy-bias").inner_text()
+    g.locator(".legacy-archive summary").click()
+    assert "انحياز سلبي حذر لـNQ" in g.locator(".legacy-archive").inner_text()
 
 
 def test_unmeasurable_checks_say_why_and_text_is_escaped(ui):
