@@ -41,13 +41,17 @@ INDICATORS: tuple[Indicator, ...] = (
               "labor", "M", "diff_avg3", "ألف", True),
     Indicator("UNRATE", "معدل البطالة", "Unemployment Rate", "labor", "M", "level", "%", False),
     Indicator("ICSA", "طلبات إعانة البطالة الأولية", "Initial Jobless Claims", "labor", "W", "level", "", False),
+    Indicator("CCSA", "طلبات إعانة البطالة المستمرة", "Continuing Jobless Claims", "labor", "W", "level", "", False),
     Indicator("JTSJOL", "الوظائف الشاغرة (JOLTS)", "Job Openings", "labor", "M", "level", "ألف", True),
+    Indicator("CES0500000003", "متوسط الأجر بالساعة (تغير سنوي)", "Average Hourly Earnings YoY",
+              "labor", "M", "yoy", "%", None),
     # التضخم
     Indicator("CPIAUCSL", "CPI الرئيسي (تغير سنوي)", "Headline CPI YoY", "inflation", "M", "yoy", "%", False),
     Indicator("CPILFESL", "CPI الأساسي (تغير سنوي)", "Core CPI YoY", "inflation", "M", "yoy", "%", False),
     Indicator("PCEPILFE", "PCE الأساسي (تغير سنوي)", "Core PCE YoY", "inflation", "M", "yoy", "%", False),
     # الفائدة والعوائد
-    Indicator("FEDFUNDS", "سعر الفائدة الفيدرالي", "Fed Funds Rate", "rates", "M", "level", "%"),
+    # يومي (H.15) بدل المتوسط الشهري FEDFUNDS: المتوسط الشهري يبقى متقادماً حتى شهراً بعد أي قرار للفيدرالي
+    Indicator("DFF", "سعر الفائدة الفيدرالي الفعلي (يومي)", "Effective Fed Funds Rate (daily)", "rates", "D", "level", "%"),
     Indicator("DGS2", "عائد سندات 2 سنة", "2Y Treasury", "rates", "D", "level", "%"),
     Indicator("DGS10", "عائد سندات 10 سنوات", "10Y Treasury", "rates", "D", "level", "%"),
     Indicator("T10Y2Y", "فارق العائد 10Y-2Y", "10Y-2Y Spread", "rates", "D", "level", "%"),
@@ -68,6 +72,8 @@ INDICATORS: tuple[Indicator, ...] = (
 )
 
 BY_ID: dict[str, Indicator] = {i.id: i for i in INDICATORS}
+# زخم محسوب بالكود (MoM و3m annualized) من سلاسل موجودة: يفصل مستوى التضخم والأجور عن تسارعها
+MOMENTUM_IDS = ("CPIAUCSL", "CPILFESL", "PCEPILFE", "CES0500000003")
 
 
 def validate_catalog() -> None:

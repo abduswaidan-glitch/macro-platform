@@ -14,16 +14,16 @@ from typing import Callable
 
 import pandas as pd
 
-from macro_platform.analytics import (growth_inflation_quadrant, sahm_rule, signals, snapshot,
+from macro_platform.analytics import (growth_inflation_quadrant, momentum, sahm_rule, signals, snapshot,
                                       transform_indicator, SAHM_TRIGGER)
-from macro_platform.catalog import CATEGORIES, INDICATORS, Indicator, PERIODS_PER_YEAR
+from macro_platform.catalog import CATEGORIES, INDICATORS, MOMENTUM_IDS, Indicator, PERIODS_PER_YEAR
 from macro_platform.fred import FredError, fetch_series
 
 MIN_ROWS = {"D": 200, "W": 50, "M": 24, "Q": 8}
 MAX_AGE_DAYS = {"D": 7, "W": 14, "M": 80, "Q": 220}  # تأخر النشر الطبيعي لكل تكرار
 # سلاسل يومية ينشرها FRED متأخرة أسبوعاً عادةً (نفط WTI من EIA، الدولار الواسع من الفيدرالي)
 MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14}
-KPI_IDS = ("DGS10", "DFII10", "DTWEXBGS", "DCOILWTICO", "T10Y2Y", "FEDFUNDS", "PCEPILFE", "UNRATE", "VIXCLS", "NASDAQ100")
+KPI_IDS = ("DGS10", "DFII10", "DTWEXBGS", "DCOILWTICO", "T10Y2Y", "DFF", "PCEPILFE", "UNRATE", "VIXCLS", "NASDAQ100")
 DEFAULT_CONFIG = {
     "start": "2000-01-01",
     "gates": {"us10y_trigger": 4.5, "vix_calm": 20, "vix_stress": 25, "real10_restrictive": 2.0, "hy_stress": 5.0},
@@ -87,6 +87,44 @@ def staleness_days(ind: Indicator, s: pd.Series, now: pd.Timestamp) -> int:
     return int((now.normalize() - s.index[-1].normalize()).days)
 
 
+# ---------------------------------------------------------------- revisions (old vs new copy at fetch time)
+# fetch_all يحمل النسخة المحفوظة قبل جلب الجديدة، والجلب يعيد التاريخ كاملاً: الكشف مقارنة مباشرة، بلا قاعدة إصدارات.
+# يُكشف فقط ما يُراجَع بين جلبين متتاليين بعد هذا التغيير. السلاسل اليومية مستثناة (مراجعاتها نادرة وضجيجها بلا فائدة).
+REVISION_WINDOW = {"W": 10, "M": 24, "Q": 8}   # آخر N قراءات مشتركة تُقارن
+REVISION_BULK = 12                              # أكثر من هذا في جلب واحد = مراجعة جماعية (معايير سنوية/موسمية) تُختصر
+REVISION_KEEP_DAYS = 45
+REVISION_TOL = 1e-9                             # نسبي: فروق تمثيل الأعداد ليست مراجعة
+
+
+def detect_revisions(ind: Indicator, old: pd.Series | None, new: pd.Series, when: str) -> list[dict]:
+    if ind.freq not in REVISION_WINDOW or old is None or not len(old):
+        return []
+    common = old.index.intersection(new.index)[-REVISION_WINDOW[ind.freq]:]
+    out = []
+    for d in common:
+        o, n = float(old[d]), float(new[d])
+        if math.isnan(o) or math.isnan(n):
+            continue
+        if abs(n - o) > REVISION_TOL * max(1.0, abs(o)):
+            out.append({"date": d.strftime("%Y-%m-%d"), "old": o, "new": n})
+    if len(out) > REVISION_BULK:
+        big = max(out, key=lambda r: abs(r["new"] - r["old"]) / max(abs(r["old"]), 1e-12))
+        return [{"detected_utc": when, "bulk": True, "count": len(out), "range": [out[0]["date"], out[-1]["date"]],
+                 "largest": big}]
+    return [{"detected_utc": when, **r} for r in out]
+
+
+def merge_status(prev: dict, status: dict, now: datetime) -> dict:
+    """يضم المراجعات المكتشفة الآن إلى ما سبق (آخر REVISION_KEEP_DAYS يوماً)، ويحفظ آخر وقت ظهرت فيه قراءة جديدة."""
+    now_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    cut = (now - pd.Timedelta(days=REVISION_KEEP_DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    for sid, st in status.items():
+        old = prev.get(sid, {}) if isinstance(prev, dict) else {}
+        st["revisions"] = [r for r in old.get("revisions", []) if r.get("detected_utc", "") >= cut] + st.pop("revisions_new", [])
+        st["last_new_obs_utc"] = now_iso if st.pop("new_obs", False) else old.get("last_new_obs_utc")
+    return status
+
+
 def fetch_all(raw_dir: Path, start: str, fetcher: Callable[[str, str], pd.Series] = fetch_series,
               indicators=INDICATORS, log=print) -> tuple[dict[str, pd.Series], dict[str, dict]]:
     series: dict[str, pd.Series] = {}
@@ -99,6 +137,8 @@ def fetch_all(raw_dir: Path, start: str, fetcher: Callable[[str, str], pd.Series
             ok, issues = validate(ind, new, old)
             st["issues"] += issues
             if ok:
+                st["revisions_new"] = detect_revisions(ind, old, new, datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
+                st["new_obs"] = old is None or not len(old) or new.index[-1] > old.index[-1]
                 save_raw(raw_dir, ind.id, new)
                 series[ind.id] = new
             else:
@@ -187,7 +227,7 @@ def nq_gates(series: dict[str, pd.Series], cfg: dict) -> list[dict]:
             "as_of": dr.strftime("%Y-%m-%d"),
         })
     y2, d2 = _last(series, "DGS2")
-    ff, _ = _last(series, "FEDFUNDS")
+    ff, _ = _last(series, "DFF")
     if y2 is not None and ff is not None:
         gap = (y2 - ff) * 100
         out.append({
@@ -270,6 +310,8 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
             "z5": _r(r["z5"], 2), "pct5": _r(r["pct5"], 1), "as_of": r["as_of"].strftime("%Y-%m-%d"),
             "age_days": age, "state": st["state"], "issues": st["issues"],
             "source_as_of": r["source_as_of"].strftime("%Y-%m-%d"), "unavailable": unavailable,
+            "momentum": momentum(ind, s) if ind.id in MOMENTUM_IDS else None,
+            "revisions": (st.get("revisions") or [])[-5:], "last_new_obs_utc": st.get("last_new_obs_utc"),
             "points": chart_points(ind, s),
         })
     q = growth_inflation_quadrant(series)
@@ -291,6 +333,8 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
         "sahm": {"trigger": SAHM_TRIGGER,
                  "points": [[d.strftime("%Y-%m-%d"), _r(v, 3)] for d, v in sahm.items()]},
         "indicators": indicators,
+        "revisions": sorted(({"id": i["id"], "name_ar": i["name_ar"], **r} for i in indicators for r in i.get("revisions") or []),
+                            key=lambda r: r.get("detected_utc", "")),
         "status": {"ok": sum(1 for i in indicators if i["state"] == "ok"), "total": len(indicators),
                    "warnings": warnings},
     }

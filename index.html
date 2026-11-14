@@ -434,6 +434,20 @@ function renderOverview(data) {
 }
 
 /* ---------- category panels ---------- */
+/* زخم وتنقيحات يحسبها الكود: MoM و3m annualized بالفترة التقويمية، وآخر مراجعة اكتُشفت بين جلبين */
+const num = v => v === null || v === undefined || !isFinite(+v) ? "—" : String(+(+v).toFixed(3));
+function momTxt(m) {
+  if (!m) return "";
+  if (m.mom === null && m.ann3m === null) return `<span class="en mom" dir="rtl">الزخم (${esc(m.label)}): غير متاح، ${esc(m.unavailable || "")}</span>`;
+  return `<span class="en mom" dir="rtl">الزخم (${esc(m.label)}): شهري <bdi>${esc(num(m.mom))}%</bdi> · 3 أشهر سنوياً <bdi>${esc(num(m.ann3m))}%</bdi>${m.unavailable ? " · " + esc(m.unavailable) : ""}</span>`;
+}
+function revTxt(revs) {
+  const r = (revs || []).slice(-1)[0];
+  if (!r) return "";
+  return r.bulk
+    ? `<span class="en tone-warn rev" dir="rtl">مراجعة جماعية: ${esc(r.count)} قراءات بين <bdi>${esc(r.range[0])}</bdi> و<bdi>${esc(r.range[1])}</bdi></span>`
+    : `<span class="en tone-warn rev" dir="rtl">رُوجعت قراءة <bdi>${esc(r.date)}</bdi>: <bdi>${esc(num(r.old))}</bdi> ← <bdi>${esc(num(r.new))}</bdi></span>`;
+}
 function renderCategories(data) {
   const host = $("#catPanels");
   host.innerHTML = "";
@@ -447,7 +461,7 @@ function renderCategories(data) {
       <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>المؤشر</th><th>آخر قيمة</th><th>التغير</th><th>Z (5y)</th><th>المئوي (5y)</th><th>التاريخ</th></tr></thead>
       <tbody>${inds.map(i => i.points ? `<tr data-id="${esc(i.id)}" aria-selected="false">
         <td><span class="dot ${esc(i.state)}" title="${esc((i.issues || []).join("؛ ") || "سليم")}"></span>${esc(i.name_ar)}<span class="en">${esc(i.name_en)} · ${esc(i.id)}</span></td>
-        <td class="num">${esc(fmt(i.last, i.unit))}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl" title="${esc(i.unavailable.reason)}">${esc(i.unavailable.label)}: غير متاح</span>` : ""}</td>
+        <td class="num">${esc(fmt(i.last, i.unit))}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl" title="${esc(i.unavailable.reason)}">${esc(i.unavailable.label)}: غير متاح</span>` : ""}${momTxt(i.momentum)}${revTxt(i.revisions)}</td>
         <td class="num tone-${chgTone(i.change, i.good_up)}">${arrow(i.change)} ${esc(fmt(Math.abs(i.change ?? 0)))}</td>
         <td class="num">${i.z5 === null ? "—" : (i.z5 > 0 ? "+" : "") + i.z5.toFixed(1) + "σ"}</td>
         <td><span class="bar"><i style="width:${Math.max(0, Math.min(100, i.pct5 ?? 0))}%"></i></span> <span class="num">${i.pct5 === null ? "—" : Math.round(i.pct5)}</span></td>
