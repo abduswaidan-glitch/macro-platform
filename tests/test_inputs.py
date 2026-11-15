@@ -230,3 +230,13 @@ def test_daily_effective_fed_funds_drives_the_pricing_gate():
     payload = build_payload(s, {}, load_config("config.json"), now=NOW)
     gate = next(g for g in payload["gates"] if g["key"] == "pricing")
     assert "FF" in gate["extra"] and any(k["id"] == "DFF" for k in payload["kpis"])
+
+
+def test_continuing_claims_lag_a_week_more_than_initial_claims_and_are_not_flagged_stale_for_it():
+    # بيان الخميس يحمل الأولية لأسبوع والمستمرة للأسبوع الذي قبله: عمر المستمرة 15 إلى 20 يوماً طبيعي
+    cfg = load_config("config.json")
+    weeks = pd.date_range("2025-01-04", "2026-10-31", freq="W-SAT")
+    s = {"CCSA": pd.Series(1.9e6, index=weeks), "ICSA": pd.Series(2.0e5, index=weeks.append(pd.DatetimeIndex(["2026-11-07"])))}
+    state = lambda now: {i["id"]: i["state"] for i in build_payload(s, {}, cfg, now=now)["indicators"] if i["id"] in s}
+    assert state(datetime(2026, 11, 18, 15, tzinfo=timezone.utc)) == {"CCSA": "ok", "ICSA": "ok"}          # 18 يوماً
+    assert state(datetime(2026, 11, 22, 15, tzinfo=timezone.utc))["CCSA"] == "stale"                       # 22 يوماً
