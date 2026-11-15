@@ -15,7 +15,7 @@ import pytest
 import fetch_macro
 import fetch_news
 import report_trigger
-from _report import body, caller_for, freeze, utc
+from _report import body, caller_for, fake_fetch, freeze, utc
 from macro_platform import ai_report, ledger
 from macro_platform.build import load_config
 from macro_platform.demo import demo_series
@@ -37,16 +37,24 @@ def rec(attempt, ok, day="2026-11-16", reason=None, cls=None):
 
 
 FAILED_1 = {"ai_attempts": [rec("1", False, reason="APIConnectionError: reset")]}
+FRESH = {"collection": {"ny_date": "2026-11-16", "fresh": True, "collected_ny": "08:41"}}
 
 
 # ---------------------------------------------------------------- the schedule, in New York time
 # الاثنين 16 نوفمبر 2026 (شتوي EST = UTC−5) والأربعاء 15 يوليو 2026 (صيفي EDT = UTC−4)
 @pytest.mark.parametrize("now, state, runs, want, why", [
-    ("2026-11-16T13:59:00", {}, [], None, "before 09:00"),                      # 08:59
+    ("2026-11-16T13:39:00", {}, [], None, "before 08:40"),                      # 08:39
+    ("2026-11-16T13:40:00", {}, [], "collect", "collect section inputs at 08:40"),  # جامعو الأقسام قبل التقرير
+    ("2026-11-16T13:59:00", {}, [], "collect", "collect section inputs at 08:59"),
+    ("2026-11-16T13:50:00", FRESH, [], None, "section inputs collected at 08:41"),
+    ("2026-11-16T13:50:00", {}, [run(created="2026-11-16T13:41:00Z", attempt="collect")], None,
+     "the report run will collect them itself"),                                   # تشغيل الجمع انتهى بلا ملفات جاهزة
+    ("2026-11-16T13:45:00", {}, [run("in_progress", attempt="collect")], None, "queued or running"),
     ("2026-11-16T14:00:00", {}, [], 1, "attempt 1 at 09:00"),                    # 09:00
     ("2026-11-16T14:07:00", {}, [], 1, "attempt 1 at 09:07"),
-    ("2026-11-16T13:00:00", {}, [], None, "before 09:00"),                       # 08:00 EST، وكانت 09:00 بإزاحة صيفية ثابتة
-    ("2026-07-15T12:59:00", {}, [], None, "before 09:00"),                       # 08:59 EDT
+    ("2026-11-16T13:00:00", {}, [], None, "before 08:40"),                       # 08:00 EST، وكانت 09:00 بإزاحة صيفية ثابتة
+    ("2026-07-15T12:39:00", {}, [], None, "before 08:40"),                       # 08:39 EDT
+    ("2026-07-15T12:40:00", {}, [], "collect", "collect section inputs at 08:40"),  # 08:40 EDT
     ("2026-07-15T13:00:00", {}, [], 1, "attempt 1 at 09:00"),                    # 09:00 EDT
     ("2026-11-16T16:59:00", FAILED_1, [], None, "retry at 12:00"),               # 11:59 بعد فشل
     ("2026-11-16T17:00:00", FAILED_1, [], 2, "attempt 2 at 12:00"),              # 12:00 بعد فشل تقني
@@ -115,12 +123,15 @@ def test_update_run_guard(attempt, now, state, ok, why):
     assert got is ok and why in reason
 
 
-def _main(monkeypatch, tmp_path, at, attempt, caller, done=None):
+def _main(monkeypatch, tmp_path, at, attempt, caller, done=None, fetch=None):
     """fetch_macro.main كاملاً بساعة مثبتة، وFRED وnews.json ونموذج مزيفين."""
     freeze(monkeypatch, at, done)
     monkeypatch.setattr(ai_report, "write_report", lambda *a, **k: WRITE(*a, caller=caller, **k))
     series = demo_series(start="2015-01-01", end="2026-06-30")
-    monkeypatch.setattr(fetch_macro, "fetch_all", lambda raw, start, log=None: (series, {}))
+    monkeypatch.setattr(fetch_macro, "fetch_all", fetch or fake_fetch(series))
+    # ما يحفظه الجلب الحقيقي في data/raw (بلا المؤشرين الداخليين)، ليقرأه تشغيل يستعمل ملفات الجمع المسبق
+    monkeypatch.setattr(fetch_macro, "load_saved_series",
+                        lambda raw: {k: v for k, v in series.items() if k not in ("NASDAQ100", "SP500")})
     monkeypatch.setattr(fetch_macro, "load_status", lambda p: ({}, []))
     monkeypatch.setattr(fetch_news, "load_live", lambda url: {})
     data = tmp_path / "data"
@@ -202,6 +213,81 @@ def test_published_with_warnings_is_logged_and_not_retried(monkeypatch, tmp_path
     assert ai_report.dispatch_decision(utc("2026-11-16T17:00:00"), state, [], CFG)[0] is None
 
 
+# ---------------------------------------------------------------- section collectors before the report
+SECTIONS = ("growth", "inflation", "labor", "fed_rates", "financial", "markets")
+
+
+def test_the_0840_collection_saves_every_section_and_writes_no_report(monkeypatch, tmp_path):
+    calls = []
+    state, hist, led, page = _main(monkeypatch, tmp_path, "2026-11-16T13:41:00", "collect", caller_for(calls=calls))
+    assert calls == [] and hist is None and "ai_attempts" not in state                 # جمع فقط، بلا تقرير
+    col = state["collection"]
+    assert (col["fresh"], col["sections_ok"], col["total"], col["collected_ny"], col["trigger"]) == \
+        (True, 6, 6, "08:41", "pre_report_collection")
+    folder = tmp_path / "data" / "sections"
+    assert {f.stem for f in folder.glob("*.json")} == set(SECTIONS) | {"index"}         # لا ملف أخبار في المستودع
+    for k in SECTIONS:
+        b = json.loads((folder / f"{k}.json").read_text(encoding="utf-8"))
+        assert b["ok"] and b["section"] == k and b["collected_at"] == "2026-11-16T13:41:00Z", k
+    mk = (folder / "markets.json").read_text(encoding="utf-8")
+    assert '"last"' not in mk and '"points"' not in mk                                  # مشتق فقط
+    assert page["collection"]["sections"]["labor"]["ok"] is True
+    assert ai_report.dispatch_decision(utc("2026-11-16T13:50:00"), state, [], CFG)[0] is None
+    assert ai_report.dispatch_decision(utc("2026-11-16T14:00:00"), state, [], CFG)[0] == 1
+
+
+def test_the_0900_report_hands_the_collected_files_to_the_model_without_fetching_again(monkeypatch, tmp_path):
+    _main(monkeypatch, tmp_path, "2026-11-16T13:41:00", "collect", caller_for())
+
+    def no_fetch(*a, **k):
+        raise AssertionError("the report run must not fetch again when the collected inputs are ready")
+    seen = {}
+    state, hist, led, _ = _main(monkeypatch, tmp_path, "2026-11-16T14:01:00", "1", caller_for(seen=seen), fetch=no_fetch)
+    m = hist[0]["meta"]
+    assert m["inputs"]["source"] == "pre_report_collection" and m["market"]["ok"]
+    for k in ("growth", "inflation", "labor", "fed_rates", "financial"):
+        r = m["inputs"]["sections"][k]
+        assert (r["ok"], r["collected_at"], r["before_model_call"]) == (True, "2026-11-16T13:41:00Z", True), k
+    sent = json.loads(seen["user"].split("\n", 1)[1])["sections"]
+    assert sent["growth"]["collected_at"] == "2026-11-16T13:41:00Z" and sent["news"]["ok"]
+    assert state["ai_attempts"][0]["inputs_source"] == "pre_report_collection"
+
+
+def test_without_ready_files_the_report_run_collects_before_calling_the_model(monkeypatch, tmp_path):
+    state, hist, _, _ = _main(monkeypatch, tmp_path, "2026-11-16T14:01:00", "1", caller_for())
+    m = hist[0]["meta"]
+    assert m["inputs"]["source"] == "report_run" and state["collection"]["trigger"] == "report_run"
+    assert all(r["collected_at"] == "2026-11-16T14:01:00Z" and r["before_model_call"]
+               for k, r in m["inputs"]["sections"].items() if k != "news")
+
+
+def test_attempt_2_collects_again_so_releases_after_0900_are_not_left_out(monkeypatch, tmp_path):
+    _main(monkeypatch, tmp_path, "2026-11-16T13:41:00", "collect", caller_for())
+    _main(monkeypatch, tmp_path, "2026-11-16T14:02:00", "1", lambda *a: (_ for _ in ()).throw(RuntimeError("down")))
+    state, hist, _, _ = _main(monkeypatch, tmp_path, "2026-11-16T17:01:00", "2", caller_for())
+    r = hist[0]["meta"]["inputs"]
+    assert r["source"] == "report_run" and r["sections"]["inflation"]["collected_at"] == "2026-11-16T17:01:00Z"
+
+
+def test_one_failing_collector_does_not_stop_the_others(monkeypatch, tmp_path):
+    series = demo_series(start="2015-01-01", end="2026-06-30")
+    ok = fake_fetch(series)
+
+    def flaky(raw, start, fetcher=None, indicators=None, log=None):
+        if indicators and any(i.id == "UNRATE" for i in indicators):
+            raise RuntimeError("labor source down")
+        return ok(raw, start, indicators=indicators)
+    state, hist, _, page = _main(monkeypatch, tmp_path, "2026-11-16T13:41:00", "collect", caller_for(), fetch=flaky)
+    secs = page["collection"]["sections"]
+    assert secs["labor"]["ok"] is False and "labor source down" in secs["labor"]["error"]
+    assert all(secs[k]["ok"] for k in SECTIONS if k != "labor")
+    assert state["collection"]["fresh"] is False and state["collection"]["sections_ok"] == 5
+    # الملفات غير جاهزة كلها: تشغيل التقرير يجمع بنفسه قبل الاستدعاء
+    state, hist, _, _ = _main(monkeypatch, tmp_path, "2026-11-16T14:01:00", "1", caller_for(), fetch=flaky)
+    r = hist[0]["meta"]["inputs"]
+    assert r["source"] == "report_run" and r["sections"]["labor"]["ok"] is False and r["sections"]["inflation"]["ok"]
+
+
 # ---------------------------------------------------------------- the workflows
 NEWS = (ROOT / ".github" / "workflows" / "news.yml").read_text(encoding="utf-8")
 UPDATE = (ROOT / ".github" / "workflows" / "update.yml").read_text(encoding="utf-8")
@@ -218,7 +304,7 @@ def test_news_tick_requests_the_attempt_number_independently_of_the_news_fetch()
     assert "if: ${{ !cancelled() }}" in step and "continue-on-error: true" in step
     assert "secrets." not in step and "ANTHROPIC_API_KEY" not in step
     assert "status,event,createdAt,displayTitle,conclusion" in step
-    assert '[[ "$d" =~ ^dispatch\\ ([12]): ]]' in step and '-f report_attempt="${BASH_REMATCH[1]}"' in step
+    assert '[[ "$d" =~ ^dispatch\\ ([12]|collect): ]]' in step and '-f report_attempt="${BASH_REMATCH[1]}"' in step
     assert "--ref main" in step and "manual" not in step                   # الدورة لا تطلب محاولة يدوية أبداً
     assert NEWS.index("طلب تقرير اليوم") < NEWS.index("جلب الأخبار وترجمتها")   # قبل الجلب، فلا يتأثر بفشله
     assert re.search(r"permissions:\n(?:  .*\n)*  actions: write", NEWS)

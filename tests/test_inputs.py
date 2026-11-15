@@ -198,24 +198,28 @@ from _report import body as _body  # noqa: E402
 def test_report_context_carries_changes_revisions_momentum_and_previous_report():
     cfg = load_config("config.json")
     payload = build_payload(demo_series(start="2020-01-01", end="2026-06-30"), {}, cfg, now=NOW)
-    payload["revisions"] = [{"id": "PAYEMS", "detected_utc": "2026-11-15T00:00:00Z", "date": "2026-09-01", "old": 1, "new": 2}]
+    next(i for i in payload["indicators"] if i["id"] == "PAYEMS")["revisions"] = [
+        {"detected_utc": "2026-11-15T00:00:00Z", "date": "2026-09-01", "old": 1, "new": 2}]
     seen = {}
 
     def caller(user, system, model, effort):
-        seen["ctx"], seen["system"] = json.loads(user.split("\n", 1)[1])["economy_inputs"], system
+        if system != ai_report.SYSTEM_MARKETS:                         # الاستدعاء الاقتصادي، لا Market Gates بعده
+            seen["ctx"], seen["system"] = json.loads(user.split("\n", 1)[1]), system
         return "<report>" + json.dumps(_body()) + "</report>", [], {k: 0 for k in ai_report.USAGE_KEYS}, model
 
     first = ai_report.write_report(payload, cfg, now_utc=NOW, caller=caller)
-    assert seen["ctx"]["changes_since_previous_report"] == {"available": False, "reason": "no previous report"}
+    assert all(seen["ctx"]["sections"][k]["changes_since_previous_report"] == {"available": False, "reason": "no previous report"}
+               for k in ("growth", "inflation", "labor", "fed_rates", "financial"))
     snap0 = first["meta"]["inputs_snapshot"]
     assert snap0 and all(set(v) == {"last", "as_of", "source_as_of", "state", "pct5"} for v in snap0.values())
     first["meta"]["completed_at"] = "2026-11-14T00:00:00Z"
     ai_report.write_report(payload, cfg, now_utc=NOW + timedelta(days=1), caller=caller, previous=first)
     ctx = seen["ctx"]
-    assert ctx["changes_since_previous_report"]["available"] is True
-    assert any(i["kind"] == "revision" for i in ctx["changes_since_previous_report"]["items"])
+    labor = ctx["sections"]["labor"]["changes_since_previous_report"]          # كل قسم يحسب ما تغيّر فيه
+    assert labor["available"] is True and any(i["kind"] == "revision" for i in labor["items"])
+    assert not any(i["kind"] == "revision" for i in ctx["sections"]["growth"]["changes_since_previous_report"]["items"])
     assert ctx["previous_report"]["scenarios"][0] == {"label": "A", "name": "سيناريو A", "prob": 45}
-    cpi = next(i for i in ctx["indicators"] if i["id"] == "CPILFESL")
+    cpi = next(i for i in ctx["sections"]["inflation"]["indicators"] if i["id"] == "CPILFESL")
     assert "momentum" in cpi and "revisions" in cpi
     assert "computed by the platform's code" in seen["system"] and "do not recompute or guess them" in seen["system"]
 

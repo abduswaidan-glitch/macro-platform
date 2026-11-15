@@ -156,7 +156,11 @@ def monthly_panel(series: dict[str, pd.Series]) -> pd.DataFrame:
 def growth_inflation_quadrant(series: dict[str, pd.Series]) -> dict | None:
     """تصنيف مبسّط: النمو صاعد إذا كان الإنتاج الصناعي (تغير سنوي) والتوظيف (متوسط 3 أشهر) موجبين معاً.
     التضخم ساخن إذا تجاوز Core PCE (تغير سنوي) الحد HOT_CORE_PCE. هذا تصنيف وصفي وليس توقعاً."""
-    panel = monthly_panel(series).dropna()
+    panel = monthly_panel(series)
+    # المربع يحتاج المدخلات الثلاثة: غياب أحدها كان يُسقط بناء المنصة كله (KeyError، فحص 15 نوفمبر 2026)
+    if panel.empty or not {"indpro_yoy", "payems_avg3", "corepce_yoy"} <= set(panel.columns):
+        return None
+    panel = panel.dropna()
     if panel.empty:
         return None
     row = panel.iloc[-1]
@@ -194,7 +198,7 @@ def signals(series: dict[str, pd.Series]) -> list[dict]:
             v = float(sahm.iloc[-1])
             trig = v >= SAHM_TRIGGER
             cards.append({
-                "title": "Sahm Rule", "value": f"{v:+.2f} pp",
+                "key": "sahm", "title": "Sahm Rule", "value": f"{v:+.2f} pp",
                 "detail": ("مفعّلة: البطالة ترتفع بسرعة تاريخية (علامة ركود)" if trig
                            else f"غير مفعّلة. العتبة {SAHM_TRIGGER:.2f} pp"),
                 "tone": "bad" if trig else "ok",
@@ -203,7 +207,7 @@ def signals(series: dict[str, pd.Series]) -> list[dict]:
     curve = _last(series.get("T10Y2Y"))
     if curve is not None:
         cards.append({
-            "title": "منحنى العائد 10Y-2Y", "value": f"{curve:+.2f}%",
+            "key": "curve", "title": "منحنى العائد 10Y-2Y", "value": f"{curve:+.2f}%",
             "detail": "مقلوب (Inverted): تاريخياً يسبق الركود" if curve < 0 else "طبيعي (Normal)",
             "tone": "warn" if curve < 0 else "ok",
         })
@@ -211,7 +215,7 @@ def signals(series: dict[str, pd.Series]) -> list[dict]:
     real = _last(series.get("DFII10"))
     if real is not None:
         cards.append({
-            "title": "العائد الحقيقي 10Y", "value": f"{real:.2f}%",
+            "key": "real10", "title": "العائد الحقيقي 10Y", "value": f"{real:.2f}%",
             "detail": "تشديد نقدي حقيقي (أعلى من 2%)" if real > 2 else "شروط نقدية حقيقية مخففة",
             "tone": "warn" if real > 2 else "ok",
         })
@@ -219,7 +223,7 @@ def signals(series: dict[str, pd.Series]) -> list[dict]:
     be = _last(series.get("T10YIE"))
     if be is not None:
         cards.append({
-            "title": "توقعات التضخم 10Y (Breakeven)", "value": f"{be:.2f}%",
+            "key": "breakeven", "title": "توقعات التضخم 10Y (Breakeven)", "value": f"{be:.2f}%",
             "detail": "فوق 2.5%: توقعات تضخم مرتفعة" if be > 2.5 else "قريبة من هدف الفيدرالي",
             "tone": "warn" if be > 2.5 else "ok",
         })
@@ -227,7 +231,7 @@ def signals(series: dict[str, pd.Series]) -> list[dict]:
     hy = _last(series.get("BAMLH0A0HYM2"))
     if hy is not None:
         cards.append({
-            "title": "فارق High Yield", "value": f"{hy:.2f}%",
+            "key": "hy", "title": "فارق High Yield", "value": f"{hy:.2f}%",
             "detail": "ضغط ائتماني (فوق 5%)" if hy > 5 else ("توتر معتدل" if hy > 4 else "هدوء ائتماني"),
             "tone": "bad" if hy > 5 else ("warn" if hy > 4 else "ok"),
         })
@@ -235,7 +239,7 @@ def signals(series: dict[str, pd.Series]) -> list[dict]:
     vix = _last(series.get("VIXCLS"))
     if vix is not None:
         cards.append({
-            "title": "مؤشر VIX", "value": f"{vix:.1f}",
+            "key": "vix", "title": "مؤشر VIX", "value": f"{vix:.1f}",
             "detail": "خوف مرتفع (فوق 25)" if vix > 25 else ("توتر (20-25)" if vix > 20 else "هدوء نسبي"),
             "tone": "bad" if vix > 25 else ("warn" if vix > 20 else "ok"),
         })
@@ -243,7 +247,7 @@ def signals(series: dict[str, pd.Series]) -> list[dict]:
     q = growth_inflation_quadrant(series)
     if q is not None:
         cards.append({
-            "title": "المربع: النمو × التضخم", "value": q["label_ar"],
+            "key": "quadrant", "title": "المربع: النمو × التضخم", "value": q["label_ar"],
             "detail": (f"الصناعة {q['indpro_yoy']:+.1f}% سنوياً، توظيف {q['payems_avg3']:+.0f}k/شهر، "
                        f"Core PCE {q['corepce_yoy']:.2f}%"),
             "tone": q["tone"],

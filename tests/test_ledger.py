@@ -17,7 +17,7 @@ import fetch_news
 from macro_platform import ai_report, ledger
 from macro_platform.build import load_config
 from macro_platform.demo import demo_series
-from _report import body, freeze
+from _report import body, fake_fetch, freeze
 
 ROOT = Path(__file__).resolve().parent.parent
 CFG = load_config(ROOT / "config.json")["ai"]
@@ -199,7 +199,7 @@ def _run(monkeypatch, tmp_path, argv, body=None, series_extra=None, attempt="1")
     orig = ai_report.write_report
     monkeypatch.setattr(ai_report, "write_report", lambda *a, **k: orig(*a, caller=caller, **k))
     series = demo_series(start="2015-01-01", end="2026-06-30") | (series_extra or {})
-    monkeypatch.setattr(fetch_macro, "fetch_all", lambda raw, start, log=None: (series, {}))
+    monkeypatch.setattr(fetch_macro, "fetch_all", fake_fetch(series))
     monkeypatch.setattr(fetch_macro, "load_saved_series", lambda raw: series)
     monkeypatch.setattr(fetch_macro, "load_status", lambda p: ({}, []))
     data = tmp_path / "data"

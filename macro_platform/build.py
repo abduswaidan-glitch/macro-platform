@@ -310,63 +310,89 @@ def kpis(snap: pd.DataFrame) -> list[dict]:
     return out
 
 
+def indicator_entries(series: dict[str, pd.Series], status: dict[str, dict], now: datetime,
+                      indicators=INDICATORS) -> tuple[list[dict], list[str]]:
+    """مدخل كل مؤشر (القيمة والتغير والعمر والحالة والزخم والمراجعات والنقاط) لقائمة مؤشرات بعينها. يستعمله كل جامع
+    قسم لمؤشرات قسمه وحدها، ويستعمله بناء الصفحة لها كلها. خلل في مؤشر واحد يُعلَّم عليه ولا يوقف البقية."""
+    now_ts = pd.Timestamp(now).tz_localize(None) if pd.Timestamp(now).tzinfo else pd.Timestamp(now)
+    sub = {i.id: series[i.id] for i in indicators if i.id in series}
+    snap = snapshot(sub, indicators=tuple(i for i in indicators if i.id in sub))
+    snap_rows = {r["id"]: r for r in snap.to_dict("records")}
+    entries, warnings = [], []
+    for ind in indicators:
+        try:
+            e, w = _entry(ind, series.get(ind.id), dict(status.get(ind.id, {"state": "ok", "issues": []})),
+                          snap_rows.get(ind.id), now_ts, status)
+        except Exception as exc:                      # عزل: مؤشر واحد لا يُسقط القسم ولا المنصة
+            e = {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+                 "internal_only": ind.internal_only, "state": "error",
+                 "issues": [f"تعذّر حساب المؤشر: {type(exc).__name__}"]}
+            w = [f"{ind.name_ar} ({ind.id}): تعذّر حساب المؤشر"]
+        entries.append(e)
+        warnings += w
+    return entries, warnings
+
+
+def _entry(ind: Indicator, s, st: dict, r: dict | None, now_ts: pd.Timestamp, status: dict) -> tuple[dict, list[str]]:
+    warnings: list[str] = []
+    if (s is None or s.empty) and ind.internal_only and ind.id in status:
+        # البناء offline بلا المؤشرين عمداً (لا يُحفظان): الحالة من آخر جلب حقيقي، لا «لا بيانات» في كل بناء
+        if st.get("issues"):
+            warnings.append(f"{ind.name_ar} ({ind.id}): {'؛ '.join(st['issues'])}")
+        return {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+                "internal_only": True, "state": st.get("state", "ok"), "issues": st.get("issues") or []}, warnings
+    if s is None or s.empty or r is None:
+        return {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+                "state": "error", "issues": st.get("issues") or ["لا بيانات"]}, [f"{ind.name_ar} ({ind.id}): لا بيانات"]
+    # حالة الجلب وعمره من آخر قيمة نشرها المصدر؛ عمر القراءة المعروضة من تاريخها (as_of). يختلفان فقط حين
+    # تكون أحدث قراءة غير قابلة للحساب (unavailable)، فلا يُحسب غيابها خطأ جلب ولا يُخفى عمر ما يُعرض فعلاً.
+    source_age = staleness_days(ind, s, now_ts)
+    if source_age > MAX_AGE_OVERRIDE.get(ind.id, MAX_AGE_DAYS[ind.freq]) and st["state"] == "ok":
+        st["state"] = "stale"
+        st["issues"] = st["issues"] + [f"آخر قيمة عمرها {source_age} يوماً"]
+    if st["issues"]:
+        warnings.append(f"{ind.name_ar} ({ind.id}): {'؛ '.join(st['issues'])}")
+    age = int((now_ts.normalize() - r["as_of"].normalize()).days)
+    unavailable = r.get("unavailable")
+    if unavailable:
+        fetch = (f"الجلب سليم، وآخر قيمة من المصدر بتاريخ {r['source_as_of']:%Y-%m-%d}"
+                 if st["state"] == "ok" else "")
+        warnings.append(f"{ind.name_ar} ({ind.id}): {unavailable['reason']}" + (f". {fetch}" if fetch else ""))
+    return {
+        "id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+        "freq": ind.freq, "transform": ind.transform, "unit": ind.unit, "good_up": ind.good_up,
+        "last": _r(r["last"]), "prev": _r(r["prev"]), "change": _r(r["change"]),
+        "z5": _r(r["z5"], 2), "pct5": _r(r["pct5"], 1), "as_of": r["as_of"].strftime("%Y-%m-%d"),
+        "age_days": age, "state": st["state"], "issues": st["issues"],
+        "source_as_of": r["source_as_of"].strftime("%Y-%m-%d"), "unavailable": unavailable,
+        "momentum": momentum(ind, s) if ind.id in MOMENTUM_IDS else None,
+        "internal_only": ind.internal_only,
+        "revisions": [x for x in st.get("revisions") or [] if not is_noise(x)][-5:],
+        "last_new_obs_utc": st.get("last_new_obs_utc"),
+        "points": chart_points(ind, s),
+    }, warnings
+
+
+def _safe(name: str, fn, default, warnings: list[str]):
+    """جزء محسوب واحد من الصفحة (الإشارات، المربع، Sahm، البوابات): فشله تحذير، لا سقوط البناء كله."""
+    try:
+        return fn()
+    except Exception as exc:
+        warnings.append(f"تعذّر حساب {name}: {type(exc).__name__}")
+        return default
+
+
 def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: dict,
                   now: datetime | None = None, demo: bool = False) -> dict:
     now = now or datetime.now(timezone.utc)
-    now_ts = pd.Timestamp(now).tz_localize(None) if pd.Timestamp(now).tzinfo else pd.Timestamp(now)
-    snap = snapshot(series)
-    snap_rows = {r["id"]: r for r in snap.to_dict("records")}
-    indicators = []
-    warnings = []
-    for ind in INDICATORS:
-        s = series.get(ind.id)
-        st = dict(status.get(ind.id, {"state": "ok", "issues": []}))
-        if (s is None or s.empty) and ind.internal_only and ind.id in status:
-            # البناء offline بلا المؤشرين عمداً (لا يُحفظان): الحالة من آخر جلب حقيقي، لا «لا بيانات» في كل بناء
-            indicators.append({"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
-                               "internal_only": True, "state": st.get("state", "ok"), "issues": st.get("issues") or []})
-            if st.get("issues"):
-                warnings.append(f"{ind.name_ar} ({ind.id}): {'؛ '.join(st['issues'])}")
-            continue
-        if s is None or s.empty or ind.id not in snap_rows:
-            indicators.append({"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en,
-                               "category": ind.category, "state": "error",
-                               "issues": st.get("issues") or ["لا بيانات"]})
-            warnings.append(f"{ind.name_ar} ({ind.id}): لا بيانات")
-            continue
-        # حالة الجلب وعمره من آخر قيمة نشرها المصدر؛ عمر القراءة المعروضة من تاريخها (as_of). يختلفان فقط حين
-        # تكون أحدث قراءة غير قابلة للحساب (unavailable)، فلا يُحسب غيابها خطأ جلب ولا يُخفى عمر ما يُعرض فعلاً.
-        source_age = staleness_days(ind, s, now_ts)
-        if source_age > MAX_AGE_OVERRIDE.get(ind.id, MAX_AGE_DAYS[ind.freq]) and st["state"] == "ok":
-            st["state"] = "stale"
-            st["issues"] = st["issues"] + [f"آخر قيمة عمرها {source_age} يوماً"]
-        if st["issues"]:
-            warnings.append(f"{ind.name_ar} ({ind.id}): {'؛ '.join(st['issues'])}")
-        r = snap_rows[ind.id]
-        age = int((now_ts.normalize() - r["as_of"].normalize()).days)
-        unavailable = r.get("unavailable")
-        if unavailable:
-            fetch = (f"الجلب سليم، وآخر قيمة من المصدر بتاريخ {r['source_as_of']:%Y-%m-%d}"
-                     if st["state"] == "ok" else "")
-            warnings.append(f"{ind.name_ar} ({ind.id}): {unavailable['reason']}" + (f". {fetch}" if fetch else ""))
-        indicators.append({
-            "id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
-            "freq": ind.freq, "transform": ind.transform, "unit": ind.unit, "good_up": ind.good_up,
-            "last": _r(r["last"]), "prev": _r(r["prev"]), "change": _r(r["change"]),
-            "z5": _r(r["z5"], 2), "pct5": _r(r["pct5"], 1), "as_of": r["as_of"].strftime("%Y-%m-%d"),
-            "age_days": age, "state": st["state"], "issues": st["issues"],
-            "source_as_of": r["source_as_of"].strftime("%Y-%m-%d"), "unavailable": unavailable,
-            "momentum": momentum(ind, s) if ind.id in MOMENTUM_IDS else None,
-            "internal_only": ind.internal_only,
-            "revisions": [r for r in st.get("revisions") or [] if not is_noise(r)][-5:],
-            "last_new_obs_utc": st.get("last_new_obs_utc"),
-            "points": chart_points(ind, s),
-        })
-    q = growth_inflation_quadrant(series)
+    indicators, warnings = indicator_entries(series, status, now)
+    snap = _safe("بطاقات الأرقام", lambda: snapshot(series), None, warnings)
+    q = _safe("المربع", lambda: growth_inflation_quadrant(series), None, warnings)
     if q:
         q = {**q, "as_of": q["as_of"].strftime("%Y-%m-%d"),
              **{k: _r(q[k], 3) for k in ("indpro_yoy", "payems_avg3", "corepce_yoy")}}
-    sahm = sahm_rule(series["UNRATE"]).dropna() if "UNRATE" in series else pd.Series(dtype=float)
+    sahm = _safe("Sahm Rule", lambda: sahm_rule(series["UNRATE"]).dropna() if "UNRATE" in series else pd.Series(dtype=float),
+                 pd.Series(dtype=float), warnings)
     return {
         "generated": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "demo": demo,
@@ -376,10 +402,10 @@ def build_payload(series: dict[str, pd.Series], status: dict[str, dict], cfg: di
                    # جدول الإصدارات نفسه (releases.py) لقواعد الخطورة في الصفحة: أهمية الإصدار لا عدد السلاسل
                    "releases": {k: list(v) for k, v in RELEASES.items()}},
         "categories": [{"key": k, "ar": ar, "en": en} for k, (ar, en) in CATEGORIES.items()],
-        "kpis": kpis(snap),
-        "gates": nq_gates(series, cfg),
-        "market_relative": market_relative(series),
-        "signals": signals(series),
+        "kpis": _safe("بطاقات الأرقام", lambda: kpis(snap), [], warnings) if snap is not None else [],
+        "gates": _safe("بوابات NQ", lambda: nq_gates(series, cfg), [], warnings),
+        "market_relative": _safe("الأداء النسبي", lambda: market_relative(series), None, warnings),
+        "signals": _safe("الإشارات", lambda: signals(series), [], warnings),
         "quadrant": q,
         "sahm": {"trigger": SAHM_TRIGGER,
                  "points": [[d.strftime("%Y-%m-%d"), _r(v, 3)] for d, v in sahm.items()]},

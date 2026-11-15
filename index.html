@@ -189,6 +189,8 @@ footer a{color:inherit}
 .verdicts li{margin:4px 0}
 .legacy-bias{margin-top:10px}
 .legacy-archive{margin-top:14px}
+.inputs-line{font-size:12.5px;margin-top:4px}
+.gates-after{font-size:13px}
 .late-tag{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:6px;padding:2px 8px}
 .eco h3{margin-top:18px}
 .exec .dir{font-size:13px;margin-inline-start:8px}
@@ -521,6 +523,9 @@ function computeAlerts(data, news, newsFailed, nowIso) {
       out.push({level: "critical", kind: "report", ids: [], text: "التقرير الاقتصادي غير متاح اليوم بسبب فشل التوليد."});
     else out.push({level: "warning", kind: "report", ids: [], text: `فشلت المحاولة الأولى لتقرير اليوم، وإعادة المحاولة ${sch.attempt_2 || "12:00"} بتوقيت نيويورك.`});
   }
+  const col = (data && data.collection) || null;
+  const badCol = col && col.sections ? Object.entries(col.sections).filter(([k, v]) => v && !v.ok) : [];
+  if (badCol.length) out.push({level: "warning", kind: "collector", ids: [], text: `تعذّر جامع ${badCol.map(([k, v]) => `${SEC_TITLES[k] || k} (${v.error || "سبب غير معروف"})`).join("، ")} في آخر جمع للأقسام.`});
   if (newsFailed && !news) out.push({level: "critical", kind: "news", ids: [], text: "تعذّرت قراءة الأخبار والتقويم (news.json)."});
   // تنبيه: بقية الأخطاء والتقادم في سطر واحد لكل نوع (لا قائمة مقطوعة)
   const err = inds.filter(i => i.state === "error" && !crit.has(i.id)).map(i => i.id);
@@ -672,6 +677,20 @@ function supportTxt(d, events) {
     .map(e => `<a href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.title)}</a>`).join("، ");
   return ev || ln ? `<div class="chk">الدليل: ${ev}${ev && ln ? " · " : ""}${ln}</div>` : "";
 }
+/* جامعو الأقسام: متى جُمعت مدخلات التقرير، وهل سبقت استدعاء النموذج، وأي قسم لم يكن متاحاً */
+const SEC_TITLES = {growth: "النمو", inflation: "التضخم", labor: "سوق العمل", fed_rates: "الفيدرالي والفائدة",
+  financial: "الأوضاع المالية", news: "الأخبار والتقويم", markets: "Market Gates"};
+const ECON_SECS = ["growth", "inflation", "labor", "fed_rates", "financial"];
+const SRC_AR = {pre_report_collection: "قبل موعد التقرير", report_run: "في تشغيل التقرير نفسه", data_run: "في تشغيل البيانات"};
+function inputsLine(r) {
+  const inp = (r.meta || {}).inputs; if (!inp || !inp.sections) return "";
+  const sec = inp.sections, eco = ECON_SECS.map(k => sec[k] || {});
+  const ok = eco.filter(x => x.ok).length, t = eco.map(x => x.collected_at).filter(Boolean).sort()[0];
+  const before = eco.every(x => !x.ok || x.before_model_call);
+  const bad = [...ECON_SECS, "news"].filter(k => sec[k] && !sec[k].ok);
+  return `<div class="inputs-line muted">المدخلات: جمعها جامعو الأقسام ${esc(SRC_AR[inp.source] || inp.source || "")}${t ? ` عند ${esc(nyTime(t))} نيويورك (${esc(viTime(t))} فيينا)` : ""}${before ? "، قبل استدعاء النموذج" : ""} · ${ok} من 5 أقسام${sec.news && sec.news.ok ? " والأخبار" : ""}${
+    bad.length ? ` · <span class="tone-warn">غير متاح: ${bad.map(k => `${esc(SEC_TITLES[k])} (<bdi>${esc(sec[k].error || "")}</bdi>)`).join("، ")}</span>` : ""}</div>`;
+}
 function lateTag(r) {
   const m = r.meta || {}; if (!m.delayed) return "";
   const t = m.completed_at || m.written_at;
@@ -758,8 +777,10 @@ const GATE_TABS = [["nq", "NQ"], ["spx", "S&P 500"], ["dow", "Dow"]];
 function renderGates(eco, legacy, data) {
   const p = $("#p-gates"), r = (eco || [])[0], mt = r ? r.market_translation : null, old = (legacy || [])[0];
   const led = r ? ledgerOf(data, r.meta?.ny_date) : null, S = ((data || {}).ledger || {}).summary;
+  const mk = r ? (r.meta || {}).market : null;
   const src = !r ? '<p class="muted gates-na">لا ترجمة سوقية بعد: تبدأ مع أول تقرير اقتصادي بالصيغة الجديدة.</p>'
-    : !mt || typeof mt !== "object" ? '<p class="muted gates-na">بوابات السوق غير متاحة اليوم.</p>' : "";
+    : !mt || typeof mt !== "object" ? `<p class="muted gates-na">بوابات السوق غير متاحة اليوم${mk && mk.reason ? `: <bdi>${esc(mk.reason)}</bdi>` : "."}</p>`
+    : mk && mk.completed_at ? `<p class="muted gates-after">كُتبت بعد اكتمال التقرير الاقتصادي، عند ${esc(nyTime(mk.completed_at))} نيويورك (${esc(viTime(mk.completed_at))} فيينا)، من التقرير نفسه وملف جامع Market Gates.</p>` : "";
   const want = store.get("macro-gate");
   const cur = GATE_TABS.some(t => t[0] === want) ? want : "nq";
   const limits = (data.gates || []).filter(g => g.key !== "leadership"), lead = (data.gates || []).filter(g => g.key === "leadership");
@@ -822,7 +843,7 @@ function renderAI(hist, data) {
     const r = hist[idx], led = ledgerOf(data, r.meta?.ny_date);
     const warn = arr(r.warnings);
     p.innerHTML = intro + reportWarnings(hist, data) + `<div class="ai-head"><div><div class="ai-title">${esc(r.title)}</div>
-        <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div>${lateTag(r)}</div>
+        <div class="ai-meta">${esc(r.meta?.ny_date)} · ${esc(r.meta?.model)}${reportTimeLabel(r) ? " · " + reportTimeLabel(r) : ""}</div>${inputsLine(r)}${lateTag(r)}</div>
         ${hist.length > 1 ? `<label class="picker">تقارير سابقة: <select id="aiPick">${hist.map((h, k) =>
           `<option value="${k}"${k === idx ? " selected" : ""}>${esc(h.meta?.ny_date)}</option>`).join("")}</select></label>` : ""}</div>
       ${economyHtml(r, data, led)}<p class="muted gates-link">انعكاس هذا التقييم على المؤشرات في قسم <a href="#gates">Market Gates</a>.</p>
@@ -864,6 +885,16 @@ function renderLearn(L) {
   if (h.startsWith("learn-") && !p.hidden) openLearn(h);
 }
 
+function collectorsTable(c) {
+  if (!c || !c.sections) return "";
+  return `<h3>جامعو الأقسام</h3><p class="muted">لكل قسم كود مستقل يجمع معلوماته بنفسه. آخر جمع: <bdi>${esc(nyDay(c.collected_at))}</bdi> ${esc(nyTime(c.collected_at))} نيويورك (${esc(viTime(c.collected_at))} فيينا) · ${esc(SRC_AR[c.trigger] || c.trigger || "")}. الأخبار تجمعها حلقة الأخبار كل نحو 10 دقائق.</p>
+    <div class="tbl-wrap collectors"><table><thead><tr><th>القسم</th><th>الحالة</th><th>المؤشرات</th><th>وقت الجمع</th></tr></thead><tbody>
+    ${Object.entries(c.sections).map(([k, v]) => `<tr data-sec="${esc(k)}"><td>${esc(SEC_TITLES[k] || k)}</td>
+      <td><span class="dot ${v.ok ? "ok" : "error"}"></span>${v.ok ? "سليم" : `تعذّر <span class="en">${esc(v.error || "")}</span>`}</td>
+      <td class="num">${v.total != null ? `${esc(v.available)}/${esc(v.total)}` : "—"}</td><td class="num">${esc(nyTime(v.collected_at))}</td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
 /* ---------- methodology ---------- */
 function renderMethod(data) {
   $("#p-method").innerHTML = `<div class="sec-head"><h2>المنهجية وحالة البيانات</h2><p>من أين تأتي الأرقام، وكيف تُفحص قبل النشر، وحالة كل مصدر الآن.</p></div>
@@ -874,6 +905,7 @@ function renderMethod(data) {
       <div class="box"><h4>Sahm Rule</h4><p>متوسط البطالة لثلاثة أشهر ناقص أدنى متوسط ثلاثة أشهر في الاثني عشر شهراً السابقة. العتبة 0.50 نقطة مئوية.</p></div>
       <div class="box"><h4>مؤشرا الأسهم</h4><p>Nasdaq-100 وS&amp;P 500 من FRED عليهما إشعار ملكية لطرف ثالث، فيُستعملان في الحساب فقط: لا تُنشر مستوياتهما ولا رسومهما، ويُنشر المشتق منهما (الأداء النسبي وبوابة القيادة وقياس الترجمة).</p></div>
     </div>
+    ${collectorsTable(data.collection)}
     ${data.status.warnings.length ? `<h3>تحذيرات البيانات (${data.status.warnings.length})</h3><div class="warn-box data-warnings"><ul>${data.status.warnings.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     <h3>حالة المصادر</h3>
     <div class="tbl-wrap"><table><thead><tr><th>المؤشر</th><th>FRED</th><th>التكرار</th><th>آخر قيمة بتاريخ</th><th>العمر (يوم)</th><th>الحالة</th></tr></thead><tbody>

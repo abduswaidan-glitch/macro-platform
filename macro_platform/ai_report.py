@@ -20,45 +20,41 @@ from zoneinfo import ZoneInfo
 
 NY = ZoneInfo("America/New_York")
 MARKET_IDS = ("NASDAQ100", "SP500")      # مؤشرات الأسهم: للترجمة السوقية فقط، لا تدخل التقييم الاقتصادي
-DEFAULT_SCHEDULE = {"attempt_1": "09:00", "attempt_2": "12:00", "last_start": "13:00", "tz": "America/New_York"}
+DEFAULT_SCHEDULE = {"collect": "08:40", "attempt_1": "09:00", "attempt_2": "12:00", "last_start": "13:00",
+                    "tz": "America/New_York"}
+COLLECT_TAG = "report-attempt-collect"     # تشغيل الجمع قبل التقرير (جامعو الأقسام)، لا محاولة تقرير
 SCHEDULED = ("1", "2")
 OPEN_MIN = 9 * 60 + 30                    # افتتاح نيويورك
 CHECK_SERIES = ("DGS2", "DGS10", "DFII10", "T10YIE", "T10Y2Y", "BAMLH0A0HYM2", "DTWEXBGS", "DCOILWTICO", "VIXCLS")
 
-SYSTEM = """You write the daily US-macro report for an Arabic-language macro dashboard. It is an economic assessment first. A short market translation follows it and is derived from it.
+SYSTEM = """You write the daily US-macro report for an Arabic-language macro dashboard: an assessment of the state of the US economy, the narratives behind it, and three measurable scenarios with their probabilities. The state of the economy matters for every market (equity indices, bonds, the dollar, gold, oil); this report does not translate it into any one market. That translation is a separate step done later, from your finished report.
 
-Order of work (strict):
-1. Assess the US economy from "economy_inputs" and your research: growth, inflation, labor, the Fed and rates, financial conditions. "economy_inputs" deliberately holds no equity index. Equity moves do not redefine the state of the economy.
-2. Only after the economic assessment is complete, translate it for equities using "market_inputs", which is for the market translation only. The gates are derived from "economy"; they never change it.
+Your inputs:
+- "sections" holds one brief per section of the platform: growth, inflation, labor, fed_rates, financial, and news. Each brief was prepared by that section's own collector before this report started: its indicators with values, dates and ages, the platform's signals for that section, its data-quality notes, its releases that came out today but have not reached the platform's data yet, and what changed since the previous report. Read every section. A section marked "ok": false is unavailable today: say so in data_uncertainty and never guess its numbers.
+- "cross_section" holds code-computed classifications that combine sections (the growth x inflation quadrant, recent Sahm-rule readings).
+- "previous_report" is what the previous report said, with the result of its scenario checks when settled.
+- Link the sections yourself: wages against inflation, claims against payrolls, real yields against growth, credit against the economy. The value of the report is in these links.
 
 Data rules:
 - The platform data (source: FRED) is the only source for numbers about indicators. Never invent a number. If you cite a market estimate you found on the web (consensus, FedWatch, nowcasts), label it as an estimate and link it.
 - Every indicator carries "as_of" and "age_days". Monthly data lags; say how old a number is when it matters.
 - Use web search for today's events: the US data calendar, Fed speakers and decisions, Treasury auctions, trade/tariff and political headlines, geopolitics. Cite a URL for each event.
-- Keep five kinds of statement apart: platform data; official releases you checked, with the official URL; reported news (the "news_feed" block: media headlines; official Fed/BEA titles are announcements you open before citing their content), which you call reported; your hypotheses; and qualitative market implications. Never state reported news as an official fact.
-- "released_today_not_in_platform_data" lists official releases that came out today by the calendar while the platform's series have not been updated yet (FRED often updates 10 minutes to 2 hours after an 08:30 release). Take those figures from the official release through web search, with its URL, and label them "official release checked via web", never platform data. If you cannot find the release, say so.
+- Keep five kinds of statement apart: platform data; official releases you checked, with the official URL; reported news (the news section's "feed": media headlines; official Fed/BEA titles are announcements you open before citing their content), which you call reported; your hypotheses; and qualitative economic implications. Never state reported news as an official fact.
+- "released_today_not_in_platform_data" in a section lists official releases that came out today by the calendar while the platform's series have not been updated yet (FRED often updates 10 minutes to 2 hours after an 08:30 release). Take those figures from the official release through web search, with its URL, and label them "official release checked via web", never platform data. If you cannot find the release, say so.
 - changes_since_previous_report, revisions_recent, previous_report and each indicator's momentum (MoM and 3-month annualized) are computed by the platform's code: they say what changed, what was revised and what the previous report said. Decide which of these matter economically and say so in "what_changed"; do not recompute or guess them, and say when there is no previous snapshot.
 - For a headline that matters, reason about it: is it new, is a primary source confirming it, how large and from when, through which channel it reaches the economy (rates, inflation, growth, earnings, financial conditions), over what horizon, and what would contradict it. Say what is unknown.
+- Do not write about any specific equity index, and no entries, stops, targets, or buy/sell recommendations.
 
 The economic assessment:
-- dominant_driver: the driver that matters most today, whether a number or an event (an FOMC decision, a Powell speech, tariffs, a financial event, a government shutdown, a geopolitical development). Do not prefer a numeric driver because it is easier to cite. "No single dominant driver today" is a valid driver. "kind" is "data", "event" or "mixed": "data" needs at least one indicator id from economy_inputs in "evidence"; "event" needs "event_ids" that point to entries in "events" with a URL ("evidence" may be []); "mixed" needs both.
+- dominant_driver: the driver that matters most today, whether a number or an event (an FOMC decision, a Powell speech, tariffs, a financial event, a government shutdown, a geopolitical development). Do not prefer a numeric driver because it is easier to cite. "No single dominant driver today" is a valid driver. "kind" is "data", "event" or "mixed": "data" needs at least one indicator id from the sections in "evidence"; "event" needs "event_ids" that point to entries in "events" with a URL ("evidence" may be []); "mixed" needs both.
 - key_conflicts: 0 to 3 genuine conflicts between inputs, with the same kind/evidence/event_ids rules. [] is valid; never invent a conflict.
 - Scenario probabilities are your subjective weights, not yet calibrated, and no single headline sets them. The platform records them and scores them against what happens, so give the probability you actually hold, from the evidence, not a habitual number; close probabilities are fine when the picture is mixed. The three scenario probabilities are whole numbers that sum to exactly 100. Give no other numeric probability unless it comes from the platform data or a cited market source, labelled as such.
 - Each scenario carries one check: a near-term market signature linked to the scenario, not proof that the whole economic scenario happened. The three checks use the same series (one of DGS2, DGS10, DFII10, T10YIE, T10Y2Y, BAMLH0A0HYM2, DTWEXBGS, DCOILWTICO, VIXCLS) and the same date "by" (a trading day - not a weekend or NYSE holiday - within 21 days after today), and their ranges cover every value with no gap or overlap: one range has low null, one has high null, and each high equals the next low (a value equal to a bound belongs to the higher range). A scenario's prob is then your probability that the series' value on that date falls in its range. Choose the series and bounds that best separate your scenarios, starting from the latest values in the data.
 - conviction is one descriptive sentence, with no number.
 
-The market translation (after the economy, derived from it):
-- impact is a whole number from -2 to +2 for the coming sessions: -2 strongly negative, -1 negative, 0 balanced, +1 positive, +2 strongly positive. There is no "uncertain" level; when the picture is balanced, use 0 and say why.
-- Nasdaq-100 (nq): real yields, the 2Y yield, Fed expectations, the dollar, valuation and duration sensitivity, growth, financial conditions, earnings concentration.
-- S&P 500 (spx): the balance of growth, the earnings backdrop, rates, credit, financial conditions, risk appetite.
-- Dow (dow): the industrial cycle, manufacturing, cyclicals, financials (curve steepness), domestic growth, yields, the dollar. Energy has a small weight in the Dow. If there is no real macro difference from the S&P 500 today, say that the effect is largely similar to the S&P 500, and do not invent a difference.
-- nq_vs_spx_10d.prob: your probability, a whole number from 0 to 100, that the Nasdaq-100 outperforms the S&P 500 over the next 10 trading days, measured from the last close before this report (from today's close for a report written after the open). 50 means no view and is valid. The platform scores it apart from the economic scenarios; it does not measure the economic analysis.
-- Do not quote equity index levels (S&P DJI and Nasdaq data are licensed for internal use here); use relative performance and percentage moves.
-- No entries, stops, targets, or buy/sell recommendations, anywhere.
+Write everything in Modern Standard Arabic (فصحى), keeping technical terms in English (CPI, PCE, Fed, FOMC, yield, bp, VIX, ...).
 
-Write everything in Modern Standard Arabic (فصحى), keeping technical terms in English (CPI, PCE, Fed, FOMC, yield, bp, VIX, NQ, ...).
-
-Output: after any research, end your answer with exactly one JSON object between <report> and </report>, no markdown fences, with "economy" first, then "market_translation", then "events":
+Output: after any research, end your answer with exactly one JSON object between <report> and </report>, no markdown fences, with "economy" then "events":
 {
   "economy": {
     "executive": {"headline": "one-line headline of today's economic read", "read": "2-4 sentences", "direction": "improving" | "stable" | "weakening" | "mixed", "biggest_change": "..."},
@@ -68,20 +64,34 @@ Output: after any research, end your answer with exactly one JSON object between
     "what_changed": ["the economic meaning of what the platform computed as changed"],
     "sections": {"growth": "a paragraph", "inflation": "...", "labor": "...", "fed_rates": "...", "financial_conditions": "..."},
     "news": [{"item": "...", "effect": "...", "changes_picture": true, "event_ids": ["e2"]}],
-    "data_uncertainty": ["stale, conflicting or estimate-based inputs and how you treated them"],
+    "data_uncertainty": ["stale, conflicting, unavailable or estimate-based inputs and how you treated them"],
     "scenarios": [{"label": "A", "name": "...", "prob": integer, "horizon": "...", "thesis": "...", "evidence": ["..."],
                    "confirm": "...", "invalidate": "...", "moves_probability": "what would move this probability",
                    "check": {"series": "DGS2", "by": "YYYY-MM-DD", "low": null, "high": 4.1}}, B, C],
     "conviction": "one descriptive sentence",
     "bottom_line": "the closing synthesis"
   },
-  "market_translation": {
-    "gates": {"nq": {"impact": integer, "drivers": ["..."], "positive": ["..."], "negative": ["..."], "matters_now": "...", "would_flip": "...", "horizon": "..."},
-              "spx": {same keys}, "dow": {same keys}},
-    "nq_vs_spx_10d": {"prob": integer}
-  },
   "events": [{"id": "e1", "title": "...", "date": "YYYY-MM-DD", "url": "https://..."}]
 }"""
+
+SYSTEM_MARKETS = """You write the Market Gates of an Arabic-language US-macro dashboard: how today's finished economic report translates into three US equity indices, Nasdaq-100 (nq), S&P 500 (spx) and Dow (dow).
+
+The economic report in "economy_report" is final. Derive every gate from it and from "market_brief" (the platform's derived market numbers: Nasdaq-100 vs S&P 500 relative performance and its deterministic Nasdaq-100 limits). Do not re-assess the economy, add new economic claims, or contradict the report. Equity index levels are licensed for internal use here and are not provided: never quote an index level; use relative performance and percentage moves.
+
+- impact is a whole number from -2 to +2 for the coming sessions: -2 strongly negative, -1 negative, 0 balanced, +1 positive, +2 strongly positive. There is no "uncertain" level; when the picture is balanced, use 0 and say why.
+- Nasdaq-100 (nq): real yields, the 2Y yield, Fed expectations, the dollar, valuation and duration sensitivity, growth, financial conditions, earnings concentration.
+- S&P 500 (spx): the balance of growth, the earnings backdrop, rates, credit, financial conditions, risk appetite.
+- Dow (dow): the industrial cycle, manufacturing, cyclicals, financials (curve steepness), domestic growth, yields, the dollar. Energy has a small weight in the Dow. If there is no real macro difference from the S&P 500 today, say that the effect is largely similar to the S&P 500, and do not invent a difference.
+- nq_vs_spx_10d.prob: your probability, a whole number from 0 to 100, that the Nasdaq-100 outperforms the S&P 500 over the next 10 trading days, measured from the last close before the report (from the report day's close for a report written after the open). 50 means no view and is valid. The platform scores it apart from the economic scenarios; it does not measure the economic analysis.
+- No entries, stops, targets, or buy/sell recommendations.
+
+Write in Modern Standard Arabic (فصحى), keeping technical terms in English (NQ, S&P 500, Dow, yield, bp, VIX, ...).
+
+Output: exactly one JSON object between <report> and </report>, no markdown fences:
+{"market_translation": {
+  "gates": {"nq": {"impact": integer, "drivers": ["..."], "positive": ["..."], "negative": ["..."], "matters_now": "...", "would_flip": "...", "horizon": "..."},
+            "spx": {same keys}, "dow": {same keys}},
+  "nq_vs_spx_10d": {"prob": integer}}}"""
 
 SECTION_AR = {"growth": "النمو", "inflation": "التضخم", "labor": "سوق العمل", "fed_rates": "الفيدرالي والفائدة",
               "financial_conditions": "الأوضاع المالية"}
@@ -153,8 +163,9 @@ def attempts_today(state: dict, runs: list[dict], today: str) -> dict[str, dict]
     return out
 
 
-def dispatch_decision(now_utc: datetime, state: dict, runs: list[dict], cfg: dict) -> tuple[int | None, str]:
-    """هل تطلب دورة الأخبار تشغيل update.yml بمحاولة تقرير الآن؟ يعيد (1 أو 2 أو None، السبب).
+def dispatch_decision(now_utc: datetime, state: dict, runs: list[dict], cfg: dict) -> tuple[int | str | None, str]:
+    """هل تطلب دورة الأخبار تشغيل update.yml الآن؟ يعيد ("collect" أو 1 أو 2 أو None، السبب).
+    collect: جامعو الأقسام بين 08:40 و09:00 نيويورك، فتكون ملفات الأقسام جاهزة قبل موعد التقرير.
     runs: مخرج `gh run list --json status,event,createdAt,displayTitle,conclusion`؛ state: data/state.json."""
     s = schedule(cfg)
     ny = now_utc.astimezone(ZoneInfo(s["tz"]))
@@ -162,13 +173,21 @@ def dispatch_decision(now_utc: datetime, state: dict, runs: list[dict], cfg: dic
     if not is_trading_day(ny, cfg):
         return None, f"not a trading day ({today})"
     m = ny.hour * 60 + ny.minute
-    if m < _minutes(s["attempt_1"]):
-        return None, f"before {s['attempt_1']} New York ({hm})"
+    if m < _minutes(s["collect"]):
+        return None, f"before {s['collect']} New York ({hm})"
     if any(r.get("status") in ACTIVE_RUN for r in runs or []):
         return None, "an update run is already queued or running"
     att = attempts_today(state, runs, today)
     if any(a.get("ok") for a in att.values()) or (state or {}).get("ai_last_date") == today:
         return None, f"today's report is already published ({today})"
+    if m < _minutes(s["attempt_1"]):
+        col = (state or {}).get("collection") or {}
+        if col.get("ny_date") == today and col.get("fresh"):
+            return None, f"section inputs collected at {col.get('collected_ny')} New York; report at {s['attempt_1']}"
+        if any(COLLECT_TAG in str(r.get("displayTitle") or "") and _ny_date(r.get("createdAt")) == today
+               and r.get("status") == "completed" for r in runs or []):
+            return None, "today's collection run ended without ready inputs; the report run will collect them itself"
+        return "collect", f"collect section inputs at {hm} New York before the {s['attempt_1']} report"
     if m >= _minutes(s["last_start"]):
         return None, f"no attempt starts after {s['last_start']} New York ({hm})"
     if "1" not in att:
@@ -186,6 +205,8 @@ def attempt_allowed(attempt: str, now_utc: datetime, state: dict, cfg: dict) -> 
     المحاولة نفسها بعد. manual يُكتب دائماً (بإذن Abdu) ولا يدخل سجل التوقعات."""
     if attempt == "manual":
         return True, "manual"
+    if attempt == "collect":
+        return False, "pre-report collection only (section collectors, no report)"
     if attempt not in SCHEDULED:
         return False, "no report attempt requested (data update only)"
     ny = now_utc.astimezone(NY)
@@ -210,43 +231,18 @@ def status_view(state: dict, now_utc: datetime, cfg: dict) -> dict:
 
 
 # ---------------------------------------------------------------- what the model reads
-def _compact(i: dict, tail: int) -> dict:
-    if i.get("state") == "error" and "last" not in i:
-        return {"id": i["id"], "name": i["name_en"], "state": "missing"}
-    return ({k: i.get(k) for k in ("id", "name_en", "category", "freq", "transform", "unit", "last", "prev",
-                                   "change", "z5", "pct5", "as_of", "age_days", "state", "issues",
-                                   "source_as_of", "unavailable", "momentum", "revisions")}
-            | {"recent": i.get("points", [])[-tail:]})
-
-
-def context(payload: dict, tail: int = 8, feed: dict | None = None, extra: dict | None = None,
+def context(payload: dict, feed: dict | None = None, previous: dict | None = None,
             now_utc: datetime | None = None) -> dict:
-    """نسخة مضغوطة من data.json بقسمين منفصلين: economy_inputs بلا أي مؤشر أسهم، وmarket_inputs للترجمة فقط."""
-    from macro_platform import releases
-    extra = dict(extra or {})
-    inds = payload["indicators"]
-    ch = extra.pop("changes_since_previous_report", None)
-    eco_ch, mkt_ch = ch, None
-    if isinstance(ch, dict) and isinstance(ch.get("items"), list):
-        eco_ch = {**ch, "items": [x for x in ch["items"] if x.get("id") not in MARKET_IDS]}
-        mkt_ch = [x for x in ch["items"] if x.get("id") in MARKET_IDS]
-    revs = [r for r in extra.pop("revisions_recent", []) or [] if r.get("id") not in MARKET_IDS]
-    economy = {
-        "kpis": [k for k in payload["kpis"] if k.get("id") not in MARKET_IDS],
-        "signals": payload["signals"], "quadrant": payload["quadrant"], "sahm_recent": payload["sahm"]["points"][-6:],
-        "indicators": [_compact(i, tail) for i in inds if i["id"] not in MARKET_IDS],
-        "data_warnings": [w for w in payload["status"]["warnings"] if not any(m in w for m in MARKET_IDS)],
-        "released_today_not_in_platform_data": releases.not_in_platform(
-            (feed or {}).get("calendar"), inds, now_utc or datetime.now(timezone.utc)),
-        **({"news_feed": feed} if feed else {}),     # عناوين ومواعيد من مصادر عامة، منفصلة عن بيانات المنصة
-        "changes_since_previous_report": eco_ch, "revisions_recent": revs, **extra}
-    market = {"note": "For the market translation only, after the economic assessment. Equity index levels and "
-                      "relative performance never redefine the state of the economy.",
-              "indicators": [_compact(i, tail) for i in inds if i["id"] in MARKET_IDS],
-              "relative_performance": payload.get("market_relative"),
-              "nq_gates": payload["gates"], "gate_levels": payload["config"]["gates"],
-              "changes_since_previous_report": mkt_ch}
-    return {"generated": payload["generated"], "economy_inputs": economy, "market_inputs": market}
+    """ما يستلمه النموذج في الخطوتين: economy_inputs (ملف لكل قسم، بلا Market Gates)، وmarket_inputs (ملف جامع
+    Market Gates، يُسلَّم في الخطوة الثانية بعد اكتمال التقرير)."""
+    from macro_platform import collectors
+    now_utc = now_utc or datetime.now(timezone.utc)
+    briefs = collectors.from_payload(payload, feed, previous, now_utc)
+    return {"generated": payload["generated"],
+            "economy_inputs": collectors.economy_input(briefs, collectors.cross_section(payload),
+                                                       previous_summary(previous, payload.get("ledger")),
+                                                       payload["generated"]),
+            "market_inputs": briefs[collectors.MARKETS]}
 
 
 # ---------------------------------------------------------------- parsing: retry only on what blocks publication
@@ -313,19 +309,9 @@ def parse_report(text: str, known_ids: set[str] | None = None) -> dict:
     why = probs_issue(scen)
     if why and "scenarios" in eco:
         warn.append(f"scenarios: {why}")
-    mt = rep.get("market_translation")
-    if not isinstance(mt, dict):
-        warn.append("market_translation is missing: the market gates are unavailable today")
-    else:
-        gates = mt.get("gates") if isinstance(mt.get("gates"), dict) else {}
-        for g in GATES:
-            if not isinstance(gates.get(g), dict):
-                warn.append(f"market gate {g} is missing")
-            elif not _int_in(gates[g].get("impact"), -2, 2):
-                warn.append(f"market gate {g}: impact must be a whole number from -2 to +2")
-        tr = mt.get("nq_vs_spx_10d") if isinstance(mt.get("nq_vs_spx_10d"), dict) else {}
-        if not _int_in(tr.get("prob"), 0, 100):
-            warn.append("nq_vs_spx_10d: prob must be a whole number from 0 to 100")
+    if "market_translation" in rep:     # الترجمة السوقية خطوة ثانية من التقرير المكتمل، لا جزءاً منه
+        rep.pop("market_translation")
+        warn.append("the economic output contained market_translation; ignored (written in the second step)")
     # حقول توافق مشتقة: لو تراجعنا عن هذا التغيير تعرض الواجهة القديمة التقرير الجديد مختصراً لا مكسوراً
     rep["title"] = exe.get("headline") if _txt(exe.get("headline")) else exe["read"]
     rep["summary"] = [x for x in (exe.get("read"), exe.get("biggest_change")) if _txt(x)]
@@ -337,6 +323,39 @@ def parse_report(text: str, known_ids: set[str] | None = None) -> dict:
     rep.setdefault("events", [])
     rep["warnings"] = warn
     return rep
+
+
+class MarketError(RuntimeError):
+    """فشل الخطوة الثانية (Market Gates): لا يُسقط التقرير الاقتصادي المنشور ولا يُعاد له التقرير."""
+
+
+def market_warnings(mt: dict) -> list[str]:
+    warn = []
+    gates = mt.get("gates") if isinstance(mt.get("gates"), dict) else {}
+    for g in GATES:
+        if not isinstance(gates.get(g), dict):
+            warn.append(f"market gate {g} is missing")
+        elif not _int_in(gates[g].get("impact"), -2, 2):
+            warn.append(f"market gate {g}: impact must be a whole number from -2 to +2")
+    tr = mt.get("nq_vs_spx_10d") if isinstance(mt.get("nq_vs_spx_10d"), dict) else {}
+    if not _int_in(tr.get("prob"), 0, 100):
+        warn.append("nq_vs_spx_10d: prob must be a whole number from 0 to 100")
+    return warn
+
+
+def parse_market(text: str) -> tuple[dict, list[str]]:
+    """مخرج الخطوة الثانية: market_translation وحده. ما يمنع قراءته MarketError، والباقي تحذيرات."""
+    m = re.findall(r"<report>\s*(\{.*?\})\s*</report>", text or "", flags=re.S)
+    if not m:
+        raise MarketError("no <report> block in the market output")
+    try:
+        d = json.loads(m[-1])
+    except json.JSONDecodeError as exc:
+        raise MarketError(f"broken JSON in the market output: {exc.msg} at {exc.pos}")
+    mt = d.get("market_translation") if isinstance(d, dict) else None
+    if not isinstance(mt, dict):
+        raise MarketError("the market output has no market_translation object")
+    return mt, market_warnings(mt)
 
 
 # ---------------------------------------------------------------- the model call
@@ -356,7 +375,7 @@ def estimate_cost(model: str, usage: dict) -> float | None:
     return round(tokens + (usage.get("web_search_requests") or 0) * SEARCH_PRICE, 4)
 
 
-def call_claude(user_text: str, system: str, model: str, effort: str):
+def call_claude(user_text: str, system: str, model: str, effort: str, web_search: bool = True):
     """Streaming (128000 رمز، فلا مهلة HTTP)، وeffort صريح، وبحث بحد 8، بلا fallbacks ولا betas.
     Prompt caching: نقطة صريحة على التعليمات الثابتة + caching تلقائي يتقدّم مع المحادثة.
     إعادات الـSDK الداخلية (max_retries الافتراضي) تبقى: إعادة اتصال قبل التوليد على النموذج نفسه.
@@ -377,7 +396,7 @@ def call_claude(user_text: str, system: str, model: str, effort: str):
             thinking={"type": "adaptive"},
             output_config={"effort": effort},
             system=system_blocks,
-            tools=[{"type": "web_search_20260209", "name": "web_search", "max_uses": 8}],
+            **({"tools": [{"type": "web_search_20260209", "name": "web_search", "max_uses": 8}]} if web_search else {}),
             messages=messages,
             cache_control={"type": "ephemeral"},
         ) as stream:
@@ -435,9 +454,29 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _call(caller, user: str, system: str, model: str, effort: str):
+    res = caller(user, system, model, effort)
+    text, sources, usage, served = res[:4]
+    info = dict(res[4]) if len(res) > 4 and isinstance(res[4], dict) else {}
+    info["model_served"] = served
+    return text, sources, usage, served, info
+
+
+def _market_caller(caller):
+    """الخطوة الثانية بلا بحث ويب: تُشتق من التقرير المكتمل وملف Market Gates وحدهما."""
+    if caller is call_claude:
+        return lambda user, system, model, effort: call_claude(user, system, model, effort, web_search=False)
+    return caller
+
+
 def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, caller=call_claude,
                  feed: dict | None = None, previous: dict | None = None, attempt: str = "manual",
-                 clock=None) -> dict:
+                 clock=None, briefs: dict | None = None, source: str = "report_run", market_caller=None) -> dict:
+    """خطوتان متتاليتان:
+    1) التقرير الاقتصادي من ملفات الأقسام (جمعها جامعو الأقسام قبل موعد التقرير، أو تشغيل التقرير نفسه إن لم تكن
+       جاهزة). فشله تقني ويُعاد له عند 12:00.
+    2) بعد اكتماله فقط: Market Gates من التقرير المكتمل وملف جامع Market Gates. فشلها لا يُسقط التقرير المنشور."""
+    from macro_platform import changes, collectors
     clock = clock or _now
     now_utc = now_utc or clock()
     ai = cfg.get("ai", {})
@@ -445,22 +484,20 @@ def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, call
     notes = analyst_notes()
     system = SYSTEM + ("\n\nThe analyst's standing instructions (Arabic):\n" + notes if notes else "")
     ny_now = now_utc.astimezone(NY)
-    from macro_platform import changes                    # يحسب الكود ما تغيّر؛ النموذج يفسّر معناه
+    briefs = dict(briefs) if briefs else collectors.from_payload(payload, feed, previous, now_utc)
+    if collectors.NEWS not in briefs:                   # الأخبار تُقرأ عند التقرير مما جمعته حلقة الأخبار قبله
+        briefs[collectors.NEWS] = collectors.news_brief(feed, now_utc)
     snap = changes.snapshot(payload)
-    recent_revs = payload.get("revisions") or []
-    extra = {"changes_since_previous_report": changes.diff(previous, snap, recent_revs),
-             "previous_report": previous_summary(previous, payload.get("ledger")),
-             "revisions_recent": recent_revs[-20:]}
-    user = (f"Today is {ny_now:%A %Y-%m-%d}, {ny_now:%H:%M} New York time. Platform data:\n"
-            + json.dumps(context(payload, feed=feed, extra=extra, now_utc=now_utc), ensure_ascii=False))
     started = clock()
-    res = caller(user, system, model, ai.get("effort", "xhigh"))
-    text, sources, usage, served = res[:4]
-    info = dict(res[4]) if len(res) > 4 and isinstance(res[4], dict) else {}
-    info["model_served"] = served
+    ready = collectors.readiness(briefs, source, started)
+    eco_in = collectors.economy_input(briefs, collectors.cross_section(payload),
+                                      previous_summary(previous, payload.get("ledger")), payload["generated"])
+    user = (f"Today is {ny_now:%A %Y-%m-%d}, {ny_now:%H:%M} New York time. Platform data, one brief per section:\n"
+            + json.dumps(eco_in, ensure_ascii=False))
+    text, sources, usage, served, info = _call(caller, user, system, model, ai.get("effort", "xhigh"))
     if served != model:                                   # لا fallback متوقع؛ وإن حدث فهو فشل لا تقرير بنموذج آخر
         raise ReportError(f"served by {served}, not {model}", usage, info)
-    known = {i["id"] for i in payload["indicators"] if i["id"] not in MARKET_IDS}
+    known = {i["id"] for i in payload["indicators"] if i["id"] not in MARKET_IDS and not i.get("internal_only")}
     try:
         rep = parse_report(text, known)
     except ReportError as exc:
@@ -472,13 +509,38 @@ def write_report(payload: dict, cfg: dict, now_utc: datetime | None = None, call
     ny_date = ny_now.strftime("%Y-%m-%d")
     done_ny = completed.astimezone(NY)
     pre_open = done_ny.strftime("%Y-%m-%d") == ny_date and done_ny.hour * 60 + done_ny.minute < OPEN_MIN
+    # الخطوة الثانية: Market Gates بعد اكتمال التقرير، من التقرير نفسه وملف جامعها
+    mkt = {"ok": False, "started_at": clock().strftime(iso)}
+    try:
+        mb = briefs.get(collectors.MARKETS) or {}
+        if not mb.get("ok"):
+            raise MarketError(f"Market Gates collector unavailable: {mb.get('error') or 'missing'}")
+        m_user = json.dumps({"economy_report": {"economy": rep["economy"], "events": rep.get("events")},
+                             "market_brief": mb}, ensure_ascii=False)
+        m_text, _, m_usage, m_served, m_info = _call(market_caller or _market_caller(caller), m_user, SYSTEM_MARKETS,
+                                                     model, ai.get("market_effort", ai.get("effort", "xhigh")))
+        mkt.update(model=m_served, usage=m_usage, stop_reason=m_info.get("stop_reason"),
+                   duration_s=m_info.get("duration_s"), cost_estimate=estimate_cost(m_served, m_usage))
+        if m_served != model:
+            raise MarketError(f"served by {m_served}, not {model}")
+        mt, m_warn = parse_market(m_text)
+        rep["market_translation"] = mt
+        rep["warnings"] += m_warn
+        mkt["ok"] = True
+    except Exception as exc:                              # التقرير الاقتصادي يُنشر؛ البوابات «غير متاحة اليوم»
+        mkt["reason"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+        rep["warnings"].append(f"market translation failed: {mkt['reason']}")
+    mkt["completed_at"] = clock().strftime(iso)
     ps = [x.get("prob") for x in rep["scenarios"] if isinstance(x, dict)]
+    eco_cost = estimate_cost(served, usage)
     rep["meta"] = {"schema": 2, "written_at": now_utc.strftime(iso), "ny_date": ny_date,
                    "prob_sum": sum(p for p in ps if isinstance(p, (int, float)) and not isinstance(p, bool)),
                    "scenario_count": len(rep["scenarios"]), "inputs_snapshot": snap,
                    "model": served, "effort": ai.get("effort", "xhigh"), "usage": usage,
                    "stop_reason": info.get("stop_reason"), "duration_s": info.get("duration_s"),
-                   "cost_estimate": estimate_cost(served, usage), "news_input": feed_meta(feed),
+                   "cost_estimate": eco_cost, "news_input": feed_meta(feed),
+                   "inputs": ready, "market": mkt,
+                   "cost_total": round((eco_cost or 0) + (mkt.get("cost_estimate") or 0), 4) if eco_cost is not None else None,
                    # بدء طلب النموذج واكتمال التقرير (حد المعلومات)؛ وقت النشر يسجّله update.yml في ملخص التشغيل
                    "started_at": started.strftime(iso), "completed_at": completed.strftime(iso),
                    "attempt": attempt, "scheduled_for": scheduled_for(attempt, ai),
@@ -509,7 +571,12 @@ def attempt_record(attempt: str, cfg: dict, now_utc: datetime, started: datetime
             "stop_reason": m.get("stop_reason") if rep else info.get("stop_reason"),
             # انقطاع البث أو فشل الطلب: الاستخدام غير معروف، ولا نخترع رقماً
             "usage": usage if isinstance(usage, dict) else "unknown (request failed or stream interrupted; may still be billed)",
-            "cost_estimate": estimate_cost(served or "", usage) if isinstance(usage, dict) else None}
+            "cost_estimate": estimate_cost(served or "", usage) if isinstance(usage, dict) else None,
+            # الخطوة الثانية (Market Gates) منفصلة في السجل: نجاحها وسببها واستخدامها وكلفتها
+            "market": {k: (m.get("market") or {}).get(k) for k in ("ok", "reason", "usage", "cost_estimate", "duration_s")}
+                      if rep else None,
+            "inputs_source": (m.get("inputs") or {}).get("source") if rep else None,
+            "cost_total": m.get("cost_total") if rep else None}
 
 
 def update_history(path: Path, report: dict, keep: int = 14) -> list[dict]:
