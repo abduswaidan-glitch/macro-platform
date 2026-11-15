@@ -1,7 +1,7 @@
 {
  "section": "inflation",
  "title": "التضخم",
- "collected_at": "2026-11-15T00:31:10Z",
+ "collected_at": "2026-11-15T20:16:16Z",
  "ok": true,
  "available": 3,
  "total": 3,
@@ -9,6 +9,7 @@
   {
    "id": "CPIAUCSL",
    "name_en": "Headline CPI YoY",
+   "source": "fred",
    "freq": "M",
    "transform": "yoy",
    "unit": "%",
@@ -75,6 +76,7 @@
   {
    "id": "CPILFESL",
    "name_en": "Core CPI YoY",
+   "source": "fred",
    "freq": "M",
    "transform": "yoy",
    "unit": "%",
@@ -141,6 +143,7 @@
   {
    "id": "PCEPILFE",
    "name_en": "Core PCE YoY",
+   "source": "fred",
    "freq": "M",
    "transform": "yoy",
    "unit": "%",

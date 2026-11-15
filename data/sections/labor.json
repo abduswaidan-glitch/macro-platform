@@ -1,7 +1,7 @@
 {
  "section": "labor",
  "title": "سوق العمل",
- "collected_at": "2026-11-15T00:31:10Z",
+ "collected_at": "2026-11-15T20:16:16Z",
  "ok": true,
  "available": 6,
  "total": 6,
@@ -9,6 +9,7 @@
   {
    "id": "PAYEMS",
    "name_en": "Nonfarm Payrolls (3m avg)",
+   "source": "fred",
    "freq": "M",
    "transform": "diff_avg3",
    "unit": "ألف",
@@ -63,6 +64,7 @@
   {
    "id": "UNRATE",
    "name_en": "Unemployment Rate",
+   "source": "fred",
    "freq": "M",
    "transform": "level",
    "unit": "%",
@@ -117,6 +119,7 @@
   {
    "id": "ICSA",
    "name_en": "Initial Jobless Claims",
+   "source": "fred",
    "freq": "W",
    "transform": "level",
    "unit": "",
@@ -171,6 +174,7 @@
   {
    "id": "CCSA",
    "name_en": "Continuing Jobless Claims",
+   "source": "fred",
    "freq": "W",
    "transform": "level",
    "unit": "",
@@ -181,10 +185,8 @@
    "pct5": 24.9,
    "as_of": "2026-10-31",
    "age_days": 15,
-   "state": "stale",
-   "issues": [
-    "آخر قيمة عمرها 15 يوماً"
-   ],
+   "state": "ok",
+   "issues": [],
    "source_as_of": "2026-10-31",
    "unavailable": null,
    "momentum": null,
@@ -227,6 +229,7 @@
   {
    "id": "JTSJOL",
    "name_en": "Job Openings",
+   "source": "fred",
    "freq": "M",
    "transform": "level",
    "unit": "ألف",
@@ -281,6 +284,7 @@
   {
    "id": "CES0500000003",
    "name_en": "Average Hourly Earnings YoY",
+   "source": "fred",
    "freq": "M",
    "transform": "yoy",
    "unit": "%",
@@ -355,7 +359,5 @@
   "previous_ny_date": "2026-11-13"
  },
  "revisions_recent": [],
- "data_quality": [
-  "CCSA: آخر قيمة عمرها 15 يوماً"
- ]
+ "data_quality": []
 }

@@ -1,7 +1,7 @@
 {
  "section": "growth",
  "title": "النمو",
- "collected_at": "2026-11-15T00:31:10Z",
+ "collected_at": "2026-11-15T20:16:16Z",
  "ok": true,
  "available": 5,
  "total": 5,
@@ -9,6 +9,7 @@
   {
    "id": "GDPC1",
    "name_en": "Real GDP",
+   "source": "fred",
    "freq": "Q",
    "transform": "yoy",
    "unit": "%",
@@ -63,6 +64,7 @@
   {
    "id": "INDPRO",
    "name_en": "Industrial Production",
+   "source": "fred",
    "freq": "M",
    "transform": "yoy",
    "unit": "%",
@@ -117,6 +119,7 @@
   {
    "id": "RSAFS",
    "name_en": "Retail Sales",
+   "source": "fred",
    "freq": "M",
    "transform": "yoy",
    "unit": "%",
@@ -171,6 +174,7 @@
   {
    "id": "HOUST",
    "name_en": "Housing Starts",
+   "source": "fred",
    "freq": "M",
    "transform": "level",
    "unit": "ألف وحدة",
@@ -225,6 +229,7 @@
   {
    "id": "UMCSENT",
    "name_en": "UMich Sentiment",
+   "source": "fred",
    "freq": "M",
    "transform": "level",
    "unit": "",
