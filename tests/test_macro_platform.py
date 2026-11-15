@@ -96,6 +96,21 @@ def test_validate_flags_unusual_jump_but_accepts():
     assert ok and any("قفزة" in i for i in issues)
 
 
+def test_an_ordinary_day_on_an_index_that_grew_25x_is_not_a_jump():
+    # الحالة الحية (13 نوفمبر 2026): Nasdaq 100 هبط 1.22% فعُلِّم «قفزة غير معتادة»، لأن الوسيط حُسب على السجل
+    # منذ 2000 حين كان المؤشر نحو 1000 نقطة. تذبذب يومي ثابت ~0.8% ومستوى يصعد 25 ضعفاً
+    n = 6800
+    rng = np.random.default_rng(7)
+    steps = np.log(25) / n + rng.normal(0, 0.008, n)
+    steps += (np.log(25) - steps.sum()) / n                     # من 1000 إلى 25000 بالضبط
+    s = pd.Series(1000 * np.exp(np.cumsum(steps)), index=pd.bdate_range("2000-01-03", periods=n))
+    s.iloc[-1] = s.iloc[-2] * (1 - 0.0122)
+    ok, issues = validate(BY_ID["NASDAQ100"], s, None)
+    assert ok and issues == []
+    s.iloc[-1] = s.iloc[-2] * 1.5                        # خطأ بيانات حقيقي (+50%) يبقى مُعلَّماً
+    assert validate(BY_ID["NASDAQ100"], s, None)[1] == ["قفزة غير معتادة في آخر قيمة"]
+
+
 def test_fetch_all_keeps_last_good_on_failure(tmp_path):
     good = _daily(400)
     inds = [BY_ID["DGS10"]]
