@@ -280,7 +280,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--rule);paddin
   <section class="panel" id="p-method" hidden></section>
 </main>
 
-<footer class="wrap">المصدر: FRED, Federal Reserve Bank of St. Louis. التقرير الاقتصادي يكتبه Claude من بيانات المنصة وأخبار اليوم. المحتوى تحليلي وليس توصية شراء أو بيع. · <a href="#method" class="method-link">المنهجية وحالة البيانات</a></footer>
+<footer class="wrap">المصدر: FRED, Federal Reserve Bank of St. Louis؛ وتموضع الدولار من CFTC Commitments of Traders عبر Tradingster. التقرير الاقتصادي يكتبه Claude من بيانات المنصة وأخبار اليوم. المحتوى تحليلي وليس توصية شراء أو بيع. · <a href="#method" class="method-link">المنهجية وحالة البيانات</a></footer>
 
 <script>
 "use strict";
@@ -313,6 +313,8 @@ function chgTone(chg, goodUp) {
 }
 const arrow = c => c > 0 ? "▲" : c < 0 ? "▼" : "•";
 const FREQ = {D: "يومي", W: "أسبوعي", M: "شهري", Q: "ربع سنوي"};
+/* مصدر كل سلسلة (catalog.SOURCES): FRED، وCOT من صفحات Tradingster العامة لتقرير CFTC */
+const DATA_SRC = {fred: "FRED", cot: "CFTC عبر Tradingster"};
 const TRANS = {level: "المستوى", yoy: "تغير سنوي %", diff: "تغير شهري", diff_avg3: "متوسط التغير الشهري (3 أشهر)"};
 const BIAS = {bullish: ["صاعد", "ok"], bearish: ["هابط", "bad"], neutral: ["محايد", "neutral"]};
 
@@ -587,7 +589,7 @@ function renderCategories(data) {
     const select = id => {
       const i = inds.find(x => x.id === id); if (!i) return;
       sec.querySelectorAll("tbody tr").forEach(tr => tr.setAttribute("aria-selected", tr.dataset.id === id));
-      const card = chartCard(i.id, i.name_ar, `${i.name_en} · ${TRANS[i.transform]} · ${FREQ[i.freq]} · FRED: ${i.id}`, i.points,
+      const card = chartCard(i.id, i.name_ar, `${i.name_en} · ${TRANS[i.transform]} · ${FREQ[i.freq]} · ${DATA_SRC[i.source] || "FRED"}: ${i.id}`, i.points,
         {unit: i.unit, label: i.name_ar});
       slot.replaceChildren(card);
       if (!sec.hidden) card.__draw();
@@ -834,7 +836,7 @@ function renderAI(hist, data) {
   const p = $("#p-ai");
   const intro = `<div class="sec-head"><h2>التقرير الاقتصادي</h2><p>يقرأ النموذج كل أقسام المنصة (النمو، والتضخم، وسوق العمل، والفيدرالي والفائدة، والأوضاع المالية) مع أخبار اليوم وتقويمه، ويكتب تقييماً لحالة الاقتصاد الأمريكي وثلاثة سيناريوهات باحتمالاتها. انعكاس هذا التقييم على المؤشرات في قسم <a href="#gates">Market Gates</a>، لا هنا.</p></div>
     <details class="about"><summary>متى يصدر، وعلى ماذا يعتمد؟</summary><div class="body">
-    <p><strong>متى يصدر:</strong> كل يوم تداول عند 09:00 بتوقيت نيويورك (15:00 فيينا). إن فشل توليده فشلاً تقنياً يُعاد مرة واحدة عند 12:00 نيويورك (18:00 فيينا). لا تبدأ أي محاولة بعد 13:00 نيويورك (19:00 فيينا)، وأي محاولة ثالثة تكون يدوية فقط بإذن المالك. التقرير الذي يكتمل بعد افتتاح السوق 09:30 نيويورك يُوسم «تقرير متأخر».</p><p><strong>بناءً على ماذا:</strong> على خمسة أقسام من FRED (النمو، والتضخم، وسوق العمل، والفائدة، والأوضاع المالية) وقسم الأخبار. يجمع كل قسم بياناته بجامع مستقل من 08:40 نيويورك (14:40 فيينا) ويحفظ ملفه، فيقرأ التقرير هذه الملفات عند 09:00 دون أن يجلب من جديد. ويُضاف ما صدر اليوم من التقويم ولم يُحدَّث في FRED بعد، ويُؤخذ من الإصدار الرسمي برابطه. ويُضاف التقرير السابق لاستمرار السرد.</p></div></details>`;
+    <p><strong>متى يصدر:</strong> كل يوم تداول عند 09:00 بتوقيت نيويورك (15:00 فيينا). إن فشل توليده فشلاً تقنياً يُعاد مرة واحدة عند 12:00 نيويورك (18:00 فيينا). لا تبدأ أي محاولة بعد 13:00 نيويورك (19:00 فيينا)، وأي محاولة ثالثة تكون يدوية فقط بإذن المالك. التقرير الذي يكتمل بعد افتتاح السوق 09:30 نيويورك يُوسم «تقرير متأخر».</p><p><strong>بناءً على ماذا:</strong> على خمسة أقسام بيانات (النمو، والتضخم، وسوق العمل، والفائدة، والأوضاع المالية) وقسم الأخبار. البيانات من FRED، عدا تموضع الدولار (COT) في الأوضاع المالية فمن CFTC عبر Tradingster. يجمع كل قسم بياناته بجامع مستقل من 08:40 نيويورك (14:40 فيينا) ويحفظ ملفه، فيقرأ التقرير هذه الملفات عند 09:00 دون أن يجلب من جديد. ويُضاف ما صدر اليوم من التقويم ولم يُحدَّث في FRED بعد، ويُؤخذ من الإصدار الرسمي برابطه. ويُضاف التقرير السابق لاستمرار السرد.</p></div></details>`;
   if (!hist || !hist.length) {
     p.innerHTML = intro + reportWarnings(hist, data) + `<p class="empty no-eco">${NO_ECO} التقارير السابقة بالصيغة القديمة نُقلت أرشيفاً إلى <a href="#gates">Market Gates</a>.</p>`;
     return;

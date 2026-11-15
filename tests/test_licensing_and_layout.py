@@ -29,7 +29,8 @@ def test_categories_follow_the_new_tabs_and_housing_is_redistributed():
     assert list(CATEGORIES) == ["growth", "inflation", "labor", "fed_rates", "financial", "markets"]
     cat = {i.id: i.category for i in INDICATORS}
     assert cat["HOUST"] == "growth" and cat["UMCSENT"] == "growth" and cat["MORTGAGE30US"] == "fed_rates"
-    assert {k for k, v in cat.items() if v == "financial"} == {"VIXCLS", "DTWEXBGS", "DCOILWTICO", "BAMLH0A0HYM2", "M2SL", "WALCL"}
+    assert {k for k, v in cat.items() if v == "financial"} == {"VIXCLS", "DTWEXBGS", "DCOILWTICO", "BAMLH0A0HYM2", "M2SL", "WALCL",
+                                                           "COT_DX_NC", "COT_DX_LEV", "COT_DX_AM"}   # COT: 15 نوفمبر
     assert {k for k, v in cat.items() if v == "markets"} == set(INTERNAL_IDS) == {"NASDAQ100", "SP500"}
     assert "housing" not in CATEGORIES and "rates" not in CATEGORIES and "money" not in CATEGORIES
 
@@ -41,7 +42,7 @@ def test_published_payload_has_no_index_levels_points_or_kpis():
         if i["id"] in INTERNAL_IDS:
             assert i["internal_only"] is True and not (LEVEL_KEYS & set(i)), i
     assert not any(k["id"] in INTERNAL_IDS for k in pub["kpis"])
-    assert full["indicators"][-2]["id"] in INTERNAL_IDS and "points" in next(i for i in full["indicators"] if i["id"] == "SP500")
+    assert set(INTERNAL_IDS) <= {i["id"] for i in full["indicators"]} and "points" in next(i for i in full["indicators"] if i["id"] == "SP500")
     assert set(pub["market_relative"]) == {"as_of", "d5", "d10", "d20"}          # مشتق فقط
     assert pub["config"]["releases"] == {k: list(v) for k, v in RELEASES.items()}
 

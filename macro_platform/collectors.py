@@ -42,7 +42,7 @@ def section_indicators(key: str) -> tuple:
 def compact(i: dict, tail: int = TAIL) -> dict:
     if i.get("state") == "error" and "last" not in i:
         return {"id": i["id"], "name": i.get("name_en"), "state": "missing", "issues": i.get("issues")}
-    return ({k: i.get(k) for k in ("id", "name_en", "freq", "transform", "unit", "last", "prev", "change", "z5",
+    return ({k: i.get(k) for k in ("id", "name_en", "source", "freq", "transform", "unit", "last", "prev", "change", "z5",
                                    "pct5", "as_of", "age_days", "state", "issues", "source_as_of", "unavailable",
                                    "momentum", "revisions")}
             | {"recent": (i.get("points") or [])[-tail:]})

@@ -17,7 +17,8 @@ import pandas as pd
 from macro_platform.analytics import (growth_inflation_quadrant, momentum, sahm_rule, signals, snapshot,
                                       transform_indicator, SAHM_TRIGGER)
 from macro_platform.releases import RELEASES
-from macro_platform.catalog import CATEGORIES, INDICATORS, INTERNAL_IDS, MOMENTUM_IDS, Indicator, PERIODS_PER_YEAR
+from macro_platform import cot
+from macro_platform.catalog import BY_ID, CATEGORIES, INDICATORS, INTERNAL_IDS, MOMENTUM_IDS, Indicator, PERIODS_PER_YEAR
 from macro_platform.fred import FredError, fetch_series
 
 MIN_ROWS = {"D": 200, "W": 50, "M": 24, "Q": 8}
@@ -25,7 +26,9 @@ MAX_AGE_DAYS = {"D": 7, "W": 14, "M": 80, "Q": 220}  # تأخر النشر ال�
 # سلاسل يومية ينشرها FRED متأخرة أسبوعاً عادةً (نفط WTI من EIA، الدولار الواسع من الفيدرالي)؛ والمطالبات المستمرة
 # (CCSA) تتأخر أسبوعاً إضافياً عن الأولية بطبيعة الإصدار: بيان الخميس 13 نوفمبر حمل أسبوع 31 أكتوبر. حد 14 يوماً
 # جعلها «متقادمة» أغلب أيام الأسبوع (فحص 15 نوفمبر 2026: عمرها 15 يوماً والبيانات سليمة).
-MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14, "CCSA": 21}
+# COT: مراكز الثلاثاء تُنشر الجمعة، وعطلة اتحادية تؤخر النشر إلى الاثنين: صباح الاثنين 16 نوفمبر 2026 آخر المتاح
+# مراكز 3 نوفمبر (13 يوماً). 17 يوماً تستوعب ذلك؛ ما بعدها (إغلاق حكومي مثلاً، كأكتوبر 2025) متقادم فعلاً.
+MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14, "CCSA": 21, **{sid: 17 for sid in cot.SERIES}}
 KPI_IDS = ("DGS10", "DFII10", "DTWEXBGS", "DCOILWTICO", "T10Y2Y", "DFF", "PCEPILFE", "UNRATE", "VIXCLS")
 DEFAULT_CONFIG = {
     "start": "2000-01-01",
@@ -153,13 +156,23 @@ def merge_status(prev: dict, status: dict, now: datetime) -> dict:
     return status
 
 
-def fetch_all(raw_dir: Path, start: str, fetcher: Callable[[str, str], pd.Series] = fetch_series,
+def fetch_source(sid: str, start: str) -> pd.Series:
+    """يوجّه كل سلسلة إلى مصدرها: COT من Tradingster، والباقي من FRED."""
+    ind = BY_ID.get(sid)
+    return cot.fetch_series(sid, start) if ind is not None and ind.source == "cot" else fetch_series(sid, start)
+
+
+def fetch_all(raw_dir: Path, start: str, fetcher: Callable[[str, str], pd.Series] = fetch_source,
               indicators=INDICATORS, log=print) -> tuple[dict[str, pd.Series], dict[str, dict]]:
     series: dict[str, pd.Series] = {}
     status: dict[str, dict] = {}
     for ind in indicators:
         old = load_raw(raw_dir, ind.id)
         st = {"state": "ok", "issues": []}
+        if ind.source == "cot" and old is not None and len(old) and not cot.due(old.index[-1]):
+            series[ind.id] = old                         # أسبوعي: لا إصدار أحدث ممكن بعد، فلا طلب للصفحة
+            status[ind.id] = st
+            continue
         try:
             new = fetcher(ind.id, start)
             ok, issues = validate(ind, new, old)
@@ -329,7 +342,7 @@ def indicator_entries(series: dict[str, pd.Series], status: dict[str, dict], now
             e, w = _entry(ind, series.get(ind.id), dict(status.get(ind.id, {"state": "ok", "issues": []})),
                           snap_rows.get(ind.id), now_ts, status)
         except Exception as exc:                      # عزل: مؤشر واحد لا يُسقط القسم ولا المنصة
-            e = {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+            e = {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category, "source": ind.source,
                  "internal_only": ind.internal_only, "state": "error",
                  "issues": [f"تعذّر حساب المؤشر: {type(exc).__name__}"]}
             w = [f"{ind.name_ar} ({ind.id}): تعذّر حساب المؤشر"]
@@ -344,10 +357,10 @@ def _entry(ind: Indicator, s, st: dict, r: dict | None, now_ts: pd.Timestamp, st
         # البناء offline بلا المؤشرين عمداً (لا يُحفظان): الحالة من آخر جلب حقيقي، لا «لا بيانات» في كل بناء
         if st.get("issues"):
             warnings.append(f"{ind.name_ar} ({ind.id}): {'؛ '.join(st['issues'])}")
-        return {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+        return {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category, "source": ind.source,
                 "internal_only": True, "state": st.get("state", "ok"), "issues": st.get("issues") or []}, warnings
     if s is None or s.empty or r is None:
-        return {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+        return {"id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category, "source": ind.source,
                 "state": "error", "issues": st.get("issues") or ["لا بيانات"]}, [f"{ind.name_ar} ({ind.id}): لا بيانات"]
     # حالة الجلب وعمره من آخر قيمة نشرها المصدر؛ عمر القراءة المعروضة من تاريخها (as_of). يختلفان فقط حين
     # تكون أحدث قراءة غير قابلة للحساب (unavailable)، فلا يُحسب غيابها خطأ جلب ولا يُخفى عمر ما يُعرض فعلاً.
@@ -364,7 +377,7 @@ def _entry(ind: Indicator, s, st: dict, r: dict | None, now_ts: pd.Timestamp, st
                  if st["state"] == "ok" else "")
         warnings.append(f"{ind.name_ar} ({ind.id}): {unavailable['reason']}" + (f". {fetch}" if fetch else ""))
     return {
-        "id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category,
+        "id": ind.id, "name_ar": ind.name_ar, "name_en": ind.name_en, "category": ind.category, "source": ind.source,
         "freq": ind.freq, "transform": ind.transform, "unit": ind.unit, "good_up": ind.good_up,
         "last": _r(r["last"]), "prev": _r(r["prev"]), "change": _r(r["change"]),
         "z5": _r(r["z5"], 2), "pct5": _r(r["pct5"], 1), "as_of": r["as_of"].strftime("%Y-%m-%d"),
