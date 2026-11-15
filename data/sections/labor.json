@@ -1,0 +1,361 @@
+{
+ "section": "labor",
+ "title": "سوق العمل",
+ "collected_at": "2026-11-15T00:31:10Z",
+ "ok": true,
+ "available": 6,
+ "total": 6,
+ "indicators": [
+  {
+   "id": "PAYEMS",
+   "name_en": "Nonfarm Payrolls (3m avg)",
+   "freq": "M",
+   "transform": "diff_avg3",
+   "unit": "ألف",
+   "last": 137.0,
+   "prev": 78.6667,
+   "change": 58.3333,
+   "z5": -0.32,
+   "pct5": 47.5,
+   "as_of": "2026-10-01",
+   "age_days": 45,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-10-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-03-01",
+     72.6667
+    ],
+    [
+     "2026-04-01",
+     68.6667
+    ],
+    [
+     "2026-05-01",
+     141.6667
+    ],
+    [
+     "2026-06-01",
+     80.6667
+    ],
+    [
+     "2026-07-01",
+     28.0
+    ],
+    [
+     "2026-08-01",
+     69.0
+    ],
+    [
+     "2026-09-01",
+     78.6667
+    ],
+    [
+     "2026-10-01",
+     137.0
+    ]
+   ]
+  },
+  {
+   "id": "UNRATE",
+   "name_en": "Unemployment Rate",
+   "freq": "M",
+   "transform": "level",
+   "unit": "%",
+   "last": 4.1,
+   "prev": 4.2,
+   "change": -0.1,
+   "z5": 0.47,
+   "pct5": 66.7,
+   "as_of": "2026-10-01",
+   "age_days": 45,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-10-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-03-01",
+     4.3
+    ],
+    [
+     "2026-04-01",
+     4.3
+    ],
+    [
+     "2026-05-01",
+     4.3
+    ],
+    [
+     "2026-06-01",
+     4.2
+    ],
+    [
+     "2026-07-01",
+     4.1
+    ],
+    [
+     "2026-08-01",
+     4.1
+    ],
+    [
+     "2026-09-01",
+     4.2
+    ],
+    [
+     "2026-10-01",
+     4.1
+    ]
+   ]
+  },
+  {
+   "id": "ICSA",
+   "name_en": "Initial Jobless Claims",
+   "freq": "W",
+   "transform": "level",
+   "unit": "",
+   "last": 200000.0,
+   "prev": 191000.0,
+   "change": 9000.0,
+   "z5": -1.39,
+   "pct5": 8.4,
+   "as_of": "2026-11-07",
+   "age_days": 8,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-07",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-09-19",
+     198000.0
+    ],
+    [
+     "2026-09-26",
+     199000.0
+    ],
+    [
+     "2026-10-03",
+     198000.0
+    ],
+    [
+     "2026-10-10",
+     200000.0
+    ],
+    [
+     "2026-10-17",
+     195000.0
+    ],
+    [
+     "2026-10-24",
+     195000.0
+    ],
+    [
+     "2026-10-31",
+     191000.0
+    ],
+    [
+     "2026-11-07",
+     200000.0
+    ]
+   ]
+  },
+  {
+   "id": "CCSA",
+   "name_en": "Continuing Jobless Claims",
+   "freq": "W",
+   "transform": "level",
+   "unit": "",
+   "last": 1697000.0,
+   "prev": 1717000.0,
+   "change": -20000.0,
+   "z5": -0.32,
+   "pct5": 24.9,
+   "as_of": "2026-10-31",
+   "age_days": 15,
+   "state": "stale",
+   "issues": [
+    "آخر قيمة عمرها 15 يوماً"
+   ],
+   "source_as_of": "2026-10-31",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-09-12",
+     1712000.0
+    ],
+    [
+     "2026-09-19",
+     1699000.0
+    ],
+    [
+     "2026-09-26",
+     1714000.0
+    ],
+    [
+     "2026-10-03",
+     1703000.0
+    ],
+    [
+     "2026-10-10",
+     1722000.0
+    ],
+    [
+     "2026-10-17",
+     1695000.0
+    ],
+    [
+     "2026-10-24",
+     1717000.0
+    ],
+    [
+     "2026-10-31",
+     1697000.0
+    ]
+   ]
+  },
+  {
+   "id": "JTSJOL",
+   "name_en": "Job Openings",
+   "freq": "M",
+   "transform": "level",
+   "unit": "ألف",
+   "last": 7523.0,
+   "prev": 7190.0,
+   "change": 333.0,
+   "z5": -0.7,
+   "pct5": 41.0,
+   "as_of": "2026-09-01",
+   "age_days": 75,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-09-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-02-01",
+     6922.0
+    ],
+    [
+     "2026-03-01",
+     6887.0
+    ],
+    [
+     "2026-04-01",
+     7585.0
+    ],
+    [
+     "2026-05-01",
+     7537.0
+    ],
+    [
+     "2026-06-01",
+     7182.0
+    ],
+    [
+     "2026-07-01",
+     7335.0
+    ],
+    [
+     "2026-08-01",
+     7190.0
+    ],
+    [
+     "2026-09-01",
+     7523.0
+    ]
+   ]
+  },
+  {
+   "id": "CES0500000003",
+   "name_en": "Average Hourly Earnings YoY",
+   "freq": "M",
+   "transform": "yoy",
+   "unit": "%",
+   "last": 3.1208,
+   "prev": 3.1608,
+   "change": -0.04,
+   "z5": -1.68,
+   "pct5": 3.3,
+   "as_of": "2026-10-01",
+   "age_days": 45,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-10-01",
+   "unavailable": null,
+   "momentum": {
+    "as_of": "2026-10-01",
+    "label": "أكتوبر 2026",
+    "mom": 0.37,
+    "ann3m": 3.88,
+    "unavailable": null
+   },
+   "revisions": [],
+   "recent": [
+    [
+     "2026-03-01",
+     3.434
+    ],
+    [
+     "2026-04-01",
+     3.5714
+    ],
+    [
+     "2026-05-01",
+     3.3352
+    ],
+    [
+     "2026-06-01",
+     3.3828
+    ],
+    [
+     "2026-07-01",
+     3.2081
+    ],
+    [
+     "2026-08-01",
+     3.1131
+    ],
+    [
+     "2026-09-01",
+     3.1608
+    ],
+    [
+     "2026-10-01",
+     3.1208
+    ]
+   ]
+  }
+ ],
+ "signals": [
+  {
+   "key": "sahm",
+   "title": "Sahm Rule",
+   "value": "-0.00 pp",
+   "detail": "غير مفعّلة. العتبة 0.50 pp",
+   "tone": "ok"
+  }
+ ],
+ "released_today_not_in_platform_data": [],
+ "changes_since_previous_report": {
+  "available": false,
+  "reason": "previous report has no snapshot",
+  "previous_ny_date": "2026-11-13"
+ },
+ "revisions_recent": [],
+ "data_quality": [
+  "CCSA: آخر قيمة عمرها 15 يوماً"
+ ]
+}

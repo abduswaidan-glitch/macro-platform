@@ -1,0 +1,358 @@
+{
+ "section": "financial",
+ "title": "الأوضاع المالية",
+ "collected_at": "2026-11-15T00:31:10Z",
+ "ok": true,
+ "available": 6,
+ "total": 6,
+ "indicators": [
+  {
+   "id": "M2SL",
+   "name_en": "M2 YoY",
+   "freq": "M",
+   "transform": "yoy",
+   "unit": "%",
+   "last": 5.7099,
+   "prev": 5.5969,
+   "change": 0.113,
+   "z5": 0.61,
+   "pct5": 85.2,
+   "as_of": "2026-09-01",
+   "age_days": 75,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-09-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-02-01",
+     4.5929
+    ],
+    [
+     "2026-03-01",
+     4.4165
+    ],
+    [
+     "2026-04-01",
+     4.5288
+    ],
+    [
+     "2026-05-01",
+     5.3744
+    ],
+    [
+     "2026-06-01",
+     5.3002
+    ],
+    [
+     "2026-07-01",
+     5.3609
+    ],
+    [
+     "2026-08-01",
+     5.5969
+    ],
+    [
+     "2026-09-01",
+     5.7099
+    ]
+   ]
+  },
+  {
+   "id": "WALCL",
+   "name_en": "Fed Balance Sheet",
+   "freq": "W",
+   "transform": "level",
+   "unit": "مليون $",
+   "last": 6758867.0,
+   "prev": 6748145.0,
+   "change": 10722.0,
+   "z5": -0.94,
+   "pct5": 33.3,
+   "as_of": "2026-11-11",
+   "age_days": 4,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-11",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-09-23",
+     6747704.0
+    ],
+    [
+     "2026-09-30",
+     6743031.0
+    ],
+    [
+     "2026-10-07",
+     6747560.0
+    ],
+    [
+     "2026-10-14",
+     6755639.0
+    ],
+    [
+     "2026-10-21",
+     6753604.0
+    ],
+    [
+     "2026-10-28",
+     6745635.0
+    ],
+    [
+     "2026-11-04",
+     6748145.0
+    ],
+    [
+     "2026-11-11",
+     6758867.0
+    ]
+   ]
+  },
+  {
+   "id": "BAMLH0A0HYM2",
+   "name_en": "HY Credit Spread",
+   "freq": "D",
+   "transform": "level",
+   "unit": "%",
+   "last": 3.2,
+   "prev": 3.3,
+   "change": -0.1,
+   "z5": 0.4,
+   "pct5": 72.4,
+   "as_of": "2026-11-12",
+   "age_days": 3,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-12",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-02",
+     3.43
+    ],
+    [
+     "2026-11-03",
+     3.4
+    ],
+    [
+     "2026-11-04",
+     3.32
+    ],
+    [
+     "2026-11-05",
+     3.48
+    ],
+    [
+     "2026-11-06",
+     3.42
+    ],
+    [
+     "2026-11-09",
+     3.34
+    ],
+    [
+     "2026-11-11",
+     3.3
+    ],
+    [
+     "2026-11-12",
+     3.2
+    ]
+   ]
+  },
+  {
+   "id": "VIXCLS",
+   "name_en": "VIX",
+   "freq": "D",
+   "transform": "level",
+   "unit": "",
+   "last": 18.7,
+   "prev": 17.49,
+   "change": 1.21,
+   "z5": -0.07,
+   "pct5": 58.1,
+   "as_of": "2026-11-12",
+   "age_days": 3,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-12",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-03",
+     20.83
+    ],
+    [
+     "2026-11-04",
+     16.61
+    ],
+    [
+     "2026-11-05",
+     28.18
+    ],
+    [
+     "2026-11-06",
+     25.64
+    ],
+    [
+     "2026-11-09",
+     19.92
+    ],
+    [
+     "2026-11-10",
+     19.46
+    ],
+    [
+     "2026-11-11",
+     17.49
+    ],
+    [
+     "2026-11-12",
+     18.7
+    ]
+   ]
+  },
+  {
+   "id": "DTWEXBGS",
+   "name_en": "Broad USD Index",
+   "freq": "D",
+   "transform": "level",
+   "unit": "",
+   "last": 121.8803,
+   "prev": 121.5061,
+   "change": 0.3742,
+   "z5": 0.25,
+   "pct5": 68.2,
+   "as_of": "2026-11-06",
+   "age_days": 9,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-06",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-10-28",
+     121.8491
+    ],
+    [
+     "2026-10-29",
+     121.7361
+    ],
+    [
+     "2026-10-30",
+     121.6656
+    ],
+    [
+     "2026-11-02",
+     121.3702
+    ],
+    [
+     "2026-11-03",
+     121.8084
+    ],
+    [
+     "2026-11-04",
+     121.3983
+    ],
+    [
+     "2026-11-05",
+     121.5061
+    ],
+    [
+     "2026-11-06",
+     121.8803
+    ]
+   ]
+  },
+  {
+   "id": "DCOILWTICO",
+   "name_en": "WTI Crude",
+   "freq": "D",
+   "transform": "level",
+   "unit": "$",
+   "last": 89.62,
+   "prev": 89.62,
+   "change": 0.0,
+   "z5": 0.69,
+   "pct5": 78.1,
+   "as_of": "2026-11-11",
+   "age_days": 4,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-11",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-02",
+     100.06
+    ],
+    [
+     "2026-11-03",
+     99.64
+    ],
+    [
+     "2026-11-04",
+     91.73
+    ],
+    [
+     "2026-11-05",
+     94.05
+    ],
+    [
+     "2026-11-06",
+     94.37
+    ],
+    [
+     "2026-11-09",
+     90.4
+    ],
+    [
+     "2026-11-10",
+     89.62
+    ],
+    [
+     "2026-11-11",
+     89.62
+    ]
+   ]
+  }
+ ],
+ "signals": [
+  {
+   "key": "hy",
+   "title": "فارق High Yield",
+   "value": "3.20%",
+   "detail": "هدوء ائتماني",
+   "tone": "ok"
+  },
+  {
+   "key": "vix",
+   "title": "مؤشر VIX",
+   "value": "18.7",
+   "detail": "هدوء نسبي",
+   "tone": "ok"
+  }
+ ],
+ "released_today_not_in_platform_data": [],
+ "changes_since_previous_report": {
+  "available": false,
+  "reason": "previous report has no snapshot",
+  "previous_ny_date": "2026-11-13"
+ },
+ "revisions_recent": [],
+ "data_quality": []
+}

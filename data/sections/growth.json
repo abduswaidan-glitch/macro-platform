@@ -1,0 +1,289 @@
+{
+ "section": "growth",
+ "title": "النمو",
+ "collected_at": "2026-11-15T00:31:10Z",
+ "ok": true,
+ "available": 5,
+ "total": 5,
+ "indicators": [
+  {
+   "id": "GDPC1",
+   "name_en": "Real GDP",
+   "freq": "Q",
+   "transform": "yoy",
+   "unit": "%",
+   "last": 2.0657,
+   "prev": 2.1916,
+   "change": -0.1258,
+   "z5": -0.78,
+   "pct5": 14.3,
+   "as_of": "2026-07-01",
+   "age_days": 137,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-07-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2024-10-01",
+     2.6419
+    ],
+    [
+     "2025-01-01",
+     2.3111
+    ],
+    [
+     "2025-04-01",
+     2.4206
+    ],
+    [
+     "2025-07-01",
+     2.6007
+    ],
+    [
+     "2025-10-01",
+     2.046
+    ],
+    [
+     "2026-01-01",
+     2.6392
+    ],
+    [
+     "2026-04-01",
+     2.1916
+    ],
+    [
+     "2026-07-01",
+     2.0657
+    ]
+   ]
+  },
+  {
+   "id": "INDPRO",
+   "name_en": "Industrial Production",
+   "freq": "M",
+   "transform": "yoy",
+   "unit": "%",
+   "last": 2.2452,
+   "prev": 1.6155,
+   "change": 0.6297,
+   "z5": 1.04,
+   "pct5": 86.9,
+   "as_of": "2026-09-01",
+   "age_days": 75,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-09-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-02-01",
+     0.7972
+    ],
+    [
+     "2026-03-01",
+     0.6861
+    ],
+    [
+     "2026-04-01",
+     1.4327
+    ],
+    [
+     "2026-05-01",
+     1.7409
+    ],
+    [
+     "2026-06-01",
+     1.4609
+    ],
+    [
+     "2026-07-01",
+     1.2823
+    ],
+    [
+     "2026-08-01",
+     1.6155
+    ],
+    [
+     "2026-09-01",
+     2.2452
+    ]
+   ]
+  },
+  {
+   "id": "RSAFS",
+   "name_en": "Retail Sales",
+   "freq": "M",
+   "transform": "yoy",
+   "unit": "%",
+   "last": 6.2876,
+   "prev": 5.5561,
+   "change": 0.7316,
+   "z5": 0.36,
+   "pct5": 73.8,
+   "as_of": "2026-09-01",
+   "age_days": 75,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-09-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-02-01",
+     3.5373
+    ],
+    [
+     "2026-03-01",
+     3.5912
+    ],
+    [
+     "2026-04-01",
+     4.0918
+    ],
+    [
+     "2026-05-01",
+     6.6999
+    ],
+    [
+     "2026-06-01",
+     5.928
+    ],
+    [
+     "2026-07-01",
+     4.5304
+    ],
+    [
+     "2026-08-01",
+     5.5561
+    ],
+    [
+     "2026-09-01",
+     6.2876
+    ]
+   ]
+  },
+  {
+   "id": "HOUST",
+   "name_en": "Housing Starts",
+   "freq": "M",
+   "transform": "level",
+   "unit": "ألف وحدة",
+   "last": 1221.0,
+   "prev": 1288.0,
+   "change": -67.0,
+   "z5": -1.53,
+   "pct5": 3.3,
+   "as_of": "2026-09-01",
+   "age_days": 75,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-09-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-02-01",
+     1346.0
+    ],
+    [
+     "2026-03-01",
+     1522.0
+    ],
+    [
+     "2026-04-01",
+     1414.0
+    ],
+    [
+     "2026-05-01",
+     1182.0
+    ],
+    [
+     "2026-06-01",
+     1439.0
+    ],
+    [
+     "2026-07-01",
+     1369.0
+    ],
+    [
+     "2026-08-01",
+     1288.0
+    ],
+    [
+     "2026-09-01",
+     1221.0
+    ]
+   ]
+  },
+  {
+   "id": "UMCSENT",
+   "name_en": "UMich Sentiment",
+   "freq": "M",
+   "transform": "level",
+   "unit": "",
+   "last": 48.1,
+   "prev": 51.7,
+   "change": -3.6,
+   "z5": -1.68,
+   "pct5": 3.3,
+   "as_of": "2026-09-01",
+   "age_days": 75,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-09-01",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-02-01",
+     56.6
+    ],
+    [
+     "2026-03-01",
+     53.3
+    ],
+    [
+     "2026-04-01",
+     49.8
+    ],
+    [
+     "2026-05-01",
+     44.8
+    ],
+    [
+     "2026-06-01",
+     49.5
+    ],
+    [
+     "2026-07-01",
+     55.2
+    ],
+    [
+     "2026-08-01",
+     51.7
+    ],
+    [
+     "2026-09-01",
+     48.1
+    ]
+   ]
+  }
+ ],
+ "signals": [],
+ "released_today_not_in_platform_data": [],
+ "changes_since_previous_report": {
+  "available": false,
+  "reason": "previous report has no snapshot",
+  "previous_ny_date": "2026-11-13"
+ },
+ "revisions_recent": [],
+ "data_quality": []
+}

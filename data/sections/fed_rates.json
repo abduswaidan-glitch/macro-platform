@@ -1,0 +1,419 @@
+{
+ "section": "fed_rates",
+ "title": "الفيدرالي والفائدة",
+ "collected_at": "2026-11-15T00:31:10Z",
+ "ok": true,
+ "available": 7,
+ "total": 7,
+ "indicators": [
+  {
+   "id": "DFF",
+   "name_en": "Effective Fed Funds Rate (daily)",
+   "freq": "D",
+   "transform": "level",
+   "unit": "%",
+   "last": 3.88,
+   "prev": 3.88,
+   "change": 0.0,
+   "z5": 0.02,
+   "pct5": 41.8,
+   "as_of": "2026-11-12",
+   "age_days": 3,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-12",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-05",
+     3.88
+    ],
+    [
+     "2026-11-06",
+     3.88
+    ],
+    [
+     "2026-11-07",
+     3.88
+    ],
+    [
+     "2026-11-08",
+     3.88
+    ],
+    [
+     "2026-11-09",
+     3.88
+    ],
+    [
+     "2026-11-10",
+     3.88
+    ],
+    [
+     "2026-11-11",
+     3.88
+    ],
+    [
+     "2026-11-12",
+     3.88
+    ]
+   ]
+  },
+  {
+   "id": "DGS2",
+   "name_en": "2Y Treasury",
+   "freq": "D",
+   "transform": "level",
+   "unit": "%",
+   "last": 4.86,
+   "prev": 4.73,
+   "change": 0.13,
+   "z5": 1.01,
+   "pct5": 90.7,
+   "as_of": "2026-11-12",
+   "age_days": 3,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-12",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-02",
+     4.59
+    ],
+    [
+     "2026-11-03",
+     4.61
+    ],
+    [
+     "2026-11-04",
+     4.58
+    ],
+    [
+     "2026-11-05",
+     4.46
+    ],
+    [
+     "2026-11-06",
+     4.51
+    ],
+    [
+     "2026-11-09",
+     4.56
+    ],
+    [
+     "2026-11-10",
+     4.73
+    ],
+    [
+     "2026-11-12",
+     4.86
+    ]
+   ]
+  },
+  {
+   "id": "DGS10",
+   "name_en": "10Y Treasury",
+   "freq": "D",
+   "transform": "level",
+   "unit": "%",
+   "last": 5.1,
+   "prev": 4.98,
+   "change": 0.12,
+   "z5": 1.49,
+   "pct5": 98.6,
+   "as_of": "2026-11-12",
+   "age_days": 3,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-12",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-02",
+     4.91
+    ],
+    [
+     "2026-11-03",
+     4.95
+    ],
+    [
+     "2026-11-04",
+     4.9
+    ],
+    [
+     "2026-11-05",
+     4.84
+    ],
+    [
+     "2026-11-06",
+     4.86
+    ],
+    [
+     "2026-11-09",
+     4.88
+    ],
+    [
+     "2026-11-10",
+     4.98
+    ],
+    [
+     "2026-11-12",
+     5.1
+    ]
+   ]
+  },
+  {
+   "id": "T10Y2Y",
+   "name_en": "10Y-2Y Spread",
+   "freq": "D",
+   "transform": "level",
+   "unit": "%",
+   "last": 0.27,
+   "prev": 0.24,
+   "change": 0.03,
+   "z5": 0.47,
+   "pct5": 57.2,
+   "as_of": "2026-11-13",
+   "age_days": 2,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-13",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-03",
+     0.34
+    ],
+    [
+     "2026-11-04",
+     0.32
+    ],
+    [
+     "2026-11-05",
+     0.38
+    ],
+    [
+     "2026-11-06",
+     0.35
+    ],
+    [
+     "2026-11-09",
+     0.32
+    ],
+    [
+     "2026-11-10",
+     0.25
+    ],
+    [
+     "2026-11-12",
+     0.24
+    ],
+    [
+     "2026-11-13",
+     0.27
+    ]
+   ]
+  },
+  {
+   "id": "DFII10",
+   "name_en": "10Y Real Yield (TIPS)",
+   "freq": "D",
+   "transform": "level",
+   "unit": "%",
+   "last": 2.86,
+   "prev": 2.78,
+   "change": 0.08,
+   "z5": 1.49,
+   "pct5": 99.1,
+   "as_of": "2026-11-12",
+   "age_days": 3,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-12",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-02",
+     2.62
+    ],
+    [
+     "2026-11-03",
+     2.65
+    ],
+    [
+     "2026-11-04",
+     2.64
+    ],
+    [
+     "2026-11-05",
+     2.6
+    ],
+    [
+     "2026-11-06",
+     2.63
+    ],
+    [
+     "2026-11-09",
+     2.66
+    ],
+    [
+     "2026-11-10",
+     2.78
+    ],
+    [
+     "2026-11-12",
+     2.86
+    ]
+   ]
+  },
+  {
+   "id": "T10YIE",
+   "name_en": "10Y Breakeven Inflation",
+   "freq": "D",
+   "transform": "level",
+   "unit": "%",
+   "last": 2.24,
+   "prev": 2.24,
+   "change": 0.0,
+   "z5": -0.74,
+   "pct5": 19.1,
+   "as_of": "2026-11-13",
+   "age_days": 2,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-13",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-11-03",
+     2.3
+    ],
+    [
+     "2026-11-04",
+     2.26
+    ],
+    [
+     "2026-11-05",
+     2.24
+    ],
+    [
+     "2026-11-06",
+     2.23
+    ],
+    [
+     "2026-11-09",
+     2.22
+    ],
+    [
+     "2026-11-10",
+     2.2
+    ],
+    [
+     "2026-11-12",
+     2.24
+    ],
+    [
+     "2026-11-13",
+     2.24
+    ]
+   ]
+  },
+  {
+   "id": "MORTGAGE30US",
+   "name_en": "30Y Mortgage Rate",
+   "freq": "W",
+   "transform": "level",
+   "unit": "%",
+   "last": 7.11,
+   "prev": 7.18,
+   "change": -0.07,
+   "z5": 0.84,
+   "pct5": 91.2,
+   "as_of": "2026-11-12",
+   "age_days": 3,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-11-12",
+   "unavailable": null,
+   "momentum": null,
+   "revisions": [],
+   "recent": [
+    [
+     "2026-09-24",
+     7.03
+    ],
+    [
+     "2026-10-01",
+     7.28
+    ],
+    [
+     "2026-10-08",
+     7.4
+    ],
+    [
+     "2026-10-15",
+     7.4
+    ],
+    [
+     "2026-10-22",
+     7.32
+    ],
+    [
+     "2026-10-29",
+     7.24
+    ],
+    [
+     "2026-11-05",
+     7.18
+    ],
+    [
+     "2026-11-12",
+     7.11
+    ]
+   ]
+  }
+ ],
+ "signals": [
+  {
+   "key": "curve",
+   "title": "منحنى العائد 10Y-2Y",
+   "value": "+0.27%",
+   "detail": "طبيعي (Normal)",
+   "tone": "ok"
+  },
+  {
+   "key": "real10",
+   "title": "العائد الحقيقي 10Y",
+   "value": "2.86%",
+   "detail": "تشديد نقدي حقيقي (أعلى من 2%)",
+   "tone": "warn"
+  },
+  {
+   "key": "breakeven",
+   "title": "توقعات التضخم 10Y (Breakeven)",
+   "value": "2.24%",
+   "detail": "قريبة من هدف الفيدرالي",
+   "tone": "ok"
+  }
+ ],
+ "released_today_not_in_platform_data": [],
+ "changes_since_previous_report": {
+  "available": false,
+  "reason": "previous report has no snapshot",
+  "previous_ny_date": "2026-11-13"
+ },
+ "revisions_recent": [],
+ "data_quality": []
+}

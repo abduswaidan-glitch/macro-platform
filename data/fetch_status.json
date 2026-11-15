@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-14T21:33:16Z",
+ "fetched_utc": "2026-11-15T00:31:10Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -20,6 +20,30 @@
    "last_new_obs_utc": null
   },
   "HOUST": {
+   "state": "ok",
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
+  },
+  "UMCSENT": {
+   "state": "ok",
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
+  },
+  "CPIAUCSL": {
+   "state": "ok",
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
+  },
+  "CPILFESL": {
+   "state": "ok",
+   "issues": [],
+   "revisions": [],
+   "last_new_obs_utc": null
+  },
+  "PCEPILFE": {
    "state": "ok",
    "issues": [],
    "revisions": [],
@@ -60,24 +84,6 @@
    "issues": [],
    "revisions": [],
    "last_new_obs_utc": "2026-11-14T19:49:56Z"
-  },
-  "CPIAUCSL": {
-   "state": "ok",
-   "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
-  },
-  "CPILFESL": {
-   "state": "ok",
-   "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
-  },
-  "PCEPILFE": {
-   "state": "ok",
-   "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
   },
   "DFF": {
    "state": "ok",
@@ -163,19 +169,13 @@
     "قفزة غير معتادة في آخر قيمة"
    ],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-14T21:33:16Z"
+   "last_new_obs_utc": "2026-11-15T00:31:10Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-14T21:33:16Z"
-  },
-  "UMCSENT": {
-   "state": "ok",
-   "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-15T00:31:10Z"
   }
  },
  "extra_warnings": []
