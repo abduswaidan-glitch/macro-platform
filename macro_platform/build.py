@@ -22,8 +22,10 @@ from macro_platform.fred import FredError, fetch_series
 
 MIN_ROWS = {"D": 200, "W": 50, "M": 24, "Q": 8}
 MAX_AGE_DAYS = {"D": 7, "W": 14, "M": 80, "Q": 220}  # تأخر النشر الطبيعي لكل تكرار
-# سلاسل يومية ينشرها FRED متأخرة أسبوعاً عادةً (نفط WTI من EIA، الدولار الواسع من الفيدرالي)
-MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14}
+# سلاسل يومية ينشرها FRED متأخرة أسبوعاً عادةً (نفط WTI من EIA، الدولار الواسع من الفيدرالي)؛ والمطالبات المستمرة
+# (CCSA) تتأخر أسبوعاً إضافياً عن الأولية بطبيعة الإصدار: بيان الخميس 13 نوفمبر حمل أسبوع 31 أكتوبر. حد 14 يوماً
+# جعلها «متقادمة» أغلب أيام الأسبوع (فحص 15 نوفمبر 2026: عمرها 15 يوماً والبيانات سليمة).
+MAX_AGE_OVERRIDE = {"DCOILWTICO": 14, "DTWEXBGS": 14, "CCSA": 21}
 KPI_IDS = ("DGS10", "DFII10", "DTWEXBGS", "DCOILWTICO", "T10Y2Y", "DFF", "PCEPILFE", "UNRATE", "VIXCLS")
 DEFAULT_CONFIG = {
     "start": "2000-01-01",
