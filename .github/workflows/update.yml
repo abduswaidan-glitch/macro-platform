@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       report_attempt:
-        description: "تقرير Claude: فارغ = بيانات فقط؛ 1 أو 2 تطلبهما الجدولة؛ manual = يدوي بإذن Abdu (لا يدخل سجل التوقعات)"
+        description: "فارغ = بيانات فقط؛ collect = جامعو الأقسام قبل التقرير (08:40)؛ 1 أو 2 = محاولة تقرير من الجدولة؛ manual = يدوي بإذن Abdu (لا يدخل سجل التوقعات)"
         required: false
         default: ""
 

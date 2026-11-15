@@ -16,7 +16,7 @@ import fetch_news
 from macro_platform import ai_report, news
 from macro_platform.demo import demo_series
 from _newsfake import CNBC_ECON, CNBC_TOP, FF_THIS, MW, Net, default_routes, ff, ff_row, iso, now
-from _report import body
+from _report import body, fake_fetch
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORT = body()
@@ -39,13 +39,14 @@ def run_report(monkeypatch, tmp_path, live):
     seen = {}
 
     def caller(user, system, model, effort):
-        seen["system"], seen["ctx"] = system, json.loads(user.split("\n", 1)[1])["economy_inputs"]
+        if system != ai_report.SYSTEM_MARKETS:          # ملف جامع الأخبار في الاستدعاء الاقتصادي
+            news_sec = json.loads(user.split("\n", 1)[1])["sections"]["news"]
+            seen["system"], seen["ctx"] = system, {"news_feed": news_sec.get("feed"), "news_section": news_sec}
         return "<report>" + json.dumps(REPORT) + "</report>", [], {k: 0 for k in ai_report.USAGE_KEYS}, model
 
     orig = ai_report.write_report
     monkeypatch.setattr(ai_report, "write_report", lambda *a, **k: orig(*a, caller=caller, **k))
-    monkeypatch.setattr(fetch_macro, "fetch_all",
-                        lambda raw, start, log=None: (demo_series(start="2015-01-01", end="2026-06-30"), {}))
+    monkeypatch.setattr(fetch_macro, "fetch_all", fake_fetch(demo_series(start="2015-01-01", end="2026-06-30")))
     data = tmp_path / "data"
     data.mkdir(parents=True, exist_ok=True)
     monkeypatch.setattr(fetch_macro, "DATA", data)
@@ -189,7 +190,7 @@ def test_report_gets_headlines_with_their_source_and_calendar_without_actuals(mo
     assert {e["title"]: e["status"] for e in feed["calendar"]} == {
         "Core CPI m/m": "past_no_value_in_source", "Unemployment Claims": "upcoming", "FOMC Member Speaks": "upcoming"}
     assert "never carries actual figures" in feed["note"] and "media' = CNBC or MarketWatch reported it" in feed["note"]
-    assert '"news_feed" block' in seen["system"] and "Never state reported news as an official fact" in seen["system"]
+    assert "the news section's \"feed\"" in seen["system"] and "Never state reported news as an official fact" in seen["system"]
     meta = rep["meta"]["news_input"]
     assert meta["headlines"] == len(feed["headlines"]) and meta["calendar"] == {"past_no_value_in_source": 1, "upcoming": 2}
     assert "Treasury yields" not in json.dumps(rep["meta"])               # لا نص عناوين في السجل العام

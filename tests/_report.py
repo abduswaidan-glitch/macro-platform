@@ -46,16 +46,39 @@ def text(b=None):
     return "<report>" + json.dumps(body() if b is None else b, ensure_ascii=False) + "</report>"
 
 
-def caller_for(b=None, seen=None, served=None, info=None, calls=None):
+def is_market(system):
+    return system == ai_report.SYSTEM_MARKETS
+
+
+def caller_for(b=None, seen=None, served=None, info=None, calls=None, market=None):
+    """نموذج مزيّف بالخطوتين كما في الحقيقة: الاستدعاء الاقتصادي يعيد economy وevents فقط، واستدعاء Market Gates
+    (بعده) يعيد market_translation فقط. seen يحفظ الاستدعاء الاقتصادي، وseen["market"] الثاني."""
+    full = body() if b is None else b
+
     def caller(user, system, model, effort):
+        mk = is_market(system)
         if seen is not None:
-            seen.update(user=user, system=system, model=model, effort=effort)
+            (seen.setdefault("market", {}) if mk else seen).update(user=user, system=system, model=model, effort=effort)
         if calls is not None:
-            calls.append(1)
-        usage = {k: 10 for k in ai_report.USAGE_KEYS} | {"web_search_requests": 3}
-        return text(b), [{"url": "https://x.test", "title": "x"}], usage, served or model, \
+            calls.append("market" if mk else "economy")
+        usage = {k: 10 for k in ai_report.USAGE_KEYS} | {"web_search_requests": 0 if mk else 3}
+        if mk:
+            out = market if market is not None else text({"market_translation": full.get("market_translation")}) \
+                if isinstance(full, dict) and "market_translation" in full else "no market output"
+        else:
+            out = text({k: v for k, v in full.items() if k != "market_translation"}) if isinstance(full, dict) else text(full)
+        return out, [] if mk else [{"url": "https://x.test", "title": "x"}], usage, served or model, \
             info or {"stop_reason": "end_turn", "duration_s": 1.0}
     return caller
+
+
+def fake_fetch(series):
+    """fetch_all مزيّف يحترم قائمة المؤشرات: كل جامع يأخذ سلاسل قسمه وحده."""
+    def fetch(raw, start, fetcher=None, indicators=None, log=None):
+        ids = None if indicators is None else {i.id for i in indicators}
+        got = {k: v for k, v in series.items() if ids is None or k in ids}
+        return got, {k: {"state": "ok", "issues": []} for k in got}
+    return fetch
 
 
 def utc(s):

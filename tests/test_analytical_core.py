@@ -1,7 +1,8 @@
-"""PR 3 — Analytical core: تقييم اقتصادي أولاً، وترجمة سوقية منفصلة مشتقة منه، وكل منهما يُقاس منفصلاً.
+"""التقرير الاقتصادي ثم Market Gates: خطوتان منفصلتان، وكل منهما يُقاس منفصلاً.
 
-ثلاثة أقفال للترتيب: المدخلات منفصلة (economy_inputs بلا أي مؤشر أسهم)، والتعليمات تنص على الترتيب، وصيغة المخرجات
-تبدأ بـeconomy. Translation-check لا يُجمع مع Scenario-check في أي رقم.
+قرار Abdu (15 نوفمبر 2026): جامع مستقل لكل قسم يسلّم ملفه للنموذج قبل التقرير؛ وMarket Gates معكوس: بعد اكتمال
+التقرير الاقتصادي يُكتب انحياز NQ وS&P وDow من التقرير المكتمل، في استدعاء ثانٍ. Translation-check لا يُجمع مع
+Scenario-check في أي رقم.
 """
 import json
 from datetime import datetime, timezone
@@ -9,7 +10,7 @@ from datetime import datetime, timezone
 import pandas as pd
 import pytest
 
-from _report import body, caller_for, gate, text
+from _report import body, caller_for, gate, is_market, text
 from macro_platform import ai_report, ledger, releases
 from macro_platform.build import build_payload, load_config
 from macro_platform.demo import demo_series
@@ -24,41 +25,102 @@ def payload():
     return build_payload(demo_series(start="2018-01-01", end="2026-06-30"), {}, CFG, now=NOW)
 
 
-# ---------------------------------------------------------------- lock 1: separate inputs
-def test_economy_inputs_hold_no_equity_index_and_market_inputs_are_labelled(payload):
-    ctx = ai_report.context(payload, now_utc=NOW, extra={
-        "changes_since_previous_report": {"available": True, "items": [{"id": "SP500", "kind": "new_observation"},
-                                                                       {"id": "DGS10", "kind": "new_observation"}]},
-        "revisions_recent": [{"id": "NASDAQ100", "date": "x"}, {"id": "PAYEMS", "date": "y"}]})
-    eco = json.dumps(ctx["economy_inputs"], ensure_ascii=False)
-    assert "NASDAQ100" not in eco and "SP500" not in eco and "nq_gates" not in eco
-    assert [i["id"] for i in ctx["market_inputs"]["indicators"]] == ["NASDAQ100", "SP500"]
-    assert ctx["market_inputs"]["changes_since_previous_report"] == [{"id": "SP500", "kind": "new_observation"}]
-    assert ctx["economy_inputs"]["revisions_recent"] == [{"id": "PAYEMS", "date": "y"}]
-    assert ctx["market_inputs"]["nq_gates"] == payload["gates"] and "market translation only" in ctx["market_inputs"]["note"]
-    rel = ctx["market_inputs"]["relative_performance"]
-    assert set(rel) == {"as_of", "d5", "d10", "d20"} and all(isinstance(rel[k], float) for k in ("d5", "d10", "d20"))
+# ---------------------------------------------------------------- one brief per section, no market data in the economy step
+ECON = ("growth", "inflation", "labor", "fed_rates", "financial")
 
 
-# ---------------------------------------------------------------- lock 2 and 3: the instructions and the output order
-def test_prompt_orders_economy_first_and_keeps_the_market_translation_out_of_it():
-    s = ai_report.SYSTEM
-    assert s.index("Assess the US economy") < s.index("translate it for equities")
-    assert "Equity moves do not redefine the state of the economy" in s and "derived from \"economy\"" in s
+def test_the_model_reads_one_brief_per_section_and_no_equity_data(payload):
+    ctx = ai_report.context(payload, feed={"calendar": [], "headlines": []}, now_utc=NOW)
+    eco = ctx["economy_inputs"]
+    assert set(eco["sections"]) == set(ECON) | {"news"}
+    cat = {i["id"]: i["category"] for i in payload["indicators"]}
+    for k in ECON:
+        b = eco["sections"][k]
+        assert b["ok"] and b["section"] == k and b["indicators"], k
+        assert {i["id"] for i in b["indicators"]} == {i for i, c in cat.items() if c == k}, k   # قسمه وحده
+    dumped = json.dumps(eco, ensure_ascii=False)
+    assert not any(x in dumped for x in ("NASDAQ100", "SP500", "nq_limits", "relative_performance", "leadership"))
+    assert set(eco["cross_section"]) == {"quadrant", "sahm_recent"}
+    mk = ctx["market_inputs"]
+    assert mk["ok"] and set(mk["relative_performance"]) == {"as_of", "d5", "d10", "d20"}
+    assert '"last"' not in json.dumps(mk) and "points" not in json.dumps(mk)          # مشتق فقط، بلا مستويات
+
+
+def test_signals_go_to_the_section_their_series_belongs_to(payload):
+    eco = ai_report.context(payload, now_utc=NOW)["economy_inputs"]["sections"]
+    keys = {k: [s["key"] for s in eco[k]["signals"]] for k in ECON}
+    assert keys["labor"] == ["sahm"] and keys["fed_rates"] == ["curve", "real10", "breakeven"]
+    assert keys["financial"] == ["hy", "vix"] and keys["growth"] == [] and keys["inflation"] == []
+
+
+# ---------------------------------------------------------------- the instructions: two separate steps
+def test_the_economic_prompt_has_no_market_step_and_the_market_prompt_derives_from_the_report():
+    s, m = ai_report.SYSTEM, ai_report.SYSTEM_MARKETS
+    assert "one brief per section" in s and "Read every section" in s and '"ok": false is unavailable' in s
+    assert "does not translate it into any one market" in s and "Do not write about any specific equity index" in s
+    for x in ("market_translation", "impact", "nq_vs_spx_10d", "Nasdaq", "Dow", "NQ"):
+        assert x not in s, x
     out = s[s.index("Output:"):]
-    assert out.index('"economy"') < out.index('"market_translation"') < out.index('"events"')
-    economy_schema = out[out.index('"economy": {'):out.index('"market_translation": {')]
-    assert "NQ" not in economy_schema and "bias" not in economy_schema.lower() and "nq" not in economy_schema
-    assert "largely similar to the S&P 500" in s and "Energy has a small weight in the Dow" in s
-    assert "from -2 to +2" in s and 'no "uncertain" level' in s and "50 means no view" in s
-    assert "No entries, stops, targets, or buy/sell recommendations" in s
+    assert out.index('"economy"') < out.index('"events"')
+    assert "economic report in \"economy_report\" is final" in m and "Do not re-assess the economy" in m
+    assert "largely similar to the S&P 500" in m and "Energy has a small weight in the Dow" in m
+    assert "from -2 to +2" in m and 'no "uncertain" level' in m and "50 means no view" in m
+    assert "never quote an index level" in m and "No entries, stops, targets, or buy/sell recommendations" in m
     assert "No single dominant driver today" in s and "never invent a conflict" in s
     assert "official release checked via web" in s
 
 
+def test_the_market_step_runs_after_the_report_from_the_finished_report(payload):
+    seen, calls = {}, []
+    rep = ai_report.write_report(payload, CFG, now_utc=NOW, caller=caller_for(seen=seen, calls=calls), attempt="1")
+    assert calls == ["economy", "market"]                                        # بعد اكتمال التقرير
+    assert "market_brief" not in seen["user"] and "nq_limits" not in seen["user"]
+    mk = json.loads(seen["market"]["user"])
+    assert set(mk) == {"economy_report", "market_brief"} and mk["economy_report"]["economy"] == rep["economy"]
+    assert seen["market"]["system"] == ai_report.SYSTEM_MARKETS and rep["market_translation"]["gates"]["nq"]["impact"] == -1
+    m = rep["meta"]
+    assert m["market"]["ok"] and m["market"]["started_at"] >= m["completed_at"]
+    assert m["cost_total"] == round(m["cost_estimate"] + m["market"]["cost_estimate"], 4)
+
+
+def test_a_failed_market_step_never_takes_the_economic_report_down(payload):
+    for market in ("no tags", text({"economy": {}})):
+        rep = ai_report.write_report(payload, CFG, now_utc=NOW, caller=caller_for(market=market), attempt="1")
+        assert "market_translation" not in rep and rep["meta"]["market"]["ok"] is False
+        assert any(w.startswith("market translation failed: MarketError") for w in rep["warnings"])
+        assert rep["one_liner"] == "الخلاصة"                                    # التقرير الاقتصادي منشور
+
+
+def test_a_failed_economic_step_never_calls_the_market_step(payload):
+    calls = []
+    with pytest.raises(ai_report.ReportError):
+        ai_report.write_report(payload, CFG, now_utc=NOW, caller=caller_for(b={"economy": {}}, calls=calls), attempt="1")
+    assert calls == ["economy"]
+
+
+def test_a_failed_collector_is_marked_unavailable_and_the_others_still_go_to_the_model(payload):
+    from macro_platform import collectors
+    briefs = collectors.from_payload(payload, None, None, NOW)
+    briefs["labor"] = collectors.failed("labor", NOW, RuntimeError("FRED down"))
+    seen = {}
+    from datetime import timedelta
+    rep = ai_report.write_report(payload, CFG, now_utc=NOW, caller=caller_for(seen=seen), briefs=briefs, attempt="1",
+                                 clock=lambda: NOW + timedelta(minutes=2))
+    sent = json.loads(seen["user"].split("\n", 1)[1])["sections"]
+    assert sent["labor"] == {"section": "labor", "title": "سوق العمل", "collected_at": "2026-11-16T14:05:00Z",
+                             "ok": False, "error": "RuntimeError: FRED down"}
+    assert all(sent[k]["ok"] for k in ECON if k != "labor")
+    r = rep["meta"]["inputs"]["sections"]
+    assert r["labor"]["ok"] is False and r["growth"]["ok"] and r["growth"]["before_model_call"]
+
+
 # ---------------------------------------------------------------- what is retried and what is published with a warning
+def _econ(b):
+    return {k: v for k, v in b.items() if k != "market_translation"}       # الخطوة الأولى بلا Market Gates
+
+
 def _warn(b):
-    return ai_report.parse_report(text(b), KNOWN)["warnings"]
+    return ai_report.parse_report(text(_econ(b)), KNOWN)["warnings"]
 
 
 def test_a_complete_report_has_no_warnings():
@@ -66,11 +128,32 @@ def test_a_complete_report_has_no_warnings():
 
 
 @pytest.mark.parametrize("mutate, expect", [
-    (lambda b: b.pop("market_translation"), "market_translation is missing"),
-    (lambda b: b["market_translation"]["gates"].update(nq=gate(3)), "market gate nq: impact must be a whole number"),
-    (lambda b: b["market_translation"]["gates"].update(dow=gate(0.5)), "market gate dow: impact"),
-    (lambda b: b["market_translation"]["gates"].pop("spx"), "market gate spx is missing"),
-    (lambda b: b["market_translation"].update(nq_vs_spx_10d={"prob": 101}), "nq_vs_spx_10d: prob"),
+    (lambda mt: mt["gates"].update(nq=gate(3)), "market gate nq: impact must be a whole number"),
+    (lambda mt: mt["gates"].update(dow=gate(0.5)), "market gate dow: impact"),
+    (lambda mt: mt["gates"].pop("spx"), "market gate spx is missing"),
+    (lambda mt: mt.update(nq_vs_spx_10d={"prob": 101}), "nq_vs_spx_10d: prob"),
+])
+def test_market_step_issues_are_warnings(mutate, expect):
+    mt = body()["market_translation"]
+    mutate(mt)
+    got, warn = ai_report.parse_market(text({"market_translation": mt}))
+    assert got == mt and any(expect in w for w in warn), warn
+
+
+def test_an_unreadable_market_output_is_a_market_error_not_a_report_error():
+    for raw in ("no tags", "<report>{bad</report>", text({"economy": {}})):
+        with pytest.raises(ai_report.MarketError):
+            ai_report.parse_market(raw)
+    assert not issubclass(ai_report.MarketError, ai_report.ReportError)          # لا إعادة للتقرير بسببها
+
+
+def test_market_translation_in_the_economic_output_is_ignored_with_a_warning():
+    rep = ai_report.parse_report(text(body()), KNOWN)
+    assert "market_translation" not in rep and rep["warnings"] == [
+        "the economic output contained market_translation; ignored (written in the second step)"]
+
+
+@pytest.mark.parametrize("mutate, expect", [
     (lambda b: b["economy"]["scenarios"][0].update(prob=46), "probabilities sum to 101"),
     (lambda b: b["economy"].pop("regime"), "missing field: economy.regime"),
     (lambda b: b["economy"].pop("key_conflicts"), "missing field: economy.key_conflicts"),
@@ -80,7 +163,7 @@ def test_a_complete_report_has_no_warnings():
     (lambda b: b["economy"]["dominant_driver"].update(kind="vibes"), "kind must be data, event or mixed"),
 ])
 def test_non_blocking_issues_publish_with_a_visible_warning(mutate, expect):
-    b = body()
+    b = _econ(body())
     mutate(b)
     rep = ai_report.parse_report(text(b), KNOWN)
     assert any(expect in w for w in rep["warnings"]), rep["warnings"]
@@ -100,7 +183,7 @@ def test_event_evidence_and_an_honest_no_driver_and_empty_conflicts_are_valid():
 
 
 def test_unknown_evidence_ids_are_removed_and_logged_not_silently():
-    b = body()
+    b = _econ(body())
     b["economy"]["dominant_driver"]["evidence"] = ["DFII10", "NASDAQ100"]  # مؤشر أسهم ليس دليلاً اقتصادياً
     rep = ai_report.parse_report(text(b), KNOWN)
     assert rep["economy"]["dominant_driver"]["evidence"] == ["DFII10"]
@@ -188,8 +271,9 @@ def test_the_report_context_carries_the_flag(payload):
     for i in p["indicators"]:
         i["last_new_obs_utc"] = "2026-11-01T00:00:00Z"
     feed = {"calendar": [ev("Core CPI m/m", "2026-11-16T13:30:00Z")], "headlines": []}
-    flag = ai_report.context(p, feed=feed, now_utc=NOW)["economy_inputs"]["released_today_not_in_platform_data"]
-    assert [f["event"] for f in flag] == ["Core CPI m/m"]
+    sec = ai_report.context(p, feed=feed, now_utc=NOW)["economy_inputs"]["sections"]
+    assert [f["event"] for f in sec["inflation"]["released_today_not_in_platform_data"]] == ["Core CPI m/m"]
+    assert sec["labor"]["released_today_not_in_platform_data"] == []              # في قسم سلسلته وحده
 
 
 # ---------------------------------------------------------------- Translation-check: NQ vs S&P 500 over 10 trading days

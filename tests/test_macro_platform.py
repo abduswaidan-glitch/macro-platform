@@ -157,7 +157,7 @@ from _report import body, caller_for, text  # noqa: E402
 
 
 def test_parse_report_extracts_last_block_and_keeps_probabilities_as_written():
-    b = body()
+    b = {k: v for k, v in body().items() if k != "market_translation"}     # مخرج الخطوة الاقتصادية وحدها
     b["economy"]["scenarios"][0]["prob"] = 46                              # المجموع 101: يُعرض كما هو، لا تعديل صامت
     rep = ai_report.parse_report("بحث...<report>{\"economy\": {}}</report> ثم " + text(b))
     assert [s["prob"] for s in rep["scenarios"]] == [46, 35, 20]

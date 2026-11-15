@@ -12,7 +12,7 @@ import pandas as pd
 
 import fetch_macro
 import fetch_news
-from _report import caller_for, freeze
+from _report import caller_for, fake_fetch, freeze
 from macro_platform import ai_report
 from macro_platform.build import (build_payload, fetch_all, load_config, public_payload, raw_path, save_raw)
 from macro_platform.catalog import BY_ID, CATEGORIES, INDICATORS, INTERNAL_IDS
@@ -64,7 +64,7 @@ def test_fetch_does_not_store_internal_series_and_removes_old_copies(tmp_path):
 def _run(monkeypatch, tmp_path, argv, series, attempt=None, data=None):
     freeze(monkeypatch, "2026-11-16T14:00:00")
     monkeypatch.setattr(ai_report, "write_report", lambda *a, **k: WRITE(*a, caller=caller_for(), **k))
-    monkeypatch.setattr(fetch_macro, "fetch_all", lambda raw, start, log=None: (series, {}))
+    monkeypatch.setattr(fetch_macro, "fetch_all", fake_fetch(series))
     monkeypatch.setattr(fetch_macro, "load_saved_series", lambda raw: {k: v for k, v in series.items() if k not in INTERNAL_IDS})
     monkeypatch.setattr(fetch_macro, "load_status", lambda p: ({}, []))
     monkeypatch.setattr(fetch_news, "load_live", lambda url: {})
@@ -107,7 +107,7 @@ def test_offline_builds_publish_the_derived_numbers_without_the_indices(monkeypa
 
 
 def test_the_report_is_told_not_to_quote_index_levels():
-    assert "Do not quote equity index levels" in ai_report.SYSTEM
+    assert "never quote an index level" in ai_report.SYSTEM_MARKETS and "Nasdaq" not in ai_report.SYSTEM
 
 
 def test_offline_builds_report_the_last_real_fetch_state_not_a_false_error():
