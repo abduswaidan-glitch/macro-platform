@@ -1,6 +1,7 @@
 """PR 2 — Deterministic inputs: الكود يحدد ما تغيّر وما رُوجع وزخم التضخم، والنموذج يفسّر معناه.
 
 القائمة المجمّدة (قرار Abdu، 14 نوفمبر 2026): DFF بدل FEDFUNDS، وCCSA، وCES0500000003، وزخم محسوب بالكود.
+وأُضيف تموضع الدولار COT من Tradingster بثلاث سلاسل (قرار Abdu، 15 نوفمبر 2026).
 لا سلسلة أخرى بلا قرار؛ الاختبار الأول يمنع ذلك.
 """
 import json
@@ -18,7 +19,8 @@ from macro_platform.demo import demo_series
 
 FROZEN = {"GDPC1", "INDPRO", "RSAFS", "HOUST", "PAYEMS", "UNRATE", "ICSA", "CCSA", "JTSJOL", "CES0500000003",
           "CPIAUCSL", "CPILFESL", "PCEPILFE", "DFF", "DGS2", "DGS10", "T10Y2Y", "DFII10", "T10YIE", "MORTGAGE30US",
-          "M2SL", "WALCL", "BAMLH0A0HYM2", "VIXCLS", "DTWEXBGS", "DCOILWTICO", "NASDAQ100", "SP500", "UMCSENT"}
+          "M2SL", "WALCL", "BAMLH0A0HYM2", "VIXCLS", "DTWEXBGS", "DCOILWTICO", "NASDAQ100", "SP500", "UMCSENT",
+          "COT_DX_NC", "COT_DX_LEV", "COT_DX_AM"}
 NOW = datetime(2026, 11, 16, 15, 0, tzinfo=timezone.utc)
 
 

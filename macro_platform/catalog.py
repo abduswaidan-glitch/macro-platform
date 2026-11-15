@@ -1,4 +1,4 @@
-"""كتالوج المؤشرات: معرّفات سلاسل FRED مع أسمائها وطريقة تحويلها."""
+"""كتالوج المؤشرات: معرّفات السلاسل (FRED، وCOT من Tradingster) مع أسمائها وطريقة تحويلها."""
 
 from __future__ import annotations
 
@@ -31,6 +31,8 @@ class Indicator:
     # ترخيص طرف ثالث (S&P DJI وNasdaq في FRED): يُجلب ويُستعمل في الحساب فقط. لا مستويات ولا نقاط في data.json،
     # ولا حفظ في data/raw، ولا في لقطة التقرير العامة؛ ما يُنشر نتائج مشتقة (فرق نسبي، حالة بوابة).
     internal_only: bool = False
+    # مصدر الجلب: fred (fredgraph.csv) أو cot (صفحات Tradingster العامة لتقرير CFTC، macro_platform/cot.py)
+    source: str = "fred"
 
 
 INDICATORS: tuple[Indicator, ...] = (
@@ -72,9 +74,20 @@ INDICATORS: tuple[Indicator, ...] = (
     Indicator("NASDAQ100", "مؤشر Nasdaq 100", "Nasdaq 100 Index", "markets", "D", "level", "", None, internal_only=True),
     Indicator("SP500", "مؤشر S&P 500", "S&P 500 Index", "markets", "D", "level", "", None, internal_only=True),
     Indicator("UMCSENT", "ثقة المستهلك (Michigan)", "UMich Sentiment", "growth", "M", "level", "", True),
+    # تموضع الدولار: CFTC Commitments of Traders لعقود USD INDEX - ICE FUTURES U.S. (098662)، صافي العقود (Long − Short)
+    # في مراكز الثلاثاء. تموضع لا بيانات اقتصادية: يقرأ ازدحام رهان الدولار بجوار الدولار الواسع. في آخر الكتالوج
+    # كي لا تتغير بذور البيانات التجريبية للمؤشرات السابقة.
+    Indicator("COT_DX_NC", "صافي المضاربين الكبار في عقود مؤشر الدولار (COT)", "COT USD Index: Non-Commercial net",
+              "financial", "W", "level", "عقد", None, source="cot"),
+    Indicator("COT_DX_LEV", "صافي Leveraged Funds في عقود مؤشر الدولار (COT)", "COT USD Index: Leveraged Funds net",
+              "financial", "W", "level", "عقد", None, source="cot"),
+    Indicator("COT_DX_AM", "صافي Asset Managers في عقود مؤشر الدولار (COT)", "COT USD Index: Asset Managers net",
+              "financial", "W", "level", "عقد", None, source="cot"),
 )
 
 BY_ID: dict[str, Indicator] = {i.id: i for i in INDICATORS}
+# اسم المصدر كما يظهر في الصفحة
+SOURCES = {"fred": "FRED", "cot": "CFTC عبر Tradingster"}
 # زخم محسوب بالكود (MoM و3m annualized) من سلاسل موجودة: يفصل مستوى التضخم والأجور عن تسارعها
 MOMENTUM_IDS = ("CPIAUCSL", "CPILFESL", "PCEPILFE", "CES0500000003")
 INTERNAL_IDS = tuple(i.id for i in INDICATORS if i.internal_only)
@@ -91,3 +104,5 @@ def validate_catalog() -> None:
             raise ValueError(f"{ind.id}: unknown freq {ind.freq}")
         if ind.transform not in {"level", "yoy", "diff", "diff_avg3"}:
             raise ValueError(f"{ind.id}: unknown transform {ind.transform}")
+        if ind.source not in SOURCES:
+            raise ValueError(f"{ind.id}: unknown source {ind.source}")
