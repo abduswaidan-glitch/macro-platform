@@ -75,6 +75,7 @@ def save_raw(raw_dir: Path, sid: str, s: pd.Series) -> None:
 
 
 # ---------------------------------------------------------------- validation
+JUMP_WINDOW = 260   # تغيّرات المقارنة لتحذير القفزة: سنة للسلاسل اليومية، خمس للأسبوعية، والسجل كله تقريباً للشهرية
 def validate(ind: Indicator, new: pd.Series, old: pd.Series | None) -> tuple[bool, list[str]]:
     """يرفض البيانات المعطوبة (قصيرة، تراجع في التاريخ، فقدان سجل)، ويحذّر من القفزات غير المعتادة."""
     issues: list[str] = []
@@ -88,7 +89,9 @@ def validate(ind: Indicator, new: pd.Series, old: pd.Series | None) -> tuple[boo
             return False, ["السجل الجديد أقصر بكثير من المحفوظ"]
     d = new.diff().dropna()
     if len(d) > 30:
-        med = d.abs().iloc[:-1].median()
+        # الوسيط على آخر JUMP_WINDOW تغيّراً لا على السجل كله: سلسلة مستوى صاعدة (Nasdaq 100 من ~1000 نقطة في 2000
+        # إلى ~25000) تجعل وسيط السجل كله صغيراً، فتُعلَّم أيام عادية «قفزة» (-1.22% في 13 نوفمبر 2026)
+        med = d.abs().iloc[:-1].tail(JUMP_WINDOW).median()
         if med > 0 and abs(d.iloc[-1]) > 12 * med:
             # مؤشر داخلي (ترخيص طرف ثالث): لا رقم في الرسالة، فهي تُنشر في fetch_status.json وفي الصفحة
             issues.append("قفزة غير معتادة في آخر قيمة" if ind.internal_only else f"قفزة غير معتادة في آخر قيمة ({d.iloc[-1]:+.4g})")
