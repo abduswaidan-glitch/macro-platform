@@ -1,7 +1,7 @@
 {
  "section": "markets",
  "title": "Market Gates",
- "collected_at": "2026-11-16T13:42:42Z",
+ "collected_at": "2026-11-16T21:56:13Z",
  "ok": true,
  "relative_performance": {
   "as_of": "2026-11-13",
@@ -13,38 +13,38 @@
   {
    "key": "us10y",
    "title": "بوابة العائد 10Y",
-   "value": "5.10%",
-   "detail": "فوق الحد 4.50% بـ+60 bp: ضغط على تقييمات NQ",
-   "extra": "أسبوع: +20 bp",
+   "value": "5.15%",
+   "detail": "فوق الحد 4.50% بـ+65 bp: ضغط على تقييمات NQ",
+   "extra": "أسبوع: +31 bp",
    "tone": "bad",
-   "as_of": "2026-11-12"
+   "as_of": "2026-11-13"
   },
   {
    "key": "vix",
    "title": "بوابة VIX",
-   "value": "18.7",
+   "value": "19.3",
    "detail": "تذبذب منخفض: Mean reversion أرجح",
    "extra": "الحدود 20 / 25",
    "tone": "ok",
-   "as_of": "2026-11-12"
+   "as_of": "2026-11-13"
   },
   {
    "key": "real10",
    "title": "العائد الحقيقي 10Y",
-   "value": "2.86%",
+   "value": "2.91%",
    "detail": "مقيِّد لأسهم النمو",
    "extra": "الحد 2.00%",
    "tone": "warn",
-   "as_of": "2026-11-12"
+   "as_of": "2026-11-13"
   },
   {
    "key": "pricing",
    "title": "تسعير الفيدرالي (2Y − FF)",
-   "value": "+98 bp",
+   "value": "+100 bp",
    "detail": "السوق يسعّر رفعاً للفائدة",
-   "extra": "2Y 4.86% · FF 3.88%",
+   "extra": "2Y 4.88% · FF 3.88%",
    "tone": "neutral",
-   "as_of": "2026-11-12"
+   "as_of": "2026-11-13"
   },
   {
    "key": "leadership",
@@ -58,11 +58,11 @@
   {
    "key": "credit",
    "title": "الائتمان (High Yield OAS)",
-   "value": "3.20%",
+   "value": "3.23%",
    "detail": "لا ضغط ائتماني",
    "extra": "الحد 5.0%",
    "tone": "ok",
-   "as_of": "2026-11-12"
+   "as_of": "2026-11-13"
   }
  ],
  "limit_levels": {

@@ -1,7 +1,7 @@
 {
  "section": "fed_rates",
  "title": "الفيدرالي والفائدة",
- "collected_at": "2026-11-16T13:42:42Z",
+ "collected_at": "2026-11-16T21:56:13Z",
  "ok": true,
  "available": 7,
  "total": 7,
@@ -18,19 +18,15 @@
    "change": 0.0,
    "z5": 0.02,
    "pct5": 41.8,
-   "as_of": "2026-11-12",
-   "age_days": 4,
+   "as_of": "2026-11-13",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-12",
+   "source_as_of": "2026-11-13",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-05",
-     3.88
-    ],
     [
      "2026-11-06",
      3.88
@@ -58,6 +54,10 @@
     [
      "2026-11-12",
      3.88
+    ],
+    [
+     "2026-11-13",
+     3.88
     ]
    ]
   },
@@ -68,24 +68,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 4.86,
-   "prev": 4.73,
-   "change": 0.13,
-   "z5": 1.01,
-   "pct5": 90.7,
-   "as_of": "2026-11-12",
-   "age_days": 4,
+   "last": 4.88,
+   "prev": 4.86,
+   "change": 0.02,
+   "z5": 1.03,
+   "pct5": 92.0,
+   "as_of": "2026-11-13",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-12",
+   "source_as_of": "2026-11-13",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-02",
-     4.59
-    ],
     [
      "2026-11-03",
      4.61
@@ -113,6 +109,10 @@
     [
      "2026-11-12",
      4.86
+    ],
+    [
+     "2026-11-13",
+     4.88
     ]
    ]
   },
@@ -123,24 +123,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 5.1,
-   "prev": 4.98,
-   "change": 0.12,
-   "z5": 1.49,
-   "pct5": 98.6,
-   "as_of": "2026-11-12",
-   "age_days": 4,
+   "last": 5.15,
+   "prev": 5.1,
+   "change": 0.05,
+   "z5": 1.56,
+   "pct5": 98.9,
+   "as_of": "2026-11-13",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-12",
+   "source_as_of": "2026-11-13",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-02",
-     4.91
-    ],
     [
      "2026-11-03",
      4.95
@@ -168,6 +164,10 @@
     [
      "2026-11-12",
      5.1
+    ],
+    [
+     "2026-11-13",
+     5.15
     ]
    ]
   },
@@ -233,24 +233,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 2.86,
-   "prev": 2.78,
-   "change": 0.08,
-   "z5": 1.49,
-   "pct5": 99.1,
-   "as_of": "2026-11-12",
-   "age_days": 4,
+   "last": 2.91,
+   "prev": 2.86,
+   "change": 0.05,
+   "z5": 1.54,
+   "pct5": 99.7,
+   "as_of": "2026-11-13",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-12",
+   "source_as_of": "2026-11-13",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-02",
-     2.62
-    ],
     [
      "2026-11-03",
      2.65
@@ -278,6 +274,10 @@
     [
      "2026-11-12",
      2.86
+    ],
+    [
+     "2026-11-13",
+     2.91
     ]
    ]
   },
@@ -403,7 +403,7 @@
   {
    "key": "real10",
    "title": "العائد الحقيقي 10Y",
-   "value": "2.86%",
+   "value": "2.91%",
    "detail": "تشديد نقدي حقيقي (أعلى من 2%)",
    "tone": "warn"
   },

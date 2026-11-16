@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-16T13:42:42Z",
+ "fetched_utc": "2026-11-16T21:56:13Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -89,19 +89,19 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-14T19:49:56Z"
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "DGS2": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "DGS10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "T10Y2Y": {
    "state": "ok",
@@ -113,7 +113,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "T10YIE": {
    "state": "ok",
@@ -143,19 +143,19 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "VIXCLS": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "DTWEXBGS": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "DCOILWTICO": {
    "state": "ok",
@@ -167,31 +167,31 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-15T20:16:16Z"
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "COT_DX_LEV": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-15T20:16:16Z"
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "COT_DX_AM": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-15T20:16:16Z"
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "NASDAQ100": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T13:42:42Z"
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T13:42:42Z"
+   "last_new_obs_utc": "2026-11-16T21:56:13Z"
   }
  },
  "extra_warnings": []
