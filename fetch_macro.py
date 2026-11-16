@@ -39,8 +39,17 @@ def load_status(path: Path) -> tuple[dict, list[str]]:
     return d.get("series", {}), d.get("extra_warnings", [])
 
 
-def save_status(path: Path, status: dict, extra: list[str], when: datetime) -> None:
-    path.write_text(json.dumps({"fetched_utc": when.strftime("%Y-%m-%dT%H:%M:%SZ"), "series": status,
+def load_fetched(path: Path) -> datetime | None:
+    """وقت آخر جلب حقيقي من المصادر (fetched_utc)، أو None إن لم يُعرف. البناء offline لا يجلب، فلا يغيّره."""
+    try:
+        t = datetime.fromisoformat(str(json.loads(path.read_text(encoding="utf-8"))["fetched_utc"]).replace("Z", "+00:00"))
+        return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
+    except Exception:
+        return None
+
+
+def save_status(path: Path, status: dict, extra: list[str], when: datetime | None) -> None:
+    path.write_text(json.dumps({"fetched_utc": when.strftime("%Y-%m-%dT%H:%M:%SZ") if when else None, "series": status,
                                 "extra_warnings": extra}, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
@@ -129,6 +138,7 @@ def main(argv=None) -> int:
     extra: list[str] = []
     feed = previous = briefs = None
     source = None
+    fetched = now                       # وقت آخر جلب حقيقي: الآن في تشغيل يجلب، والمحفوظ في بناء لا يجلب
     man, _ = collectors.load(sec_dir)
     if args.demo:
         series = demo_series(start=cfg["start"], end=now.strftime("%Y-%m-%d"))
@@ -136,6 +146,7 @@ def main(argv=None) -> int:
     elif args.offline:
         series = load_saved_series(DATA / "raw")
         status, extra = load_status(status_p)
+        fetched = load_fetched(status_p)
     else:
         from fetch_news import load_live
         from macro_platform import news
@@ -152,6 +163,7 @@ def main(argv=None) -> int:
             log(f"section inputs ready before the report: {ready_why}")
             series = load_saved_series(DATA / "raw")
             status, extra = load_status(status_p)
+            fetched = load_fetched(status_p)        # ملفات جمع 08:40 كما هي: لا جلب في هذا التشغيل
             briefs, source, man = saved, "pre_report_collection", saved_man
         else:
             if reporting:
@@ -174,6 +186,8 @@ def main(argv=None) -> int:
         log("no data at all; data.json left unchanged")
         return 1
     payload = build_payload(series, status, cfg, now=now, demo=args.demo)
+    # generated وقت بناء الصفحة (يتجدد كل 10 دقائق)؛ fetched وقت آخر جلب حقيقي، وعليه تُبنى شارة «محدّثة»
+    payload["fetched"] = fetched.strftime("%Y-%m-%dT%H:%M:%SZ") if fetched else None
     if not args.demo:
         DATA.mkdir(exist_ok=True)
         apply_market_derived(payload, DATA / "market_derived.json", write=not args.offline)
@@ -229,7 +243,7 @@ def main(argv=None) -> int:
         log(f"forecast ledger: {settled} outcome(s) settled")
     if not (args.demo or args.offline):
         DATA.mkdir(exist_ok=True)
-        save_status(status_p, status, extra, now)
+        save_status(status_p, status, extra, fetched)
         if led["entries"]:
             ledger.save(ledger_p, led)
 
