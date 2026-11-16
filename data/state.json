@@ -1,5 +1,5 @@
 {
- "ai_last_date": "2026-11-13",
+ "ai_last_date": "2026-11-16",
  "collection": {
   "ny_date": "2026-11-16",
   "collected_at": "2026-11-16T13:42:42Z",
@@ -8,5 +8,46 @@
   "sections_ok": 6,
   "total": 6,
   "trigger": "pre_report_collection"
- }
+ },
+ "ai_attempts": [
+  {
+   "ny_date": "2026-11-16",
+   "attempt": "1",
+   "scheduled_for": "09:00 America/New_York",
+   "run_id": "43881690841",
+   "started_at": "2026-11-16T14:03:15Z",
+   "finished_at": "2026-11-16T14:12:12Z",
+   "duration_s": 536.6,
+   "ok": true,
+   "failure_class": null,
+   "reason": null,
+   "warnings": 0,
+   "model_requested": "claude-opus-5-5",
+   "model_served": "claude-opus-5-5",
+   "stop_reason": "end_turn",
+   "usage": {
+    "input_tokens": 28,
+    "output_tokens": 40611,
+    "cache_creation_input_tokens": 53262,
+    "cache_read_input_tokens": 457045,
+    "web_search_requests": 8
+   },
+   "cost_estimate": 1.2501,
+   "market": {
+    "ok": true,
+    "reason": null,
+    "usage": {
+     "input_tokens": 4,
+     "output_tokens": 15363,
+     "cache_creation_input_tokens": 16079,
+     "cache_read_input_tokens": 0,
+     "web_search_requests": 0
+    },
+    "cost_estimate": 0.3877,
+    "duration_s": 136.4
+   },
+   "inputs_source": "pre_report_collection",
+   "cost_total": 1.6378
+  }
+ ]
 }

@@ -1,0 +1,50 @@
+{
+ "version": 2,
+ "entries": [
+  {
+   "ny_date": "2026-11-16",
+   "written_at": "2026-11-16T14:09:55Z",
+   "model": "claude-opus-5-5",
+   "run_id": "43881690841",
+   "timing": {
+    "attempt": "1",
+    "scheduled_for": "09:00 America/New_York",
+    "started_at": "2026-11-16T14:03:15Z",
+    "completed_at": "2026-11-16T14:09:55Z",
+    "pre_open": true,
+    "delayed": false
+   },
+   "scenario_check": {
+    "series": "DGS2",
+    "by": "2026-12-04",
+    "ranges": [
+     {
+      "label": "C",
+      "low": null,
+      "high": 4.6,
+      "prob": 24
+     },
+     {
+      "label": "B",
+      "low": 4.6,
+      "high": 5.0,
+      "prob": 46
+     },
+     {
+      "label": "A",
+      "low": 5.0,
+      "high": null,
+      "prob": 30
+     }
+    ],
+    "check_result": null
+   },
+   "translation_check": {
+    "prob": 42,
+    "start": "2026-11-13",
+    "end": "2026-11-30",
+    "check_result": null
+   }
+  }
+ ]
+}
