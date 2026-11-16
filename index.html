@@ -454,12 +454,14 @@ function renderClocks() {
 setInterval(renderClocks, 30000);
 function renderHeader(data) {
   renderClocks();
-  const gen = new Date(data.generated);
-  const hrs = (Date.now() - gen) / 36e5;
+  /* الشارة والوقت من آخر جلب حقيقي للبيانات (data.fetched)، لا من وقت بناء الصفحة (generated يتجدد كل 10 دقائق).
+     الجلب في أيام العمل فقط: فجوة نهاية أسبوع طويلة (الجمعة مساءً إلى الثلاثاء صباحاً) نحو 88 ساعة، وما فوق 96 تأخر فعلي */
+  const ft = Date.parse(data.fetched || ""), known = !isNaN(ft);
+  const hrs = known ? (Date.now() - ft) / 36e5 : Infinity;
   const live = $("#live");
-  live.className = "live" + (hrs > 30 ? " late" : hrs > 8 ? " slow" : "");
-  $("#liveTxt").textContent = hrs > 30 ? "البيانات متأخرة" : hrs > 8 ? "آخر تحديث منذ ساعات" : "محدّثة";
-  $("#updated").textContent = "آخر تحديث: " + gen.toLocaleString("ar-EG-u-nu-latn", {dateStyle: "medium", timeStyle: "short"}) +
+  live.className = "live" + (!known || hrs > 96 ? " late" : hrs > 30 ? " slow" : "");
+  $("#liveTxt").textContent = !known ? "وقت الجلب غير معروف" : hrs > 96 ? "البيانات متأخرة" : hrs > 30 ? "آخر جلب منذ أكثر من يوم" : "محدّثة";
+  $("#updated").textContent = "آخر جلب للبيانات: " + (known ? new Date(ft).toLocaleString("ar-EG-u-nu-latn", {dateStyle: "medium", timeStyle: "short"}) : "غير معروف") +
     ` · ${data.status.ok}/${data.status.total} مصدر سليم`;
   if (data.demo) $("#demoFlag").style.display = "block";
   $("#kpis").innerHTML = data.kpis.map(k => {
@@ -901,7 +903,7 @@ function collectorsTable(c) {
 function renderMethod(data) {
   $("#p-method").innerHTML = `<div class="sec-head"><h2>المنهجية وحالة البيانات</h2><p>من أين تأتي الأرقام، وكيف تُفحص قبل النشر، وحالة كل مصدر الآن.</p></div>
     <div class="ai-grid">
-      <div class="box"><h4>المصدر والتحديث</h4><p>كل السلاسل من FRED (بنك الاحتياطي الفيدرالي في سانت لويس)، وتُحدَّث تلقائياً عبر GitHub Actions عدة مرات في كل يوم عمل.</p></div>
+      <div class="box"><h4>المصدر والتحديث</h4><p>السلاسل من FRED (بنك الاحتياطي الفيدرالي في سانت لويس)، عدا تموضع الدولار (COT) فمن تقرير CFTC عبر صفحات Tradingster العامة. تُحدَّث تلقائياً عبر GitHub Actions عدة مرات في كل يوم عمل.</p></div>
       <div class="box"><h4>الفحص قبل النشر</h4><p>تُرفض السلسلة إن جاءت قصيرة أو بتاريخ أقدم من المحفوظ أو بسجل ناقص، وتبقى آخر نسخة سليمة مع تحذير. وتُعلَّم القفزة غير المعتادة والقيمة التي تجاوز عمرها التأخر الطبيعي لتكرارها.</p></div>
       <div class="box"><h4>المربع: النمو × التضخم</h4><p>النمو صاعد إذا كان الإنتاج الصناعي (تغير سنوي) والتوظيف (متوسط 3 أشهر) موجبين معاً، والتضخم ساخن إذا تجاوز Core PCE (تغير سنوي) 2.5%. تصنيف وصفي لا توقع.</p></div>
       <div class="box"><h4>Sahm Rule</h4><p>متوسط البطالة لثلاثة أشهر ناقص أدنى متوسط ثلاثة أشهر في الاثني عشر شهراً السابقة. العتبة 0.50 نقطة مئوية.</p></div>
@@ -910,7 +912,7 @@ function renderMethod(data) {
     ${collectorsTable(data.collection)}
     ${data.status.warnings.length ? `<h3>تحذيرات البيانات (${data.status.warnings.length})</h3><div class="warn-box data-warnings"><ul>${data.status.warnings.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     <h3>حالة المصادر</h3>
-    <div class="tbl-wrap"><table><thead><tr><th>المؤشر</th><th>FRED</th><th>التكرار</th><th>آخر قيمة بتاريخ</th><th>العمر (يوم)</th><th>الحالة</th></tr></thead><tbody>
+    <div class="tbl-wrap"><table><thead><tr><th>المؤشر</th><th>المعرّف</th><th>التكرار</th><th>آخر قيمة بتاريخ</th><th>العمر (يوم)</th><th>الحالة</th></tr></thead><tbody>
     ${data.indicators.map(i => `<tr><td>${esc(i.name_ar)}</td><td class="num">${esc(i.id)}</td><td>${esc(FREQ[i.freq] || "")}</td>
       <td class="num">${esc(i.as_of || "—")}</td><td class="num">${esc(i.age_days ?? "—")}</td>
       <td><span class="dot ${esc(i.state)}"></span>${i.state === "ok" ? "سليم" : i.state === "stale" ? "متأخر" : "خطأ"}${(i.issues || []).length ? `<span class="en">${esc(i.issues.join("؛ "))}</span>` : ""}${i.unavailable ? `<span class="en tone-warn yoy-na" dir="rtl">آخر قيمة من المصدر <bdi>${esc(i.source_as_of)}</bdi>؛ ${esc(i.unavailable.reason)}</span>` : ""}${i.internal_only ? '<span class="en internal" dir="rtl">داخلي: يُستعمل في الحساب فقط، ولا تُنشر قيمه</span>' : ""}</td></tr>`).join("")}

@@ -14,7 +14,7 @@
 
 ## التفعيل (مرة واحدة)
 
-1. **الصفحة:** Settings → Pages → Source: `Deploy from a branch` → Branch: `main` و`/ (root)` → Save.
+1. **الصفحة:** Settings → Pages → Source: `GitHub Actions` (النشر تقوم به ملفات `.github/workflows`، لا فرع).
    الرابط: `https://abduswaidan-glitch.github.io/macro-platform/`
 2. **تقرير Claude:** Settings → Secrets and variables → Actions → New repository secret →
    الاسم `ANTHROPIC_API_KEY` والقيمة مفتاحك (نفس مفتاح منصة الذهب يعمل).

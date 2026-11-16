@@ -319,3 +319,25 @@ def test_stop_reasons_that_block_publication_are_retryable_failures_with_usage(m
     with pytest.raises(ai_report.ReportError) as e:
         ai_report.call_claude("data", "S", "claude-opus-5-5", "xhigh")
     assert why in str(e.value) and isinstance(e.value.usage, dict) and e.value.info["stop_reason"]
+
+
+def test_offline_rebuild_reports_the_last_real_fetch_time_not_the_build_time(tmp_path, monkeypatch, demo):
+    """الصفحة تُبنى كل 10 دقائق بلا جلب: fetched يبقى وقت آخر جلب حقيقي، وgenerated وحده يتقدم (فحص 16 نوفمبر 2026:
+    الصفحة عرضت «آخر تحديث 07:15، محدّثة» وآخر جلب من FRED كان قبلها بـ11 ساعة)."""
+    import fetch_macro
+    from macro_platform.build import save_raw
+
+    data = tmp_path / "data"
+    save_raw(data / "raw", "DGS10", demo["DGS10"])
+    fetch_macro.save_status(data / "fetch_status.json", {}, [], NOW)
+    monkeypatch.setattr(fetch_macro, "DATA", data)
+    out = tmp_path / "data.json"
+    assert fetch_macro.main(["--offline", "--out", str(out)]) == 0
+    d = json.loads(out.read_text(encoding="utf-8"))
+    assert d["fetched"] == NOW.strftime("%Y-%m-%dT%H:%M:%SZ") and d["generated"] > d["fetched"]
+    # البناء offline لا يكتب fetch_status.json: وقت الجلب المحفوظ كما هو
+    assert json.loads((data / "fetch_status.json").read_text(encoding="utf-8"))["fetched_utc"] == d["fetched"]
+    # ملف حالة بلا وقت جلب (قديم أو تالف): «غير معروف»، لا وقت البناء
+    (data / "fetch_status.json").write_text('{"series": {}}', encoding="utf-8")
+    assert fetch_macro.main(["--offline", "--out", str(out)]) == 0
+    assert json.loads(out.read_text(encoding="utf-8"))["fetched"] is None
