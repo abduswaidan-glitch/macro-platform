@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-17T13:48:24Z",
+ "fetched_utc": "2026-11-17T17:01:28Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -10,8 +10,39 @@
   "INDPRO": {
    "state": "ok",
    "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
+   "revisions": [
+    {
+     "detected_utc": "2026-11-17T17:01:30Z",
+     "date": "2026-05-01",
+     "old": 102.723,
+     "new": 102.692
+    },
+    {
+     "detected_utc": "2026-11-17T17:01:30Z",
+     "date": "2026-06-01",
+     "old": 102.961,
+     "new": 102.967
+    },
+    {
+     "detected_utc": "2026-11-17T17:01:30Z",
+     "date": "2026-07-01",
+     "old": 103.201,
+     "new": 103.168
+    },
+    {
+     "detected_utc": "2026-11-17T17:01:30Z",
+     "date": "2026-08-01",
+     "old": 103.266,
+     "new": 103.095
+    },
+    {
+     "detected_utc": "2026-11-17T17:01:30Z",
+     "date": "2026-09-01",
+     "old": 103.951,
+     "new": 103.846
+    }
+   ],
+   "last_new_obs_utc": "2026-11-17T17:01:28Z"
   },
   "RSAFS": {
    "state": "ok",
@@ -168,13 +199,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T21:56:13Z"
+   "last_new_obs_utc": "2026-11-17T17:01:28Z"
   },
   "VIXCLS": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T21:56:13Z"
+   "last_new_obs_utc": "2026-11-17T17:01:28Z"
   },
   "DTWEXBGS": {
    "state": "ok",
@@ -210,13 +241,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T13:48:24Z"
+   "last_new_obs_utc": "2026-11-17T17:01:28Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T13:48:24Z"
+   "last_new_obs_utc": "2026-11-17T17:01:28Z"
   }
  },
  "extra_warnings": []
