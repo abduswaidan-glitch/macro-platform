@@ -48,6 +48,27 @@
    },
    "inputs_source": "pre_report_collection",
    "cost_total": 1.6378
+  },
+  {
+   "ny_date": "2026-11-17",
+   "attempt": "1",
+   "scheduled_for": "09:00 America/New_York",
+   "run_id": "44099802386",
+   "started_at": "2026-11-17T14:08:32Z",
+   "finished_at": "2026-11-17T14:14:41Z",
+   "duration_s": 368.7,
+   "ok": false,
+   "failure_class": "retryable",
+   "reason": "APIStatusError: {'type': 'error', 'error': {'details': None, 'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchas",
+   "warnings": 0,
+   "model_requested": "claude-opus-5-5",
+   "model_served": null,
+   "stop_reason": null,
+   "usage": "unknown (request failed or stream interrupted; may still be billed)",
+   "cost_estimate": null,
+   "market": null,
+   "inputs_source": null,
+   "cost_total": null
   }
  ]
 }
