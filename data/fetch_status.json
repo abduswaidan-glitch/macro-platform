@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-16T21:56:13Z",
+ "fetched_utc": "2026-11-17T00:47:58Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -107,7 +107,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-17T00:47:58Z"
   },
   "DFII10": {
    "state": "ok",
@@ -119,7 +119,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-17T00:47:58Z"
   },
   "MORTGAGE30US": {
    "state": "ok",
@@ -185,13 +185,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T21:56:13Z"
+   "last_new_obs_utc": "2026-11-17T00:47:58Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T21:56:13Z"
+   "last_new_obs_utc": "2026-11-17T00:47:58Z"
   }
  },
  "extra_warnings": []

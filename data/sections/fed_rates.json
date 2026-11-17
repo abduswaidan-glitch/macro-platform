@@ -1,7 +1,7 @@
 {
  "section": "fed_rates",
  "title": "الفيدرالي والفائدة",
- "collected_at": "2026-11-16T21:56:13Z",
+ "collected_at": "2026-11-17T00:47:58Z",
  "ok": true,
  "available": 7,
  "total": 7,
@@ -19,7 +19,7 @@
    "z5": 0.02,
    "pct5": 41.8,
    "as_of": "2026-11-13",
-   "age_days": 3,
+   "age_days": 4,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-13",
@@ -74,7 +74,7 @@
    "z5": 1.03,
    "pct5": 92.0,
    "as_of": "2026-11-13",
-   "age_days": 3,
+   "age_days": 4,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-13",
@@ -129,7 +129,7 @@
    "z5": 1.56,
    "pct5": 98.9,
    "as_of": "2026-11-13",
-   "age_days": 3,
+   "age_days": 4,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-13",
@@ -178,24 +178,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 0.27,
-   "prev": 0.24,
-   "change": 0.03,
-   "z5": 0.47,
-   "pct5": 57.2,
-   "as_of": "2026-11-13",
-   "age_days": 3,
+   "last": 0.29,
+   "prev": 0.27,
+   "change": 0.02,
+   "z5": 0.51,
+   "pct5": 58.5,
+   "as_of": "2026-11-16",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-13",
+   "source_as_of": "2026-11-16",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-03",
-     0.34
-    ],
     [
      "2026-11-04",
      0.32
@@ -223,6 +219,10 @@
     [
      "2026-11-13",
      0.27
+    ],
+    [
+     "2026-11-16",
+     0.29
     ]
    ]
   },
@@ -239,7 +239,7 @@
    "z5": 1.54,
    "pct5": 99.7,
    "as_of": "2026-11-13",
-   "age_days": 3,
+   "age_days": 4,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-13",
@@ -288,24 +288,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 2.24,
+   "last": 2.2,
    "prev": 2.24,
-   "change": 0.0,
-   "z5": -0.74,
-   "pct5": 19.1,
-   "as_of": "2026-11-13",
-   "age_days": 3,
+   "change": -0.04,
+   "z5": -1.01,
+   "pct5": 8.6,
+   "as_of": "2026-11-16",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-13",
+   "source_as_of": "2026-11-16",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-03",
-     2.3
-    ],
     [
      "2026-11-04",
      2.26
@@ -333,6 +329,10 @@
     [
      "2026-11-13",
      2.24
+    ],
+    [
+     "2026-11-16",
+     2.2
     ]
    ]
   },
@@ -349,7 +349,7 @@
    "z5": 0.84,
    "pct5": 91.2,
    "as_of": "2026-11-12",
-   "age_days": 4,
+   "age_days": 5,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-12",
@@ -396,7 +396,7 @@
   {
    "key": "curve",
    "title": "منحنى العائد 10Y-2Y",
-   "value": "+0.27%",
+   "value": "+0.29%",
    "detail": "طبيعي (Normal)",
    "tone": "ok"
   },
@@ -410,7 +410,7 @@
   {
    "key": "breakeven",
    "title": "توقعات التضخم 10Y (Breakeven)",
-   "value": "2.24%",
+   "value": "2.20%",
    "detail": "قريبة من هدف الفيدرالي",
    "tone": "ok"
   }
