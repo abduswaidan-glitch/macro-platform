@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-17T00:47:58Z",
+ "collected_at": "2026-11-17T13:48:24Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -520,9 +520,82 @@
  ],
  "released_today_not_in_platform_data": [],
  "changes_since_previous_report": {
-  "available": false,
-  "reason": "previous report has no snapshot",
-  "previous_ny_date": "2026-11-13"
+  "available": true,
+  "previous_ny_date": "2026-11-16",
+  "since_utc": "2026-11-16T14:09:55Z",
+  "items": [
+   {
+    "id": "WALCL",
+    "kind": "value_change",
+    "prev": 6758870.0,
+    "now": 6758867.0,
+    "prev_as_of": "2026-11-11",
+    "now_as_of": "2026-11-11",
+    "pct5_prev": 33.3,
+    "pct5_now": 33.3
+   },
+   {
+    "id": "BAMLH0A0HYM2",
+    "kind": "new_observation",
+    "prev": 3.2,
+    "now": 3.23,
+    "prev_as_of": "2026-11-12",
+    "now_as_of": "2026-11-13",
+    "pct5_prev": 72.4,
+    "pct5_now": 76.1
+   },
+   {
+    "id": "VIXCLS",
+    "kind": "new_observation",
+    "prev": 18.7,
+    "now": 19.3,
+    "prev_as_of": "2026-11-12",
+    "now_as_of": "2026-11-13",
+    "pct5_prev": 58.1,
+    "pct5_now": 62.6
+   },
+   {
+    "id": "DTWEXBGS",
+    "kind": "new_observation",
+    "prev": 121.88,
+    "now": 122.6503,
+    "prev_as_of": "2026-11-06",
+    "now_as_of": "2026-11-13",
+    "pct5_prev": 68.2,
+    "pct5_now": 75.1
+   },
+   {
+    "id": "COT_DX_NC",
+    "kind": "new_observation",
+    "prev": 14190.0,
+    "now": 13813.0,
+    "prev_as_of": "2026-11-03",
+    "now_as_of": "2026-11-10",
+    "pct5_prev": 57.9,
+    "pct5_now": 56.3
+   },
+   {
+    "id": "COT_DX_LEV",
+    "kind": "new_observation",
+    "prev": 3311.0,
+    "now": 2850.0,
+    "prev_as_of": "2026-11-03",
+    "now_as_of": "2026-11-10",
+    "pct5_prev": 72.8,
+    "pct5_now": 70.5
+   },
+   {
+    "id": "COT_DX_AM",
+    "kind": "new_observation",
+    "prev": 16820.0,
+    "now": 16444.0,
+    "prev_as_of": "2026-11-03",
+    "now_as_of": "2026-11-10",
+    "pct5_prev": 63.6,
+    "pct5_now": 60.9
+   }
+  ],
+  "unchanged_count": 2
  },
  "revisions_recent": [],
  "data_quality": []

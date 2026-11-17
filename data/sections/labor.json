@@ -1,7 +1,7 @@
 {
  "section": "labor",
  "title": "سوق العمل",
- "collected_at": "2026-11-17T00:47:58Z",
+ "collected_at": "2026-11-17T13:48:24Z",
  "ok": true,
  "available": 6,
  "total": 6,
@@ -354,9 +354,11 @@
  ],
  "released_today_not_in_platform_data": [],
  "changes_since_previous_report": {
-  "available": false,
-  "reason": "previous report has no snapshot",
-  "previous_ny_date": "2026-11-13"
+  "available": true,
+  "previous_ny_date": "2026-11-16",
+  "since_utc": "2026-11-16T14:09:55Z",
+  "items": [],
+  "unchanged_count": 6
  },
  "revisions_recent": [],
  "data_quality": []

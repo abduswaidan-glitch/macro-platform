@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-17T00:47:58Z",
+ "fetched_utc": "2026-11-17T13:48:24Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -16,8 +16,33 @@
   "RSAFS": {
    "state": "ok",
    "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
+   "revisions": [
+    {
+     "detected_utc": "2026-11-17T13:48:30Z",
+     "date": "2025-09-01",
+     "old": 700948.0,
+     "new": 700614.0
+    },
+    {
+     "detected_utc": "2026-11-17T13:48:30Z",
+     "date": "2025-10-01",
+     "old": 700790.0,
+     "new": 700427.0
+    },
+    {
+     "detected_utc": "2026-11-17T13:48:30Z",
+     "date": "2026-08-01",
+     "old": 739322.0,
+     "new": 740502.0
+    },
+    {
+     "detected_utc": "2026-11-17T13:48:30Z",
+     "date": "2026-09-01",
+     "old": 745021.0,
+     "new": 746637.0
+    }
+   ],
+   "last_new_obs_utc": "2026-11-17T13:48:24Z"
   },
   "HOUST": {
    "state": "ok",
@@ -185,13 +210,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T00:47:58Z"
+   "last_new_obs_utc": "2026-11-17T13:48:24Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T00:47:58Z"
+   "last_new_obs_utc": "2026-11-17T13:48:24Z"
   }
  },
  "extra_warnings": []

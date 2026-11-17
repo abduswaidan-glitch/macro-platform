@@ -1,13 +1,13 @@
 {
  "section": "markets",
  "title": "Market Gates",
- "collected_at": "2026-11-17T00:47:58Z",
+ "collected_at": "2026-11-17T13:48:24Z",
  "ok": true,
  "relative_performance": {
-  "as_of": "2026-11-13",
-  "d5": 1.003,
-  "d10": -1.314,
-  "d20": -3.024
+  "as_of": "2026-11-16",
+  "d5": -0.794,
+  "d10": -1.197,
+  "d20": -4.493
  },
  "nq_limits": [
   {
@@ -49,11 +49,11 @@
   {
    "key": "leadership",
    "title": "قيادة NQ مقابل ES (20 يوماً)",
-   "value": "-3.02%",
+   "value": "-4.49%",
    "detail": "S&P يقود: دوران بعيداً عن النمو",
    "extra": "نسبة NDX/SPX",
    "tone": "warn",
-   "as_of": "2026-11-13"
+   "as_of": "2026-11-16"
   },
   {
    "key": "credit",
