@@ -1,7 +1,7 @@
 {
  "section": "fed_rates",
  "title": "الفيدرالي والفائدة",
- "collected_at": "2026-11-18T20:25:10Z",
+ "collected_at": "2026-11-18T23:23:25Z",
  "ok": true,
  "available": 7,
  "total": 7,
@@ -18,19 +18,15 @@
    "change": 0.0,
    "z5": 0.01,
    "pct5": 41.8,
-   "as_of": "2026-11-16",
-   "age_days": 2,
+   "as_of": "2026-11-17",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-16",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-09",
-     3.88
-    ],
     [
      "2026-11-10",
      3.88
@@ -58,6 +54,10 @@
     [
      "2026-11-16",
      3.88
+    ],
+    [
+     "2026-11-17",
+     3.88
     ]
    ]
   },
@@ -68,24 +68,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 4.83,
-   "prev": 4.88,
-   "change": -0.05,
-   "z5": 0.98,
-   "pct5": 89.6,
-   "as_of": "2026-11-16",
-   "age_days": 2,
+   "last": 4.8,
+   "prev": 4.83,
+   "change": -0.03,
+   "z5": 0.95,
+   "pct5": 87.9,
+   "as_of": "2026-11-17",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-16",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-04",
-     4.58
-    ],
     [
      "2026-11-05",
      4.46
@@ -113,6 +109,10 @@
     [
      "2026-11-16",
      4.83
+    ],
+    [
+     "2026-11-17",
+     4.8
     ]
    ]
   },
@@ -123,24 +123,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 5.12,
-   "prev": 5.15,
-   "change": -0.03,
-   "z5": 1.52,
-   "pct5": 98.6,
-   "as_of": "2026-11-16",
-   "age_days": 2,
+   "last": 5.1,
+   "prev": 5.12,
+   "change": -0.02,
+   "z5": 1.49,
+   "pct5": 98.4,
+   "as_of": "2026-11-17",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-16",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-04",
-     4.9
-    ],
     [
      "2026-11-05",
      4.84
@@ -168,6 +164,10 @@
     [
      "2026-11-16",
      5.12
+    ],
+    [
+     "2026-11-17",
+     5.1
     ]
    ]
   },
@@ -178,24 +178,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 0.3,
-   "prev": 0.29,
-   "change": 0.01,
-   "z5": 0.53,
-   "pct5": 59.2,
-   "as_of": "2026-11-17",
-   "age_days": 1,
+   "last": 0.27,
+   "prev": 0.3,
+   "change": -0.03,
+   "z5": 0.47,
+   "pct5": 57.3,
+   "as_of": "2026-11-18",
+   "age_days": 0,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-17",
+   "source_as_of": "2026-11-18",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-05",
-     0.38
-    ],
     [
      "2026-11-06",
      0.35
@@ -223,6 +219,10 @@
     [
      "2026-11-17",
      0.3
+    ],
+    [
+     "2026-11-18",
+     0.27
     ]
    ]
   },
@@ -233,24 +233,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 2.92,
-   "prev": 2.91,
-   "change": 0.01,
-   "z5": 1.56,
-   "pct5": 99.8,
-   "as_of": "2026-11-16",
-   "age_days": 2,
+   "last": 2.89,
+   "prev": 2.92,
+   "change": -0.03,
+   "z5": 1.52,
+   "pct5": 99.2,
+   "as_of": "2026-11-17",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-16",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-04",
-     2.64
-    ],
     [
      "2026-11-05",
      2.6
@@ -278,6 +274,10 @@
     [
      "2026-11-16",
      2.92
+    ],
+    [
+     "2026-11-17",
+     2.89
     ]
    ]
   },
@@ -288,24 +288,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 2.21,
-   "prev": 2.2,
-   "change": 0.01,
-   "z5": -0.94,
-   "pct5": 10.5,
-   "as_of": "2026-11-17",
-   "age_days": 1,
+   "last": 2.19,
+   "prev": 2.21,
+   "change": -0.02,
+   "z5": -1.07,
+   "pct5": 7.4,
+   "as_of": "2026-11-18",
+   "age_days": 0,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-17",
+   "source_as_of": "2026-11-18",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-05",
-     2.24
-    ],
     [
      "2026-11-06",
      2.23
@@ -333,6 +329,10 @@
     [
      "2026-11-17",
      2.21
+    ],
+    [
+     "2026-11-18",
+     2.19
     ]
    ]
   },
@@ -396,21 +396,21 @@
   {
    "key": "curve",
    "title": "منحنى العائد 10Y-2Y",
-   "value": "+0.30%",
+   "value": "+0.27%",
    "detail": "طبيعي (Normal)",
    "tone": "ok"
   },
   {
    "key": "real10",
    "title": "العائد الحقيقي 10Y",
-   "value": "2.92%",
+   "value": "2.89%",
    "detail": "تشديد نقدي حقيقي (أعلى من 2%)",
    "tone": "warn"
   },
   {
    "key": "breakeven",
    "title": "توقعات التضخم 10Y (Breakeven)",
-   "value": "2.21%",
+   "value": "2.19%",
    "detail": "قريبة من هدف الفيدرالي",
    "tone": "ok"
   }
@@ -427,7 +427,7 @@
     "prev": 3.88,
     "now": 3.88,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-16",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 41.8,
     "pct5_now": 41.8
    },
@@ -435,51 +435,51 @@
     "id": "DGS2",
     "kind": "new_observation",
     "prev": 4.86,
-    "now": 4.83,
+    "now": 4.8,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-16",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 90.7,
-    "pct5_now": 89.6
+    "pct5_now": 87.9
    },
    {
     "id": "DGS10",
     "kind": "new_observation",
     "prev": 5.1,
-    "now": 5.12,
+    "now": 5.1,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-16",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 98.6,
-    "pct5_now": 98.6
+    "pct5_now": 98.4
    },
    {
     "id": "T10Y2Y",
     "kind": "new_observation",
     "prev": 0.27,
-    "now": 0.3,
+    "now": 0.27,
     "prev_as_of": "2026-11-13",
-    "now_as_of": "2026-11-17",
+    "now_as_of": "2026-11-18",
     "pct5_prev": 57.2,
-    "pct5_now": 59.2
+    "pct5_now": 57.3
    },
    {
     "id": "DFII10",
     "kind": "new_observation",
     "prev": 2.86,
-    "now": 2.92,
+    "now": 2.89,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-16",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 99.1,
-    "pct5_now": 99.8
+    "pct5_now": 99.2
    },
    {
     "id": "T10YIE",
     "kind": "new_observation",
     "prev": 2.24,
-    "now": 2.21,
+    "now": 2.19,
     "prev_as_of": "2026-11-13",
-    "now_as_of": "2026-11-17",
+    "now_as_of": "2026-11-18",
     "pct5_prev": 19.1,
-    "pct5_now": 10.5
+    "pct5_now": 7.4
    }
   ],
   "unchanged_count": 1

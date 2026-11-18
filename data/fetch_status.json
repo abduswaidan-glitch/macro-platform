@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-18T20:25:10Z",
+ "fetched_utc": "2026-11-18T23:23:25Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -158,37 +158,37 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T23:50:56Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   },
   "DGS2": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T23:50:56Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   },
   "DGS10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T23:50:56Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   },
   "T10Y2Y": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T23:50:56Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   },
   "DFII10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T23:50:56Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   },
   "T10YIE": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-17T23:50:56Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   },
   "MORTGAGE30US": {
    "state": "ok",
@@ -254,13 +254,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-18T20:25:10Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-18T20:25:10Z"
+   "last_new_obs_utc": "2026-11-18T23:23:25Z"
   }
  },
  "extra_warnings": []
