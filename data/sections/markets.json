@@ -1,7 +1,7 @@
 {
  "section": "markets",
  "title": "Market Gates",
- "collected_at": "2026-11-18T13:44:01Z",
+ "collected_at": "2026-11-18T17:07:30Z",
  "ok": true,
  "relative_performance": {
   "as_of": "2026-11-16",
@@ -22,11 +22,11 @@
   {
    "key": "vix",
    "title": "بوابة VIX",
-   "value": "22.9",
-   "detail": "منطقة توتر: حذر في الحجم",
+   "value": "25.5",
+   "detail": "توسّع تذبذب: Trend days وحركات عنيفة",
    "extra": "الحدود 20 / 25",
-   "tone": "warn",
-   "as_of": "2026-11-16"
+   "tone": "bad",
+   "as_of": "2026-11-17"
   },
   {
    "key": "real10",
@@ -58,11 +58,11 @@
   {
    "key": "credit",
    "title": "الائتمان (High Yield OAS)",
-   "value": "3.34%",
+   "value": "3.43%",
    "detail": "لا ضغط ائتماني",
    "extra": "الحد 5.0%",
    "tone": "ok",
-   "as_of": "2026-11-16"
+   "as_of": "2026-11-17"
   }
  ],
  "limit_levels": {

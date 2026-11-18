@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-18T13:44:01Z",
+ "collected_at": "2026-11-18T17:07:30Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -123,24 +123,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 3.34,
-   "prev": 3.23,
-   "change": 0.11,
-   "z5": 0.84,
-   "pct5": 84.3,
-   "as_of": "2026-11-16",
-   "age_days": 2,
+   "last": 3.43,
+   "prev": 3.34,
+   "change": 0.09,
+   "z5": 1.11,
+   "pct5": 88.8,
+   "as_of": "2026-11-17",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-16",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-05",
-     3.48
-    ],
     [
      "2026-11-06",
      3.42
@@ -168,6 +164,10 @@
     [
      "2026-11-16",
      3.34
+    ],
+    [
+     "2026-11-17",
+     3.43
     ]
    ]
   },
@@ -178,24 +178,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "",
-   "last": 22.91,
-   "prev": 19.3,
-   "change": 3.61,
-   "z5": 0.72,
-   "pct5": 80.1,
-   "as_of": "2026-11-16",
-   "age_days": 2,
+   "last": 25.46,
+   "prev": 22.91,
+   "change": 2.55,
+   "z5": 1.2,
+   "pct5": 86.5,
+   "as_of": "2026-11-17",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-16",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-05",
-     28.18
-    ],
     [
      "2026-11-06",
      25.64
@@ -223,6 +219,10 @@
     [
      "2026-11-16",
      22.91
+    ],
+    [
+     "2026-11-17",
+     25.46
     ]
    ]
   },
@@ -506,16 +506,16 @@
   {
    "key": "hy",
    "title": "فارق High Yield",
-   "value": "3.34%",
+   "value": "3.43%",
    "detail": "هدوء ائتماني",
    "tone": "ok"
   },
   {
    "key": "vix",
    "title": "مؤشر VIX",
-   "value": "22.9",
-   "detail": "توتر (20-25)",
-   "tone": "warn"
+   "value": "25.5",
+   "detail": "خوف مرتفع (فوق 25)",
+   "tone": "bad"
   }
  ],
  "released_today_not_in_platform_data": [],
@@ -538,21 +538,21 @@
     "id": "BAMLH0A0HYM2",
     "kind": "new_observation",
     "prev": 3.2,
-    "now": 3.34,
+    "now": 3.43,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-16",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 72.4,
-    "pct5_now": 84.3
+    "pct5_now": 88.8
    },
    {
     "id": "VIXCLS",
     "kind": "new_observation",
     "prev": 18.7,
-    "now": 22.91,
+    "now": 25.46,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-16",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 58.1,
-    "pct5_now": 80.1
+    "pct5_now": 86.5
    },
    {
     "id": "DTWEXBGS",
