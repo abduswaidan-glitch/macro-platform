@@ -1,7 +1,7 @@
 {
  "section": "growth",
  "title": "النمو",
- "collected_at": "2026-11-17T23:50:56Z",
+ "collected_at": "2026-11-18T13:44:01Z",
  "ok": true,
  "available": 5,
  "total": 5,
@@ -19,7 +19,7 @@
    "z5": -0.78,
    "pct5": 14.3,
    "as_of": "2026-07-01",
-   "age_days": 139,
+   "age_days": 140,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-07-01",
@@ -74,7 +74,7 @@
    "z5": 1.0,
    "pct5": 88.5,
    "as_of": "2026-10-01",
-   "age_days": 47,
+   "age_days": 48,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -160,7 +160,7 @@
    "z5": 0.52,
    "pct5": 78.7,
    "as_of": "2026-10-01",
-   "age_days": 47,
+   "age_days": 48,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -234,24 +234,33 @@
    "freq": "M",
    "transform": "level",
    "unit": "ألف وحدة",
-   "last": 1221.0,
-   "prev": 1288.0,
-   "change": -67.0,
-   "z5": -1.53,
-   "pct5": 3.3,
-   "as_of": "2026-09-01",
-   "age_days": 77,
+   "last": 1309.0,
+   "prev": 1191.0,
+   "change": 118.0,
+   "z5": -0.84,
+   "pct5": 18.0,
+   "as_of": "2026-10-01",
+   "age_days": 48,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-09-01",
+   "source_as_of": "2026-10-01",
    "unavailable": null,
    "momentum": null,
-   "revisions": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-18T13:44:02Z",
+     "date": "2026-08-01",
+     "old": 1288.0,
+     "new": 1280.0
+    },
+    {
+     "detected_utc": "2026-11-18T13:44:02Z",
+     "date": "2026-09-01",
+     "old": 1221.0,
+     "new": 1191.0
+    }
+   ],
    "recent": [
-    [
-     "2026-02-01",
-     1346.0
-    ],
     [
      "2026-03-01",
      1522.0
@@ -274,11 +283,15 @@
     ],
     [
      "2026-08-01",
-     1288.0
+     1280.0
     ],
     [
      "2026-09-01",
-     1221.0
+     1191.0
+    ],
+    [
+     "2026-10-01",
+     1309.0
     ]
    ]
   },
@@ -295,7 +308,7 @@
    "z5": -1.68,
    "pct5": 3.3,
    "as_of": "2026-09-01",
-   "age_days": 77,
+   "age_days": 78,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-09-01",
@@ -364,6 +377,16 @@
     "now_as_of": "2026-10-01",
     "pct5_prev": 73.8,
     "pct5_now": 78.7
+   },
+   {
+    "id": "HOUST",
+    "kind": "new_observation",
+    "prev": 1221.0,
+    "now": 1309.0,
+    "prev_as_of": "2026-09-01",
+    "now_as_of": "2026-10-01",
+    "pct5_prev": 3.3,
+    "pct5_now": 18.0
    },
    {
     "kind": "revision",
@@ -436,9 +459,25 @@
     "date": "2026-09-01",
     "old": 103.951,
     "new": 103.846
+   },
+   {
+    "kind": "revision",
+    "id": "HOUST",
+    "detected_utc": "2026-11-18T13:44:02Z",
+    "date": "2026-08-01",
+    "old": 1288.0,
+    "new": 1280.0
+   },
+   {
+    "kind": "revision",
+    "id": "HOUST",
+    "detected_utc": "2026-11-18T13:44:02Z",
+    "date": "2026-09-01",
+    "old": 1221.0,
+    "new": 1191.0
    }
   ],
-  "unchanged_count": 3
+  "unchanged_count": 2
  },
  "revisions_recent": [
   {
@@ -503,6 +542,20 @@
    "date": "2026-09-01",
    "old": 103.951,
    "new": 103.846
+  },
+  {
+   "id": "HOUST",
+   "detected_utc": "2026-11-18T13:44:02Z",
+   "date": "2026-08-01",
+   "old": 1288.0,
+   "new": 1280.0
+  },
+  {
+   "id": "HOUST",
+   "detected_utc": "2026-11-18T13:44:02Z",
+   "date": "2026-09-01",
+   "old": 1221.0,
+   "new": 1191.0
   }
  ],
  "data_quality": []
