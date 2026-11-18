@@ -2,12 +2,12 @@
  "ai_last_date": "2026-11-16",
  "collection": {
   "ny_date": "2026-11-18",
-  "collected_at": "2026-11-18T17:07:30Z",
-  "collected_ny": "12:07",
+  "collected_at": "2026-11-18T20:25:10Z",
+  "collected_ny": "15:25",
   "fresh": true,
   "sections_ok": 6,
   "total": 6,
-  "trigger": "report_run"
+  "trigger": "data_run"
  },
  "ai_attempts": [
   {

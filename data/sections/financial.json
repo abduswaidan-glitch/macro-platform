@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-18T17:07:30Z",
+ "collected_at": "2026-11-18T20:25:10Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -288,36 +288,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "$",
-   "last": 89.62,
-   "prev": 89.62,
-   "change": 0.0,
-   "z5": 0.69,
-   "pct5": 78.1,
-   "as_of": "2026-11-11",
-   "age_days": 7,
+   "last": 89.53,
+   "prev": 89.24,
+   "change": 0.29,
+   "z5": 0.68,
+   "pct5": 77.6,
+   "as_of": "2026-11-17",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-11",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-02",
-     100.06
-    ],
-    [
-     "2026-11-03",
-     99.64
-    ],
-    [
-     "2026-11-04",
-     91.73
-    ],
-    [
-     "2026-11-05",
-     94.05
-    ],
     [
      "2026-11-06",
      94.37
@@ -333,6 +317,22 @@
     [
      "2026-11-11",
      89.62
+    ],
+    [
+     "2026-11-12",
+     92.3
+    ],
+    [
+     "2026-11-13",
+     91.96
+    ],
+    [
+     "2026-11-16",
+     89.24
+    ],
+    [
+     "2026-11-17",
+     89.53
     ]
    ]
   },
@@ -565,6 +565,16 @@
     "pct5_now": 75.1
    },
    {
+    "id": "DCOILWTICO",
+    "kind": "new_observation",
+    "prev": 89.62,
+    "now": 89.53,
+    "prev_as_of": "2026-11-11",
+    "now_as_of": "2026-11-17",
+    "pct5_prev": 78.1,
+    "pct5_now": 77.6
+   },
+   {
     "id": "COT_DX_NC",
     "kind": "new_observation",
     "prev": 14190.0,
@@ -595,7 +605,7 @@
     "pct5_now": 60.9
    }
   ],
-  "unchanged_count": 2
+  "unchanged_count": 1
  },
  "revisions_recent": [],
  "data_quality": []
