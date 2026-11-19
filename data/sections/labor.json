@@ -1,7 +1,7 @@
 {
  "section": "labor",
  "title": "سوق العمل",
- "collected_at": "2026-11-18T23:23:25Z",
+ "collected_at": "2026-11-19T13:49:48Z",
  "ok": true,
  "available": 6,
  "total": 6,
@@ -19,7 +19,7 @@
    "z5": -0.32,
    "pct5": 47.5,
    "as_of": "2026-10-01",
-   "age_days": 48,
+   "age_days": 49,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -74,7 +74,7 @@
    "z5": 0.47,
    "pct5": 66.7,
    "as_of": "2026-10-01",
-   "age_days": 48,
+   "age_days": 49,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -123,24 +123,27 @@
    "freq": "W",
    "transform": "level",
    "unit": "",
-   "last": 200000.0,
-   "prev": 191000.0,
-   "change": 9000.0,
-   "z5": -1.39,
-   "pct5": 8.4,
-   "as_of": "2026-11-07",
-   "age_days": 11,
+   "last": 203000.0,
+   "prev": 202000.0,
+   "change": 1000.0,
+   "z5": -1.17,
+   "pct5": 13.0,
+   "as_of": "2026-11-14",
+   "age_days": 5,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-07",
+   "source_as_of": "2026-11-14",
    "unavailable": null,
    "momentum": null,
-   "revisions": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-19T13:49:52Z",
+     "date": "2026-11-07",
+     "old": 200000.0,
+     "new": 202000.0
+    }
+   ],
    "recent": [
-    [
-     "2026-09-19",
-     198000.0
-    ],
     [
      "2026-09-26",
      199000.0
@@ -167,7 +170,11 @@
     ],
     [
      "2026-11-07",
-     200000.0
+     202000.0
+    ],
+    [
+     "2026-11-14",
+     203000.0
     ]
    ]
   },
@@ -178,24 +185,27 @@
    "freq": "W",
    "transform": "level",
    "unit": "",
-   "last": 1697000.0,
-   "prev": 1717000.0,
-   "change": -20000.0,
-   "z5": -0.32,
-   "pct5": 24.9,
-   "as_of": "2026-10-31",
-   "age_days": 18,
+   "last": 1763000.0,
+   "prev": 1693000.0,
+   "change": 70000.0,
+   "z5": 0.09,
+   "pct5": 35.6,
+   "as_of": "2026-11-07",
+   "age_days": 12,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-10-31",
+   "source_as_of": "2026-11-07",
    "unavailable": null,
    "momentum": null,
-   "revisions": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-19T13:49:53Z",
+     "date": "2026-10-31",
+     "old": 1697000.0,
+     "new": 1693000.0
+    }
+   ],
    "recent": [
-    [
-     "2026-09-12",
-     1712000.0
-    ],
     [
      "2026-09-19",
      1699000.0
@@ -222,7 +232,11 @@
     ],
     [
      "2026-10-31",
-     1697000.0
+     1693000.0
+    ],
+    [
+     "2026-11-07",
+     1763000.0
     ]
    ]
   },
@@ -239,7 +253,7 @@
    "z5": -0.7,
    "pct5": 41.0,
    "as_of": "2026-09-01",
-   "age_days": 78,
+   "age_days": 79,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-09-01",
@@ -294,7 +308,7 @@
    "z5": -1.68,
    "pct5": 3.3,
    "as_of": "2026-10-01",
-   "age_days": 48,
+   "age_days": 49,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -357,9 +371,61 @@
   "available": true,
   "previous_ny_date": "2026-11-16",
   "since_utc": "2026-11-16T14:09:55Z",
-  "items": [],
-  "unchanged_count": 6
+  "items": [
+   {
+    "id": "ICSA",
+    "kind": "new_observation",
+    "prev": 200000.0,
+    "now": 203000.0,
+    "prev_as_of": "2026-11-07",
+    "now_as_of": "2026-11-14",
+    "pct5_prev": 8.4,
+    "pct5_now": 13.0
+   },
+   {
+    "id": "CCSA",
+    "kind": "new_observation",
+    "prev": 1697000.0,
+    "now": 1763000.0,
+    "prev_as_of": "2026-10-31",
+    "now_as_of": "2026-11-07",
+    "pct5_prev": 24.9,
+    "pct5_now": 35.6
+   },
+   {
+    "kind": "revision",
+    "id": "ICSA",
+    "detected_utc": "2026-11-19T13:49:52Z",
+    "date": "2026-11-07",
+    "old": 200000.0,
+    "new": 202000.0
+   },
+   {
+    "kind": "revision",
+    "id": "CCSA",
+    "detected_utc": "2026-11-19T13:49:53Z",
+    "date": "2026-10-31",
+    "old": 1697000.0,
+    "new": 1693000.0
+   }
+  ],
+  "unchanged_count": 4
  },
- "revisions_recent": [],
+ "revisions_recent": [
+  {
+   "id": "ICSA",
+   "detected_utc": "2026-11-19T13:49:52Z",
+   "date": "2026-11-07",
+   "old": 200000.0,
+   "new": 202000.0
+  },
+  {
+   "id": "CCSA",
+   "detected_utc": "2026-11-19T13:49:53Z",
+   "date": "2026-10-31",
+   "old": 1697000.0,
+   "new": 1693000.0
+  }
+ ],
  "data_quality": []
 }

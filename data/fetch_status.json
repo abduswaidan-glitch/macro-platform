@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-18T23:23:25Z",
+ "fetched_utc": "2026-11-19T13:49:48Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -133,14 +133,28 @@
   "ICSA": {
    "state": "ok",
    "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
+   "revisions": [
+    {
+     "detected_utc": "2026-11-19T13:49:52Z",
+     "date": "2026-11-07",
+     "old": 200000.0,
+     "new": 202000.0
+    }
+   ],
+   "last_new_obs_utc": "2026-11-19T13:49:48Z"
   },
   "CCSA": {
    "state": "ok",
    "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": "2026-11-14T19:49:56Z"
+   "revisions": [
+    {
+     "detected_utc": "2026-11-19T13:49:53Z",
+     "date": "2026-10-31",
+     "old": 1697000.0,
+     "new": 1693000.0
+    }
+   ],
+   "last_new_obs_utc": "2026-11-19T13:49:48Z"
   },
   "JTSJOL": {
    "state": "ok",
@@ -254,13 +268,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-18T23:23:25Z"
+   "last_new_obs_utc": "2026-11-19T13:49:48Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-18T23:23:25Z"
+   "last_new_obs_utc": "2026-11-19T13:49:48Z"
   }
  },
  "extra_warnings": []
