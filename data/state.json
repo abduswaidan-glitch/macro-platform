@@ -2,12 +2,12 @@
  "ai_last_date": "2026-11-16",
  "collection": {
   "ny_date": "2026-11-19",
-  "collected_at": "2026-11-19T13:49:48Z",
-  "collected_ny": "08:49",
+  "collected_at": "2026-11-19T17:02:55Z",
+  "collected_ny": "12:02",
   "fresh": true,
   "sections_ok": 6,
   "total": 6,
-  "trigger": "pre_report_collection"
+  "trigger": "report_run"
  },
  "ai_attempts": [
   {
@@ -141,6 +141,27 @@
    "started_at": "2026-11-19T14:10:01Z",
    "finished_at": "2026-11-19T14:10:02Z",
    "duration_s": 1.6,
+   "ok": false,
+   "failure_class": "retryable",
+   "reason": "BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purcha",
+   "warnings": 0,
+   "model_requested": "claude-opus-5-5",
+   "model_served": null,
+   "stop_reason": null,
+   "usage": "unknown (request failed or stream interrupted; may still be billed)",
+   "cost_estimate": null,
+   "market": null,
+   "inputs_source": null,
+   "cost_total": null
+  },
+  {
+   "ny_date": "2026-11-19",
+   "attempt": "2",
+   "scheduled_for": "12:00 America/New_York",
+   "run_id": "44572784368",
+   "started_at": "2026-11-19T17:03:12Z",
+   "finished_at": "2026-11-19T17:03:13Z",
+   "duration_s": 1.4,
    "ok": false,
    "failure_class": "retryable",
    "reason": "BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purcha",

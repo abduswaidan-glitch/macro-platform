@@ -1,47 +1,47 @@
 {
- "collected_at": "2026-11-19T13:49:48Z",
+ "collected_at": "2026-11-19T17:02:55Z",
  "ny_date": "2026-11-19",
- "trigger": "pre_report_collection",
- "run_id": "44537257158",
+ "trigger": "report_run",
+ "run_id": "44572784368",
  "sections": {
   "growth": {
    "ok": true,
-   "collected_at": "2026-11-19T13:49:48Z",
+   "collected_at": "2026-11-19T17:02:55Z",
    "available": 5,
    "total": 5,
    "error": null
   },
   "inflation": {
    "ok": true,
-   "collected_at": "2026-11-19T13:49:48Z",
+   "collected_at": "2026-11-19T17:02:55Z",
    "available": 3,
    "total": 3,
    "error": null
   },
   "labor": {
    "ok": true,
-   "collected_at": "2026-11-19T13:49:48Z",
+   "collected_at": "2026-11-19T17:02:55Z",
    "available": 6,
    "total": 6,
    "error": null
   },
   "fed_rates": {
    "ok": true,
-   "collected_at": "2026-11-19T13:49:48Z",
+   "collected_at": "2026-11-19T17:02:55Z",
    "available": 7,
    "total": 7,
    "error": null
   },
   "financial": {
    "ok": true,
-   "collected_at": "2026-11-19T13:49:48Z",
+   "collected_at": "2026-11-19T17:02:55Z",
    "available": 9,
    "total": 9,
    "error": null
   },
   "markets": {
    "ok": true,
-   "collected_at": "2026-11-19T13:49:48Z",
+   "collected_at": "2026-11-19T17:02:55Z",
    "available": null,
    "total": null,
    "error": null

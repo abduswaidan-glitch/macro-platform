@@ -1,7 +1,7 @@
 {
  "section": "fed_rates",
  "title": "الفيدرالي والفائدة",
- "collected_at": "2026-11-19T13:49:48Z",
+ "collected_at": "2026-11-19T17:02:55Z",
  "ok": true,
  "available": 7,
  "total": 7,
@@ -343,24 +343,20 @@
    "freq": "W",
    "transform": "level",
    "unit": "%",
-   "last": 7.11,
-   "prev": 7.18,
-   "change": -0.07,
-   "z5": 0.84,
-   "pct5": 91.2,
-   "as_of": "2026-11-12",
-   "age_days": 7,
+   "last": 7.28,
+   "prev": 7.11,
+   "change": 0.17,
+   "z5": 1.02,
+   "pct5": 95.4,
+   "as_of": "2026-11-19",
+   "age_days": 0,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-12",
+   "source_as_of": "2026-11-19",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-09-24",
-     7.03
-    ],
     [
      "2026-10-01",
      7.28
@@ -388,6 +384,10 @@
     [
      "2026-11-12",
      7.11
+    ],
+    [
+     "2026-11-19",
+     7.28
     ]
    ]
   }
@@ -480,9 +480,19 @@
     "now_as_of": "2026-11-18",
     "pct5_prev": 19.1,
     "pct5_now": 7.4
+   },
+   {
+    "id": "MORTGAGE30US",
+    "kind": "new_observation",
+    "prev": 7.11,
+    "now": 7.28,
+    "prev_as_of": "2026-11-12",
+    "now_as_of": "2026-11-19",
+    "pct5_prev": 91.2,
+    "pct5_now": 95.4
    }
   ],
-  "unchanged_count": 1
+  "unchanged_count": 0
  },
  "revisions_recent": [],
  "data_quality": []
