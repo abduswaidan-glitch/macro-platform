@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-19T20:28:10Z",
+ "collected_at": "2026-11-19T23:34:33Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -68,24 +68,20 @@
    "freq": "W",
    "transform": "level",
    "unit": "مليون $",
-   "last": 6758867.0,
-   "prev": 6748145.0,
-   "change": 10722.0,
-   "z5": -0.94,
-   "pct5": 33.3,
-   "as_of": "2026-11-11",
-   "age_days": 8,
+   "last": 6741452.0,
+   "prev": 6758867.0,
+   "change": -17415.0,
+   "z5": -0.95,
+   "pct5": 28.0,
+   "as_of": "2026-11-18",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-11",
+   "source_as_of": "2026-11-18",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-09-23",
-     6747704.0
-    ],
     [
      "2026-09-30",
      6743031.0
@@ -113,6 +109,10 @@
     [
      "2026-11-11",
      6758867.0
+    ],
+    [
+     "2026-11-18",
+     6741452.0
     ]
    ]
   },
@@ -526,13 +526,13 @@
   "items": [
    {
     "id": "WALCL",
-    "kind": "value_change",
+    "kind": "new_observation",
     "prev": 6758870.0,
-    "now": 6758867.0,
+    "now": 6741452.0,
     "prev_as_of": "2026-11-11",
-    "now_as_of": "2026-11-11",
+    "now_as_of": "2026-11-18",
     "pct5_prev": 33.3,
-    "pct5_now": 33.3
+    "pct5_now": 28.0
    },
    {
     "id": "BAMLH0A0HYM2",
