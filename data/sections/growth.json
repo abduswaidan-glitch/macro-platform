@@ -1,7 +1,7 @@
 {
  "section": "growth",
  "title": "النمو",
- "collected_at": "2026-11-20T13:44:31Z",
+ "collected_at": "2026-11-20T17:08:24Z",
  "ok": true,
  "available": 5,
  "total": 5,
@@ -302,24 +302,20 @@
    "freq": "M",
    "transform": "level",
    "unit": "",
-   "last": 48.1,
-   "prev": 51.7,
-   "change": -3.6,
-   "z5": -1.68,
+   "last": 48.0,
+   "prev": 48.1,
+   "change": -0.1,
+   "z5": -1.63,
    "pct5": 3.3,
-   "as_of": "2026-09-01",
-   "age_days": 80,
+   "as_of": "2026-10-01",
+   "age_days": 50,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-09-01",
+   "source_as_of": "2026-10-01",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-02-01",
-     56.6
-    ],
     [
      "2026-03-01",
      53.3
@@ -347,6 +343,10 @@
     [
      "2026-09-01",
      48.1
+    ],
+    [
+     "2026-10-01",
+     48.0
     ]
    ]
   }
@@ -387,6 +387,16 @@
     "now_as_of": "2026-10-01",
     "pct5_prev": 3.3,
     "pct5_now": 18.0
+   },
+   {
+    "id": "UMCSENT",
+    "kind": "new_observation",
+    "prev": 48.1,
+    "now": 48.0,
+    "prev_as_of": "2026-09-01",
+    "now_as_of": "2026-10-01",
+    "pct5_prev": 3.3,
+    "pct5_now": 3.3
    },
    {
     "kind": "revision",
@@ -477,7 +487,7 @@
     "new": 1191.0
    }
   ],
-  "unchanged_count": 2
+  "unchanged_count": 1
  },
  "revisions_recent": [
   {

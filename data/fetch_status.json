@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-20T13:44:31Z",
+ "fetched_utc": "2026-11-20T17:08:24Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -98,7 +98,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": null
+   "last_new_obs_utc": "2026-11-20T17:08:24Z"
   },
   "CPIAUCSL": {
    "state": "ok",
@@ -226,13 +226,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T17:02:55Z"
+   "last_new_obs_utc": "2026-11-20T17:08:24Z"
   },
   "VIXCLS": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T17:02:55Z"
+   "last_new_obs_utc": "2026-11-20T17:08:24Z"
   },
   "DTWEXBGS": {
    "state": "ok",
@@ -268,13 +268,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-20T13:44:31Z"
+   "last_new_obs_utc": "2026-11-20T17:08:24Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-20T13:44:31Z"
+   "last_new_obs_utc": "2026-11-20T17:08:24Z"
   }
  },
  "extra_warnings": []
