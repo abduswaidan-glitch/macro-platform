@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-20T20:02:02Z",
+ "fetched_utc": "2026-11-20T23:04:48Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -172,37 +172,37 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T23:34:33Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "DGS2": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T23:34:33Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "DGS10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T23:34:33Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "T10Y2Y": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T23:34:33Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "DFII10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T23:34:33Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "T10YIE": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T23:34:33Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "MORTGAGE30US": {
    "state": "ok",
@@ -250,31 +250,31 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T21:56:13Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "COT_DX_LEV": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T21:56:13Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "COT_DX_AM": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-16T21:56:13Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "NASDAQ100": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-20T20:02:02Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-20T20:02:02Z"
+   "last_new_obs_utc": "2026-11-20T23:04:48Z"
   }
  },
  "extra_warnings": []

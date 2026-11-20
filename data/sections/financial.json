@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-20T20:02:02Z",
+ "collected_at": "2026-11-20T23:04:48Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -343,24 +343,20 @@
    "freq": "W",
    "transform": "level",
    "unit": "عقد",
-   "last": 13813.0,
-   "prev": 14190.0,
-   "change": -377.0,
-   "z5": 0.11,
-   "pct5": 56.3,
-   "as_of": "2026-11-10",
-   "age_days": 10,
+   "last": 13345.0,
+   "prev": 13813.0,
+   "change": -468.0,
+   "z5": 0.09,
+   "pct5": 55.6,
+   "as_of": "2026-11-17",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-10",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-09-22",
-     10330.0
-    ],
     [
      "2026-09-29",
      11881.0
@@ -388,6 +384,10 @@
     [
      "2026-11-10",
      13813.0
+    ],
+    [
+     "2026-11-17",
+     13345.0
     ]
    ]
   },
@@ -398,24 +398,20 @@
    "freq": "W",
    "transform": "level",
    "unit": "عقد",
-   "last": 2850.0,
-   "prev": 3311.0,
-   "change": -461.0,
-   "z5": 0.5,
-   "pct5": 70.5,
-   "as_of": "2026-11-10",
-   "age_days": 10,
+   "last": -1251.0,
+   "prev": 2850.0,
+   "change": -4101.0,
+   "z5": 0.07,
+   "pct5": 50.6,
+   "as_of": "2026-11-17",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-10",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-09-22",
-     -4495.0
-    ],
     [
      "2026-09-29",
      361.0
@@ -443,6 +439,10 @@
     [
      "2026-11-10",
      2850.0
+    ],
+    [
+     "2026-11-17",
+     -1251.0
     ]
    ]
   },
@@ -453,24 +453,20 @@
    "freq": "W",
    "transform": "level",
    "unit": "عقد",
-   "last": 16444.0,
-   "prev": 16820.0,
-   "change": -376.0,
-   "z5": 0.42,
-   "pct5": 60.9,
-   "as_of": "2026-11-10",
-   "age_days": 10,
+   "last": 18828.0,
+   "prev": 16444.0,
+   "change": 2384.0,
+   "z5": 0.66,
+   "pct5": 75.5,
+   "as_of": "2026-11-17",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-10",
+   "source_as_of": "2026-11-17",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-09-22",
-     16772.0
-    ],
     [
      "2026-09-29",
      18007.0
@@ -498,6 +494,10 @@
     [
      "2026-11-10",
      16444.0
+    ],
+    [
+     "2026-11-17",
+     18828.0
     ]
    ]
   }
@@ -578,31 +578,31 @@
     "id": "COT_DX_NC",
     "kind": "new_observation",
     "prev": 14190.0,
-    "now": 13813.0,
+    "now": 13345.0,
     "prev_as_of": "2026-11-03",
-    "now_as_of": "2026-11-10",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 57.9,
-    "pct5_now": 56.3
+    "pct5_now": 55.6
    },
    {
     "id": "COT_DX_LEV",
     "kind": "new_observation",
     "prev": 3311.0,
-    "now": 2850.0,
+    "now": -1251.0,
     "prev_as_of": "2026-11-03",
-    "now_as_of": "2026-11-10",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 72.8,
-    "pct5_now": 70.5
+    "pct5_now": 50.6
    },
    {
     "id": "COT_DX_AM",
     "kind": "new_observation",
     "prev": 16820.0,
-    "now": 16444.0,
+    "now": 18828.0,
     "prev_as_of": "2026-11-03",
-    "now_as_of": "2026-11-10",
+    "now_as_of": "2026-11-17",
     "pct5_prev": 63.6,
-    "pct5_now": 60.9
+    "pct5_now": 75.5
    }
   ],
   "unchanged_count": 1
