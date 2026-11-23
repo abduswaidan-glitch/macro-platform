@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-23T13:47:49Z",
+ "collected_at": "2026-11-23T17:01:41Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -125,24 +125,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 3.52,
-   "prev": 3.47,
-   "change": 0.05,
-   "z5": 1.39,
-   "pct5": 92.0,
-   "as_of": "2026-11-19",
-   "age_days": 4,
+   "last": 3.76,
+   "prev": 3.52,
+   "change": 0.24,
+   "z5": 2.14,
+   "pct5": 96.4,
+   "as_of": "2026-11-20",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-19",
+   "source_as_of": "2026-11-20",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-10",
-     3.3
-    ],
     [
      "2026-11-11",
      3.3
@@ -170,6 +166,10 @@
     [
      "2026-11-19",
      3.52
+    ],
+    [
+     "2026-11-20",
+     3.76
     ]
    ]
   },
@@ -180,24 +180,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "",
-   "last": 28.44,
-   "prev": 24.56,
-   "change": 3.88,
-   "z5": 1.76,
-   "pct5": 92.9,
-   "as_of": "2026-11-19",
-   "age_days": 4,
+   "last": 35.89,
+   "prev": 28.44,
+   "change": 7.45,
+   "z5": 3.15,
+   "pct5": 99.5,
+   "as_of": "2026-11-20",
+   "age_days": 3,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-19",
+   "source_as_of": "2026-11-20",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-10",
-     19.46
-    ],
     [
      "2026-11-11",
      17.49
@@ -225,6 +221,10 @@
     [
      "2026-11-19",
      28.44
+    ],
+    [
+     "2026-11-20",
+     35.89
     ]
    ]
   },
@@ -508,14 +508,14 @@
   {
    "key": "hy",
    "title": "فارق High Yield",
-   "value": "3.52%",
+   "value": "3.76%",
    "detail": "هدوء ائتماني",
    "tone": "ok"
   },
   {
    "key": "vix",
    "title": "مؤشر VIX",
-   "value": "28.4",
+   "value": "35.9",
    "detail": "خوف مرتفع (فوق 25)",
    "tone": "bad"
   }
@@ -546,21 +546,21 @@
     "id": "BAMLH0A0HYM2",
     "kind": "new_observation",
     "prev": 3.2,
-    "now": 3.52,
+    "now": 3.76,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-19",
+    "now_as_of": "2026-11-20",
     "pct5_prev": 72.4,
-    "pct5_now": 92.0
+    "pct5_now": 96.4
    },
    {
     "id": "VIXCLS",
     "kind": "new_observation",
     "prev": 18.7,
-    "now": 28.44,
+    "now": 35.89,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-19",
+    "now_as_of": "2026-11-20",
     "pct5_prev": 58.1,
-    "pct5_now": 92.9
+    "pct5_now": 99.5
    },
    {
     "id": "DTWEXBGS",
