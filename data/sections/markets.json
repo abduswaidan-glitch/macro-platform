@@ -1,7 +1,7 @@
 {
  "section": "markets",
  "title": "Market Gates",
- "collected_at": "2026-11-24T17:07:08Z",
+ "collected_at": "2026-11-24T22:19:43Z",
  "ok": true,
  "relative_performance": {
   "as_of": "2026-11-19",
@@ -15,9 +15,9 @@
    "title": "بوابة العائد 10Y",
    "value": "4.92%",
    "detail": "فوق الحد 4.50% بـ+42 bp: ضغط على تقييمات NQ",
-   "extra": "أسبوع: -23 bp",
+   "extra": "أسبوع: -20 bp",
    "tone": "bad",
-   "as_of": "2026-11-20"
+   "as_of": "2026-11-23"
   },
   {
    "key": "vix",
@@ -31,11 +31,11 @@
   {
    "key": "real10",
    "title": "العائد الحقيقي 10Y",
-   "value": "2.77%",
+   "value": "2.79%",
    "detail": "مقيِّد لأسهم النمو",
    "extra": "الحد 2.00%",
    "tone": "warn",
-   "as_of": "2026-11-20"
+   "as_of": "2026-11-23"
   },
   {
    "key": "pricing",
@@ -44,7 +44,7 @@
    "detail": "السوق يسعّر رفعاً للفائدة",
    "extra": "2Y 4.63% · FF 3.88%",
    "tone": "neutral",
-   "as_of": "2026-11-20"
+   "as_of": "2026-11-23"
   },
   {
    "key": "leadership",

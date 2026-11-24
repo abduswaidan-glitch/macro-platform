@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-24T17:07:08Z",
+ "fetched_utc": "2026-11-24T22:19:43Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -40,6 +40,20 @@
      "date": "2026-09-01",
      "old": 103.951,
      "new": 103.846
+    },
+    {
+     "detected_utc": "2026-11-24T22:19:43Z",
+     "bulk": true,
+     "count": 24,
+     "range": [
+      "2024-11-01",
+      "2026-10-01"
+     ],
+     "largest": {
+      "date": "2026-09-01",
+      "old": 103.846,
+      "new": 102.678
+     }
     }
    ],
    "last_new_obs_utc": "2026-11-17T17:01:28Z"
@@ -172,37 +186,37 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-23T23:47:28Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "DGS2": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-23T23:47:28Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "DGS10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-23T23:47:28Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "T10Y2Y": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-23T23:47:28Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "DFII10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-23T23:47:28Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "T10YIE": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-23T23:47:28Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "MORTGAGE30US": {
    "state": "ok",
@@ -213,8 +227,45 @@
   "M2SL": {
    "state": "ok",
    "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
+   "revisions": [
+    {
+     "detected_utc": "2026-11-24T22:19:47Z",
+     "date": "2026-01-01",
+     "old": 22386.6,
+     "new": 22386.7
+    },
+    {
+     "detected_utc": "2026-11-24T22:19:47Z",
+     "date": "2026-05-01",
+     "old": 22980.9,
+     "new": 22980.8
+    },
+    {
+     "detected_utc": "2026-11-24T22:19:47Z",
+     "date": "2026-06-01",
+     "old": 23077.7,
+     "new": 23077.6
+    },
+    {
+     "detected_utc": "2026-11-24T22:19:47Z",
+     "date": "2026-07-01",
+     "old": 23177.4,
+     "new": 23177.3
+    },
+    {
+     "detected_utc": "2026-11-24T22:19:47Z",
+     "date": "2026-08-01",
+     "old": 23300.9,
+     "new": 23300.8
+    },
+    {
+     "detected_utc": "2026-11-24T22:19:47Z",
+     "date": "2026-09-01",
+     "old": 23413.9,
+     "new": 23414.3
+    }
+   ],
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "WALCL": {
    "state": "ok",
@@ -270,13 +321,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T17:07:08Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T17:07:08Z"
+   "last_new_obs_utc": "2026-11-24T22:19:43Z"
   }
  },
  "extra_warnings": []
