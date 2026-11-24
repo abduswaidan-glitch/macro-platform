@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-24T03:19:55Z",
+ "fetched_utc": "2026-11-24T13:43:17Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -268,13 +268,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T03:19:55Z"
+   "last_new_obs_utc": "2026-11-24T13:43:17Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T03:19:55Z"
+   "last_new_obs_utc": "2026-11-24T13:43:17Z"
   }
  },
  "extra_warnings": []
