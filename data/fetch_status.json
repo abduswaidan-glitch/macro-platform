@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-25T17:01:38Z",
+ "fetched_utc": "2026-11-25T21:36:11Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -218,19 +218,19 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T22:19:43Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   },
   "DGS2": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T22:19:43Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   },
   "DGS10": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T22:19:43Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   },
   "T10Y2Y": {
    "state": "ok",
@@ -242,7 +242,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T22:19:43Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   },
   "T10YIE": {
    "state": "ok",
@@ -254,7 +254,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-19T17:02:55Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   },
   "M2SL": {
    "state": "ok",
@@ -327,7 +327,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-18T20:25:10Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   },
   "COT_DX_NC": {
    "state": "ok",
@@ -351,13 +351,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-25T17:01:38Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-25T17:01:38Z"
+   "last_new_obs_utc": "2026-11-25T21:36:11Z"
   }
  },
  "extra_warnings": []
