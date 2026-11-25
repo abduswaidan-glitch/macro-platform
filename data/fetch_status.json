@@ -1,10 +1,17 @@
 {
- "fetched_utc": "2026-11-25T13:48:39Z",
+ "fetched_utc": "2026-11-25T17:01:38Z",
  "series": {
   "GDPC1": {
    "state": "ok",
    "issues": [],
-   "revisions": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-25T17:01:39Z",
+     "date": "2026-07-01",
+     "old": 24611.1,
+     "new": 24665.2
+    }
+   ],
    "last_new_obs_utc": null
   },
   "INDPRO": {
@@ -129,8 +136,21 @@
   "PCEPILFE": {
    "state": "ok",
    "issues": [],
-   "revisions": [],
-   "last_new_obs_utc": null
+   "revisions": [
+    {
+     "detected_utc": "2026-11-25T17:01:43Z",
+     "date": "2026-08-01",
+     "old": 130.489,
+     "new": 130.505
+    },
+    {
+     "detected_utc": "2026-11-25T17:01:43Z",
+     "date": "2026-09-01",
+     "old": 130.902,
+     "new": 130.929
+    }
+   ],
+   "last_new_obs_utc": "2026-11-25T17:01:38Z"
   },
   "PAYEMS": {
    "state": "ok",
@@ -289,15 +309,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T17:07:08Z"
+   "last_new_obs_utc": "2026-11-25T17:01:38Z"
   },
   "VIXCLS": {
    "state": "ok",
-   "issues": [
-    "قفزة غير معتادة في آخر قيمة (-9.27)"
-   ],
+   "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-24T17:07:08Z"
+   "last_new_obs_utc": "2026-11-25T17:01:38Z"
   },
   "DTWEXBGS": {
    "state": "ok",
@@ -333,13 +351,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-25T13:48:39Z"
+   "last_new_obs_utc": "2026-11-25T17:01:38Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-25T13:48:39Z"
+   "last_new_obs_utc": "2026-11-25T17:01:38Z"
   }
  },
  "extra_warnings": []

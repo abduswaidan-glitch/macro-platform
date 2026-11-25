@@ -1,7 +1,7 @@
 {
  "section": "inflation",
  "title": "التضخم",
- "collected_at": "2026-11-25T13:48:39Z",
+ "collected_at": "2026-11-25T17:01:38Z",
  "ok": true,
  "available": 3,
  "total": 3,
@@ -147,32 +147,39 @@
    "freq": "M",
    "transform": "yoy",
    "unit": "%",
-   "last": 3.1212,
-   "prev": 3.0344,
-   "change": 0.0867,
-   "z5": -0.61,
-   "pct5": 47.5,
-   "as_of": "2026-09-01",
-   "age_days": 85,
-   "state": "stale",
-   "issues": [
-    "آخر قيمة عمرها 85 يوماً"
-   ],
-   "source_as_of": "2026-09-01",
+   "last": 3.2611,
+   "prev": 3.1424,
+   "change": 0.1187,
+   "z5": -0.47,
+   "pct5": 57.4,
+   "as_of": "2026-10-01",
+   "age_days": 55,
+   "state": "ok",
+   "issues": [],
+   "source_as_of": "2026-10-01",
    "unavailable": null,
    "momentum": {
-    "as_of": "2026-09-01",
-    "label": "سبتمبر 2026",
-    "mom": 0.317,
-    "ann3m": 2.9,
+    "as_of": "2026-10-01",
+    "label": "أكتوبر 2026",
+    "mom": 0.293,
+    "ann3m": 3.63,
     "unavailable": null
    },
-   "revisions": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-25T17:01:43Z",
+     "date": "2026-08-01",
+     "old": 130.489,
+     "new": 130.505
+    },
+    {
+     "detected_utc": "2026-11-25T17:01:43Z",
+     "date": "2026-09-01",
+     "old": 130.902,
+     "new": 130.929
+    }
+   ],
    "recent": [
-    [
-     "2026-02-01",
-     2.9592
-    ],
     [
      "2026-03-01",
      3.1052
@@ -195,29 +202,21 @@
     ],
     [
      "2026-08-01",
-     3.0344
+     3.0471
     ],
     [
      "2026-09-01",
-     3.1212
+     3.1424
+    ],
+    [
+     "2026-10-01",
+     3.2611
     ]
    ]
   }
  ],
  "signals": [],
- "released_today_not_in_platform_data": [
-  {
-   "event": "Core PCE Price Index m/m",
-   "time_utc": "2026-11-25T13:30:00Z",
-   "time_ny": "08:30",
-   "series_not_updated": [
-    {
-     "id": "PCEPILFE",
-     "platform_as_of": "2026-09-01"
-    }
-   ]
-  }
- ],
+ "released_today_not_in_platform_data": [],
  "changes_since_previous_report": {
   "available": true,
   "previous_ny_date": "2026-11-16",
@@ -225,16 +224,50 @@
   "items": [
    {
     "id": "PCEPILFE",
-    "kind": "state_change",
-    "from": "ok",
-    "to": "stale"
+    "kind": "new_observation",
+    "prev": 3.1212,
+    "now": 3.2611,
+    "prev_as_of": "2026-09-01",
+    "now_as_of": "2026-10-01",
+    "pct5_prev": 47.5,
+    "pct5_now": 57.4
+   },
+   {
+    "kind": "revision",
+    "id": "PCEPILFE",
+    "detected_utc": "2026-11-25T17:01:43Z",
+    "date": "2026-08-01",
+    "old": 130.489,
+    "new": 130.505
+   },
+   {
+    "kind": "revision",
+    "id": "PCEPILFE",
+    "detected_utc": "2026-11-25T17:01:43Z",
+    "date": "2026-09-01",
+    "old": 130.902,
+    "new": 130.929
    }
   ],
   "unchanged_count": 2
  },
- "revisions_recent": [],
+ "revisions_recent": [
+  {
+   "id": "PCEPILFE",
+   "detected_utc": "2026-11-25T17:01:43Z",
+   "date": "2026-08-01",
+   "old": 130.489,
+   "new": 130.505
+  },
+  {
+   "id": "PCEPILFE",
+   "detected_utc": "2026-11-25T17:01:43Z",
+   "date": "2026-09-01",
+   "old": 130.902,
+   "new": 130.929
+  }
+ ],
  "data_quality": [
-  "PCEPILFE: آخر قيمة عمرها 85 يوماً",
   "CPIAUCSL: التغير السنوي لقراءة أكتوبر 2026 غير متاح: شهر المقارنة (أكتوبر 2025) غير منشور في المصدر",
   "CPILFESL: التغير السنوي لقراءة أكتوبر 2026 غير متاح: شهر المقارنة (أكتوبر 2025) غير منشور في المصدر"
  ]

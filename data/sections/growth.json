@@ -1,7 +1,7 @@
 {
  "section": "growth",
  "title": "النمو",
- "collected_at": "2026-11-25T13:48:39Z",
+ "collected_at": "2026-11-25T17:01:38Z",
  "ok": true,
  "available": 5,
  "total": 5,
@@ -13,11 +13,11 @@
    "freq": "Q",
    "transform": "yoy",
    "unit": "%",
-   "last": 2.0657,
+   "last": 2.2902,
    "prev": 2.1916,
-   "change": -0.1258,
-   "z5": -0.78,
-   "pct5": 14.3,
+   "change": 0.0986,
+   "z5": -0.58,
+   "pct5": 23.8,
    "as_of": "2026-07-01",
    "age_days": 147,
    "state": "ok",
@@ -25,7 +25,14 @@
    "source_as_of": "2026-07-01",
    "unavailable": null,
    "momentum": null,
-   "revisions": [],
+   "revisions": [
+    {
+     "detected_utc": "2026-11-25T17:01:39Z",
+     "date": "2026-07-01",
+     "old": 24611.1,
+     "new": 24665.2
+    }
+   ],
    "recent": [
     [
      "2024-10-01",
@@ -57,7 +64,7 @@
     ],
     [
      "2026-07-01",
-     2.0657
+     2.2902
     ]
    ]
   },
@@ -379,6 +386,16 @@
   "since_utc": "2026-11-16T14:09:55Z",
   "items": [
    {
+    "id": "GDPC1",
+    "kind": "value_change",
+    "prev": 2.0657,
+    "now": 2.2902,
+    "prev_as_of": "2026-07-01",
+    "now_as_of": "2026-07-01",
+    "pct5_prev": 14.3,
+    "pct5_now": 23.8
+   },
+   {
     "id": "INDPRO",
     "kind": "new_observation",
     "prev": 2.2455,
@@ -513,9 +530,17 @@
      "old": 103.846,
      "new": 102.678
     }
+   },
+   {
+    "kind": "revision",
+    "id": "GDPC1",
+    "detected_utc": "2026-11-25T17:01:39Z",
+    "date": "2026-07-01",
+    "old": 24611.1,
+    "new": 24665.2
    }
   ],
-  "unchanged_count": 1
+  "unchanged_count": 0
  },
  "revisions_recent": [
   {
@@ -602,6 +627,13 @@
     "old": 103.846,
     "new": 102.678
    }
+  },
+  {
+   "id": "GDPC1",
+   "detected_utc": "2026-11-25T17:01:39Z",
+   "date": "2026-07-01",
+   "old": 24611.1,
+   "new": 24665.2
   }
  ],
  "data_quality": []

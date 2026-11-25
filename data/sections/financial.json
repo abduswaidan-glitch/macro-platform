@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-25T13:48:39Z",
+ "collected_at": "2026-11-25T17:01:38Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -154,24 +154,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 3.63,
-   "prev": 3.76,
-   "change": -0.13,
-   "z5": 1.75,
-   "pct5": 94.6,
-   "as_of": "2026-11-23",
-   "age_days": 2,
+   "last": 3.72,
+   "prev": 3.63,
+   "change": 0.09,
+   "z5": 2.02,
+   "pct5": 95.7,
+   "as_of": "2026-11-24",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-23",
+   "source_as_of": "2026-11-24",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-12",
-     3.2
-    ],
     [
      "2026-11-13",
      3.23
@@ -199,6 +195,10 @@
     [
      "2026-11-23",
      3.63
+    ],
+    [
+     "2026-11-24",
+     3.72
     ]
    ]
   },
@@ -209,26 +209,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "",
-   "last": 26.62,
-   "prev": 35.89,
-   "change": -9.27,
-   "z5": 1.41,
-   "pct5": 89.3,
-   "as_of": "2026-11-23",
-   "age_days": 2,
+   "last": 26.36,
+   "prev": 26.62,
+   "change": -0.26,
+   "z5": 1.36,
+   "pct5": 88.8,
+   "as_of": "2026-11-24",
+   "age_days": 1,
    "state": "ok",
-   "issues": [
-    "قفزة غير معتادة في آخر قيمة (-9.27)"
-   ],
-   "source_as_of": "2026-11-23",
+   "issues": [],
+   "source_as_of": "2026-11-24",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-12",
-     18.7
-    ],
     [
      "2026-11-13",
      19.3
@@ -256,6 +250,10 @@
     [
      "2026-11-23",
      26.62
+    ],
+    [
+     "2026-11-24",
+     26.36
     ]
    ]
   },
@@ -539,14 +537,14 @@
   {
    "key": "hy",
    "title": "فارق High Yield",
-   "value": "3.63%",
+   "value": "3.72%",
    "detail": "هدوء ائتماني",
    "tone": "ok"
   },
   {
    "key": "vix",
    "title": "مؤشر VIX",
-   "value": "26.6",
+   "value": "26.4",
    "detail": "خوف مرتفع (فوق 25)",
    "tone": "bad"
   }
@@ -581,21 +579,21 @@
     "id": "BAMLH0A0HYM2",
     "kind": "new_observation",
     "prev": 3.2,
-    "now": 3.63,
+    "now": 3.72,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-23",
+    "now_as_of": "2026-11-24",
     "pct5_prev": 72.4,
-    "pct5_now": 94.6
+    "pct5_now": 95.7
    },
    {
     "id": "VIXCLS",
     "kind": "new_observation",
     "prev": 18.7,
-    "now": 26.62,
+    "now": 26.36,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-23",
+    "now_as_of": "2026-11-24",
     "pct5_prev": 58.1,
-    "pct5_now": 89.3
+    "pct5_now": 88.8
    },
    {
     "id": "DTWEXBGS",
@@ -727,7 +725,5 @@
    "new": 23414.3
   }
  ],
- "data_quality": [
-  "VIXCLS: قفزة غير معتادة في آخر قيمة (-9.27)"
- ]
+ "data_quality": []
 }

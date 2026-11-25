@@ -1,13 +1,13 @@
 {
  "section": "markets",
  "title": "Market Gates",
- "collected_at": "2026-11-25T13:48:39Z",
+ "collected_at": "2026-11-25T17:01:38Z",
  "ok": true,
  "relative_performance": {
-  "as_of": "2026-11-23",
-  "d5": 0.78,
-  "d10": -0.02,
-  "d20": -3.084
+  "as_of": "2026-11-24",
+  "d5": -1.037,
+  "d10": -1.306,
+  "d20": -5.19
  },
  "nq_limits": [
   {
@@ -22,11 +22,11 @@
   {
    "key": "vix",
    "title": "بوابة VIX",
-   "value": "26.6",
+   "value": "26.4",
    "detail": "توسّع تذبذب: Trend days وحركات عنيفة",
    "extra": "الحدود 20 / 25",
    "tone": "bad",
-   "as_of": "2026-11-23"
+   "as_of": "2026-11-24"
   },
   {
    "key": "real10",
@@ -49,20 +49,20 @@
   {
    "key": "leadership",
    "title": "قيادة NQ مقابل ES (20 يوماً)",
-   "value": "-3.08%",
+   "value": "-5.19%",
    "detail": "S&P يقود: دوران بعيداً عن النمو",
    "extra": "نسبة NDX/SPX",
    "tone": "warn",
-   "as_of": "2026-11-23"
+   "as_of": "2026-11-24"
   },
   {
    "key": "credit",
    "title": "الائتمان (High Yield OAS)",
-   "value": "3.63%",
+   "value": "3.72%",
    "detail": "لا ضغط ائتماني",
    "extra": "الحد 5.0%",
    "tone": "ok",
-   "as_of": "2026-11-23"
+   "as_of": "2026-11-24"
   }
  ],
  "limit_levels": {
