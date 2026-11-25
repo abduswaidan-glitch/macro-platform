@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-25T01:25:48Z",
+ "fetched_utc": "2026-11-25T13:48:39Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -153,9 +153,15 @@
      "date": "2026-11-07",
      "old": 200000.0,
      "new": 202000.0
+    },
+    {
+     "detected_utc": "2026-11-25T13:48:42Z",
+     "date": "2026-11-14",
+     "old": 203000.0,
+     "new": 202000.0
     }
    ],
-   "last_new_obs_utc": "2026-11-19T13:49:48Z"
+   "last_new_obs_utc": "2026-11-25T13:48:39Z"
   },
   "CCSA": {
    "state": "ok",
@@ -166,9 +172,15 @@
      "date": "2026-10-31",
      "old": 1697000.0,
      "new": 1693000.0
+    },
+    {
+     "detected_utc": "2026-11-25T13:48:42Z",
+     "date": "2026-11-07",
+     "old": 1763000.0,
+     "new": 1792000.0
     }
    ],
-   "last_new_obs_utc": "2026-11-19T13:49:48Z"
+   "last_new_obs_utc": "2026-11-25T13:48:39Z"
   },
   "JTSJOL": {
    "state": "ok",
@@ -321,13 +333,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-25T01:25:48Z"
+   "last_new_obs_utc": "2026-11-25T13:48:39Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-25T01:25:48Z"
+   "last_new_obs_utc": "2026-11-25T13:48:39Z"
   }
  },
  "extra_warnings": []
