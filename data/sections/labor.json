@@ -1,7 +1,7 @@
 {
  "section": "labor",
  "title": "سوق العمل",
- "collected_at": "2026-11-25T21:36:11Z",
+ "collected_at": "2026-11-26T00:59:19Z",
  "ok": true,
  "available": 6,
  "total": 6,
@@ -19,7 +19,7 @@
    "z5": -0.32,
    "pct5": 47.5,
    "as_of": "2026-10-01",
-   "age_days": 55,
+   "age_days": 56,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -74,7 +74,7 @@
    "z5": 0.47,
    "pct5": 66.7,
    "as_of": "2026-10-01",
-   "age_days": 55,
+   "age_days": 56,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -129,7 +129,7 @@
    "z5": -2.17,
    "pct5": 0.8,
    "as_of": "2026-11-21",
-   "age_days": 4,
+   "age_days": 5,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-21",
@@ -197,7 +197,7 @@
    "z5": -0.31,
    "pct5": 25.3,
    "as_of": "2026-11-14",
-   "age_days": 11,
+   "age_days": 12,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-14",
@@ -265,10 +265,10 @@
    "z5": -0.7,
    "pct5": 41.0,
    "as_of": "2026-09-01",
-   "age_days": 85,
+   "age_days": 86,
    "state": "stale",
    "issues": [
-    "آخر قيمة عمرها 85 يوماً"
+    "آخر قيمة عمرها 86 يوماً"
    ],
    "source_as_of": "2026-09-01",
    "unavailable": null,
@@ -322,7 +322,7 @@
    "z5": -1.68,
    "pct5": 3.3,
    "as_of": "2026-10-01",
-   "age_days": 55,
+   "age_days": 56,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-10-01",
@@ -478,6 +478,6 @@
   }
  ],
  "data_quality": [
-  "JTSJOL: آخر قيمة عمرها 85 يوماً"
+  "JTSJOL: آخر قيمة عمرها 86 يوماً"
  ]
 }

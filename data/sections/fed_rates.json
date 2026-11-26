@@ -1,7 +1,7 @@
 {
  "section": "fed_rates",
  "title": "الفيدرالي والفائدة",
- "collected_at": "2026-11-25T21:36:11Z",
+ "collected_at": "2026-11-26T00:59:19Z",
  "ok": true,
  "available": 7,
  "total": 7,
@@ -19,7 +19,7 @@
    "z5": 0.0,
    "pct5": 41.8,
    "as_of": "2026-11-24",
-   "age_days": 1,
+   "age_days": 2,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-24",
@@ -74,7 +74,7 @@
    "z5": 0.78,
    "pct5": 79.6,
    "as_of": "2026-11-24",
-   "age_days": 1,
+   "age_days": 2,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-24",
@@ -129,7 +129,7 @@
    "z5": 1.25,
    "pct5": 96.1,
    "as_of": "2026-11-24",
-   "age_days": 1,
+   "age_days": 2,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-24",
@@ -178,24 +178,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 0.28,
-   "prev": 0.29,
-   "change": -0.01,
-   "z5": 0.5,
-   "pct5": 58.0,
-   "as_of": "2026-11-24",
+   "last": 0.24,
+   "prev": 0.28,
+   "change": -0.04,
+   "z5": 0.42,
+   "pct5": 54.3,
+   "as_of": "2026-11-25",
    "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-24",
+   "source_as_of": "2026-11-25",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-13",
-     0.27
-    ],
     [
      "2026-11-16",
      0.29
@@ -223,6 +219,10 @@
     [
      "2026-11-24",
      0.28
+    ],
+    [
+     "2026-11-25",
+     0.24
     ]
    ]
   },
@@ -239,7 +239,7 @@
    "z5": 1.41,
    "pct5": 98.3,
    "as_of": "2026-11-24",
-   "age_days": 1,
+   "age_days": 2,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-24",
@@ -289,23 +289,19 @@
    "transform": "level",
    "unit": "%",
    "last": 2.12,
-   "prev": 2.13,
-   "change": -0.01,
-   "z5": -1.54,
-   "pct5": 2.4,
-   "as_of": "2026-11-24",
+   "prev": 2.12,
+   "change": 0.0,
+   "z5": -1.53,
+   "pct5": 2.5,
+   "as_of": "2026-11-25",
    "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-24",
+   "source_as_of": "2026-11-25",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-13",
-     2.24
-    ],
     [
      "2026-11-16",
      2.2
@@ -333,6 +329,10 @@
     [
      "2026-11-24",
      2.12
+    ],
+    [
+     "2026-11-25",
+     2.12
     ]
    ]
   },
@@ -349,7 +349,7 @@
    "z5": 0.95,
    "pct5": 93.1,
    "as_of": "2026-11-25",
-   "age_days": 0,
+   "age_days": 1,
    "state": "ok",
    "issues": [],
    "source_as_of": "2026-11-25",
@@ -396,7 +396,7 @@
   {
    "key": "curve",
    "title": "منحنى العائد 10Y-2Y",
-   "value": "+0.28%",
+   "value": "+0.24%",
    "detail": "طبيعي (Normal)",
    "tone": "ok"
   },
@@ -455,11 +455,11 @@
     "id": "T10Y2Y",
     "kind": "new_observation",
     "prev": 0.27,
-    "now": 0.28,
+    "now": 0.24,
     "prev_as_of": "2026-11-13",
-    "now_as_of": "2026-11-24",
+    "now_as_of": "2026-11-25",
     "pct5_prev": 57.2,
-    "pct5_now": 58.0
+    "pct5_now": 54.3
    },
    {
     "id": "DFII10",
@@ -477,9 +477,9 @@
     "prev": 2.24,
     "now": 2.12,
     "prev_as_of": "2026-11-13",
-    "now_as_of": "2026-11-24",
+    "now_as_of": "2026-11-25",
     "pct5_prev": 19.1,
-    "pct5_now": 2.4
+    "pct5_now": 2.5
    },
    {
     "id": "MORTGAGE30US",
