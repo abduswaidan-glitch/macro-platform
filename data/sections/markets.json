@@ -1,13 +1,13 @@
 {
  "section": "markets",
  "title": "Market Gates",
- "collected_at": "2026-11-27T13:47:44Z",
+ "collected_at": "2026-11-27T17:10:25Z",
  "ok": true,
  "relative_performance": {
-  "as_of": "2026-11-24",
-  "d5": -1.037,
-  "d10": -1.306,
-  "d20": -5.19
+  "as_of": "2026-11-25",
+  "d5": -2.06,
+  "d10": -2.622,
+  "d20": -5.807
  },
  "nq_limits": [
   {
@@ -22,11 +22,11 @@
   {
    "key": "vix",
    "title": "بوابة VIX",
-   "value": "26.4",
+   "value": "26.8",
    "detail": "توسّع تذبذب: Trend days وحركات عنيفة",
    "extra": "الحدود 20 / 25",
    "tone": "bad",
-   "as_of": "2026-11-24"
+   "as_of": "2026-11-26"
   },
   {
    "key": "real10",
@@ -49,11 +49,11 @@
   {
    "key": "leadership",
    "title": "قيادة NQ مقابل ES (20 يوماً)",
-   "value": "-5.19%",
+   "value": "-5.81%",
    "detail": "S&P يقود: دوران بعيداً عن النمو",
    "extra": "نسبة NDX/SPX",
    "tone": "warn",
-   "as_of": "2026-11-24"
+   "as_of": "2026-11-25"
   },
   {
    "key": "credit",

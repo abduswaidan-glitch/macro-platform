@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-27T13:47:44Z",
+ "collected_at": "2026-11-27T17:10:25Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -209,28 +209,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "",
-   "last": 26.36,
-   "prev": 26.62,
-   "change": -0.26,
-   "z5": 1.36,
-   "pct5": 88.8,
-   "as_of": "2026-11-24",
-   "age_days": 3,
+   "last": 26.8,
+   "prev": 28.29,
+   "change": -1.49,
+   "z5": 1.43,
+   "pct5": 89.5,
+   "as_of": "2026-11-26",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-24",
+   "source_as_of": "2026-11-26",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-13",
-     19.3
-    ],
-    [
-     "2026-11-16",
-     22.91
-    ],
     [
      "2026-11-17",
      25.46
@@ -254,6 +246,14 @@
     [
      "2026-11-24",
      26.36
+    ],
+    [
+     "2026-11-25",
+     28.29
+    ],
+    [
+     "2026-11-26",
+     26.8
     ]
    ]
   },
@@ -544,7 +544,7 @@
   {
    "key": "vix",
    "title": "مؤشر VIX",
-   "value": "26.4",
+   "value": "26.8",
    "detail": "خوف مرتفع (فوق 25)",
    "tone": "bad"
   }
@@ -589,11 +589,11 @@
     "id": "VIXCLS",
     "kind": "new_observation",
     "prev": 18.7,
-    "now": 26.36,
+    "now": 26.8,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-24",
+    "now_as_of": "2026-11-26",
     "pct5_prev": 58.1,
-    "pct5_now": 88.8
+    "pct5_now": 89.5
    },
    {
     "id": "DTWEXBGS",

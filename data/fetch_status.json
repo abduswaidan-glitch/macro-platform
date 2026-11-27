@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-11-27T13:47:44Z",
+ "fetched_utc": "2026-11-27T17:10:25Z",
  "series": {
   "GDPC1": {
    "state": "ok",
@@ -315,7 +315,7 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-25T17:01:38Z"
+   "last_new_obs_utc": "2026-11-27T17:10:25Z"
   },
   "DTWEXBGS": {
    "state": "ok",
@@ -351,13 +351,13 @@
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-27T13:47:44Z"
+   "last_new_obs_utc": "2026-11-27T17:10:25Z"
   },
   "SP500": {
    "state": "ok",
    "issues": [],
    "revisions": [],
-   "last_new_obs_utc": "2026-11-27T13:47:44Z"
+   "last_new_obs_utc": "2026-11-27T17:10:25Z"
   }
  },
  "extra_warnings": []
