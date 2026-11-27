@@ -1,7 +1,7 @@
 {
  "section": "financial",
  "title": "الأوضاع المالية",
- "collected_at": "2026-11-27T17:10:25Z",
+ "collected_at": "2026-11-27T21:06:35Z",
  "ok": true,
  "available": 9,
  "total": 9,
@@ -154,28 +154,20 @@
    "freq": "D",
    "transform": "level",
    "unit": "%",
-   "last": 3.72,
-   "prev": 3.63,
-   "change": 0.09,
-   "z5": 2.02,
-   "pct5": 95.7,
-   "as_of": "2026-11-24",
-   "age_days": 3,
+   "last": 3.77,
+   "prev": 3.77,
+   "change": 0.0,
+   "z5": 2.16,
+   "pct5": 96.8,
+   "as_of": "2026-11-26",
+   "age_days": 1,
    "state": "ok",
    "issues": [],
-   "source_as_of": "2026-11-24",
+   "source_as_of": "2026-11-26",
    "unavailable": null,
    "momentum": null,
    "revisions": [],
    "recent": [
-    [
-     "2026-11-13",
-     3.23
-    ],
-    [
-     "2026-11-16",
-     3.34
-    ],
     [
      "2026-11-17",
      3.43
@@ -199,6 +191,14 @@
     [
      "2026-11-24",
      3.72
+    ],
+    [
+     "2026-11-25",
+     3.77
+    ],
+    [
+     "2026-11-26",
+     3.77
     ]
    ]
   },
@@ -537,7 +537,7 @@
   {
    "key": "hy",
    "title": "فارق High Yield",
-   "value": "3.72%",
+   "value": "3.77%",
    "detail": "هدوء ائتماني",
    "tone": "ok"
   },
@@ -579,11 +579,11 @@
     "id": "BAMLH0A0HYM2",
     "kind": "new_observation",
     "prev": 3.2,
-    "now": 3.72,
+    "now": 3.77,
     "prev_as_of": "2026-11-12",
-    "now_as_of": "2026-11-24",
+    "now_as_of": "2026-11-26",
     "pct5_prev": 72.4,
-    "pct5_now": 95.7
+    "pct5_now": 96.8
    },
    {
     "id": "VIXCLS",

@@ -1,7 +1,7 @@
 {
  "section": "markets",
  "title": "Market Gates",
- "collected_at": "2026-11-27T17:10:25Z",
+ "collected_at": "2026-11-27T21:06:35Z",
  "ok": true,
  "relative_performance": {
   "as_of": "2026-11-25",
@@ -58,11 +58,11 @@
   {
    "key": "credit",
    "title": "الائتمان (High Yield OAS)",
-   "value": "3.72%",
+   "value": "3.77%",
    "detail": "لا ضغط ائتماني",
    "extra": "الحد 5.0%",
    "tone": "ok",
-   "as_of": "2026-11-24"
+   "as_of": "2026-11-26"
   }
  ],
  "limit_levels": {
